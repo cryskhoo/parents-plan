@@ -66,7 +66,7 @@ h2{font-family:var(--f-disp);font-weight:800;font-size:1.42rem;line-height:1.15;
 .tvm2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.tv{background:#fff;border:2px solid #e8dcb5;border-radius:16px;padding:10px;display:grid;gap:4px;font-size:.82rem;font-weight:700;color:var(--soft)}.tv.mod{border-color:#f0cf8c;background:#fffaf0}.tv svg{width:100%;height:auto}.tv b{font-family:var(--f-disp);font-size:1.05rem;color:var(--ink)}.tv .bad::before{content:"✗ ";color:#c0392b}.tv .good::before{content:"✓ ";color:var(--leaf)}.dyk-t b{color:var(--ink)}
 .dyk-t{margin:0!important;background:#fff4dc;border-radius:14px;padding:10px 12px;color:var(--ink)!important;font-size:.95rem;width:100%;box-sizing:border-box}
 .cta{background:var(--leaf);color:#fff;border-radius:34px;padding:26px 22px;display:grid;gap:12px;text-align:center;box-shadow:0 8px 0 #1f6b37}
-.cta h2{color:#fff}.cta .big{font-family:var(--f-disp);font-weight:800;font-size:clamp(1.5rem,5.5vw,2.1rem);color:#fff!important;line-height:1.1}.cta p{margin:0;color:#dff5e3}
+.cta h2{color:#fff}.cta .big{font-family:var(--f-disp);font-weight:800;font-size:clamp(1.6rem,6vw,2.3rem);color:var(--ink)!important;line-height:1.1;background:var(--coin);border-radius:16px;padding:8px 16px;display:inline-block;justify-self:center;box-shadow:0 4px 0 var(--coin2);transform:rotate(-1.5deg)}.cta p{margin:0;color:#dff5e3}
 .btn{font:800 1rem var(--f-body);border:0;border-radius:99px;padding:12px 20px;cursor:pointer;background:var(--coin);color:var(--ink);box-shadow:0 4px 0 var(--coin2);transition:transform .1s;justify-self:center}
 .btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--coin2)}.btn:focus-visible{outline:3px solid #fff;outline-offset:3px}
 .me{display:grid;gap:4px;margin-top:6px}.me b{font-family:var(--f-disp);font-size:1.15rem}
@@ -104,7 +104,6 @@ h2{font-family:var(--f-disp);font-weight:800;font-size:1.42rem;line-height:1.15;
 
 <div class="sky" aria-hidden="true"><div class="cl" style="width:120px;height:36px;top:4%;animation-delay:-5s;animation-duration:55s"></div><div class="cl" style="width:90px;height:28px;top:14%;animation-delay:-30s;animation-duration:70s"></div><div class="cl" style="width:150px;height:42px;top:26%;animation-delay:-12s;animation-duration:80s"></div><div class="cl" style="width:100px;height:30px;top:38%;animation-delay:-44s;animation-duration:65s"></div><div class="cl" style="width:130px;height:38px;top:50%;animation-delay:-20s;animation-duration:75s"></div><div class="cl" style="width:80px;height:24px;top:62%;animation-delay:-8s;animation-duration:60s"></div><div class="cl" style="width:140px;height:40px;top:74%;animation-delay:-50s;animation-duration:85s"></div><div class="cl" style="width:110px;height:32px;top:86%;animation-delay:-33s;animation-duration:70s"></div><div class="cl" style="width:95px;height:28px;top:95%;animation-delay:-15s;animation-duration:58s"></div></div>
 <canvas id="fx" aria-hidden="true"></canvas>
-<div class="hud" aria-live="polite"><div class="hud-m"><span class="slot" data-w="1">1</span><span class="slot" data-w="2">2</span><span class="slot" data-w="3">3</span></div><div class="hud-t" id="hud-t">Scroll to collect 3 wins</div><div class="hud-i">💡 <b id="ins">0</b>/4</div></div>
 <button id="mus" class="mus" aria-pressed="false">🎵 Play music</button>
 
 <div class="wrap">
@@ -170,7 +169,7 @@ h2{font-family:var(--f-disp);font-weight:800;font-size:1.42rem;line-height:1.15;
     <button class="btn" id="copy">Copy link to share</button>
     <p id="copied" aria-live="polite" style="min-height:1.2em;font-weight:800"></p>
     <div class="me"><b>Crystal Khoo</b><span>Financial Adviser</span><span style="font-style:italic;color:#dff5e3">Knowing you better to serve you best</span>
-      <div class="acc"><span>MDRT 2026</span><span>MDRT 2027</span><span>Financial adviser to many mums</span></div></div>
+      <div class="acc"><span>MDRT 2026</span><span>MDRT 2027</span><span>FA to many thrill-seekers and their mums</span></div></div>
   </section>
 
   <p class="fine">For illustration only, not a quote or a recommendation. Dividend payouts are not guaranteed and depend on fund performance; the plan's value can go up or down. Who receives the remaining value depends on how the policy is set up and nominations. Using CPF savings follows CPF's rules. Your situation will be reviewed properly before anything is recommended.</p>
@@ -319,15 +318,15 @@ function burst(x,y,n=60,coins=false){for(let i=0;i<n;i++){const a=Math.random()*
 function tick(){cx.clearRect(0,0,fx.width,fx.height);cx.save();cx.scale(devicePixelRatio,devicePixelRatio);parts=parts.filter(p=>p.l-->0);parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.35;p.vx*=.98;p.rot+=.1;cx.globalAlpha=Math.min(1,p.l/20);cx.fillStyle=p.c;if(p.coin){cx.beginPath();cx.ellipse(p.x,p.y,p.r,p.r*Math.abs(Math.cos(p.rot)),0,0,7);cx.fill();cx.strokeStyle="#d99400";cx.stroke()}else{cx.fillRect(p.x,p.y,p.r,p.r*1.6)}});cx.restore();if(parts.length)requestAnimationFrame(tick)}
 function chime(k=0){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();if(ac.state!=="running")return;const t0=ac.currentTime;[[0,76],[.08,80],[.16,84],[.26,88]].slice(0,k?4:3).forEach(([d,m])=>{const o=ac.createOscillator(),g=ac.createGain();o.type="sine";o.frequency.value=440*Math.pow(2,(m-69)/12);g.gain.setValueAtTime(0,t0+d);g.gain.linearRampToValueAtTime(.12,t0+d+.01);g.gain.exponentialRampToValueAtTime(.0001,t0+d+.35);o.connect(g).connect(ac.destination);o.start(t0+d);o.stop(t0+d+.4)})}catch(e){}}
 const toast=document.createElement("div");toast.className="toast";document.body.appendChild(toast);let tt;
-function say(h,s){toast.innerHTML=`${h}<small>${s||""}</small>`;toast.classList.add("show");clearTimeout(tt);tt=setTimeout(()=>toast.classList.remove("show"),1700)}
-const won=new Set(),hudT=document.getElementById("hud-t");const WT={1:"Win #1 collected",2:"Win #2 collected",3:"All 3 wins collected 🏆"};
-function win(n){if(won.has(n))return;won.add(n);const m=document.querySelector(`.medal[data-w="${n}"]`);m.classList.remove("lock");m.classList.add("won");const s=document.querySelector(`.slot[data-w="${n}"]`);s.classList.add("on");const r=m.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,70,true);chime(n===3);
+function say(h,s){toast.innerHTML=`${h}<small>${s||""}</small>`;toast.classList.add("show");clearTimeout(tt);tt=setTimeout(()=>toast.classList.remove("show"),900)}
+const won=new Set(),hudT={};const WT={1:"Win #1 collected",2:"Win #2 collected",3:"All 3 wins collected 🏆"};
+function win(n){if(won.has(n))return;won.add(n);const m=document.querySelector(`.medal[data-w="${n}"]`);m.classList.remove("lock");m.classList.add("won");const r=m.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,70,true);chime(n===3);
  hudT.textContent=WT[n];say(`🏅 ${WT[n]}`,n<3?`${3-won.size} more to go`:"Scroll down for your next step");
  if(won.size===3){document.getElementById("cta").classList.add("all");setTimeout(()=>burst(innerWidth/2,innerHeight*.3,160),500)}}
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.dataset.w.split(",").forEach(n=>win(+n))}),{threshold:.3});
 document.querySelectorAll(".scene .medal[data-w]").forEach(m=>{const st=m.parentElement;st.dataset.w=(st.dataset.w?st.dataset.w+",":"")+m.dataset.w;io.observe(st)});
 addEventListener("scroll",()=>{document.querySelectorAll(".stage[data-w]").forEach(st=>{if(st.getBoundingClientRect().top<innerHeight*.75)st.dataset.w.split(",").forEach(n=>win(+n))})},{passive:true});
-let ins=0;document.querySelectorAll(".dyk-b").forEach(b=>b.addEventListener("click",e=>{if(b.classList.contains("done"))return;b.classList.add("done");ins++;document.getElementById("ins").textContent=ins;const r=b.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,30);chime();say(`💡 Insight ${ins}/4`,ins===4?"You know more than most people now":"Nice one")}));
+let ins=0;document.querySelectorAll(".dyk-b").forEach(b=>b.addEventListener("click",e=>{if(b.classList.contains("done"))return;b.classList.add("done");ins++;const r=b.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,30);chime();say(`💡 Insight ${ins}/4`,ins===4?"You know more than most people now":"Nice one")}));
 let rev=0;document.querySelectorAll(".win").forEach(w=>w.addEventListener("click",()=>{if(w.dataset.done)return;w.dataset.done=1;rev++;const r=w.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,30);chime();say(rev<3?`✨ ${rev}/3 revealed`:"✨ All 3 revealed",rev<3?"Tap the others":"Now scroll to collect them")}));
 document.getElementById("copy").onclick=()=>{const u=location.href.split("#")[0],o=document.getElementById("copied");
   navigator.clipboard.writeText(u).then(()=>o.textContent="Link copied. Paste it in your family chat.").catch(()=>{o.textContent=u})};
