@@ -63,7 +63,7 @@ h2{font-family:var(--f-disp);font-weight:800;font-size:1.42rem;line-height:1.15;
 .dyk{display:grid;gap:8px;margin-top:2px;justify-items:start}
 .dyk-b{font:800 .9rem var(--f-body);border:2px solid #f0cf8c;background:#fff4dc;color:var(--ink);border-radius:99px;padding:7px 14px;cursor:pointer}
 .dyk-b[aria-expanded="true"]{background:var(--coin);border-color:var(--coin2)}
-.tvm{width:100%;max-width:340px;height:auto;display:block;margin-top:8px}.dyk-t b{color:var(--ink)}
+.tvm2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.tv{background:#fff;border:2px solid #e8dcb5;border-radius:16px;padding:10px;display:grid;gap:4px;font-size:.82rem;font-weight:700;color:var(--soft)}.tv.mod{border-color:#f0cf8c;background:#fffaf0}.tv svg{width:100%;height:auto}.tv b{font-family:var(--f-disp);font-size:1.05rem;color:var(--ink)}.tv .bad::before{content:"✗ ";color:#c0392b}.tv .good::before{content:"✓ ";color:var(--leaf)}.dyk-t b{color:var(--ink)}
 .dyk-t{margin:0!important;background:#fff4dc;border-radius:14px;padding:10px 12px;color:var(--ink)!important;font-size:.95rem;width:100%;box-sizing:border-box}
 .cta{background:var(--leaf);color:#fff;border-radius:34px;padding:26px 22px;display:grid;gap:12px;text-align:center;box-shadow:0 8px 0 #1f6b37}
 .cta h2{color:#fff}.cta .big{font-family:var(--f-disp);font-weight:800;font-size:clamp(1.5rem,5.5vw,2.1rem);color:#fff!important;line-height:1.1}.cta p{margin:0;color:#dff5e3}
@@ -72,6 +72,19 @@ h2{font-family:var(--f-disp);font-weight:800;font-size:1.42rem;line-height:1.15;
 .me{display:grid;gap:4px;margin-top:6px}.me b{font-family:var(--f-disp);font-size:1.15rem}
 .acc{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}.acc span{background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.5);border-radius:99px;padding:3px 12px;font-size:.82rem;font-weight:800}
 .fine{font-size:.78rem;color:#5d6b50;text-align:center;max-width:56ch;margin:0 auto}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:9}
+.hud{position:sticky;top:env(safe-area-inset-top,0px);z-index:6;display:flex;align-items:center;gap:10px;background:rgba(255,251,234,.92);backdrop-filter:blur(6px);border:3px solid var(--card-edge);border-radius:99px;padding:6px 12px;box-shadow:0 4px 0 #d8c995;margin-bottom:-14px}
+.hud-m{display:flex;gap:4px}.slot{width:26px;height:26px;border-radius:50%;background:#e4dcc6;color:#a39c86;font:800 .8rem var(--f-disp);display:grid;place-items:center;border:2px solid #d8cfb6;transition:transform .3s}
+.slot.on{background:radial-gradient(circle at 35% 30%,#fff2a8,#ffc93c 60%,#d99400);color:#7a4a00;border-color:#fff;box-shadow:0 0 0 2px #e9a100;animation:slotpop .5s cubic-bezier(.3,1.6,.5,1)}
+@keyframes slotpop{0%{transform:scale(.4)}60%{transform:scale(1.3)}100%{transform:scale(1)}}
+.hud-t{flex:1;font-weight:800;font-size:.82rem;color:var(--ink);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.hud-i{font-weight:800;font-size:.82rem;color:var(--coin2);white-space:nowrap}
+.toast{position:fixed;left:50%;top:18%;transform:translate(-50%,0) scale(.8);z-index:10;background:var(--paper);border:4px solid var(--coin);border-radius:22px;padding:12px 20px;font:800 1.1rem var(--f-disp);color:var(--ink);box-shadow:0 8px 0 #d8c995,0 14px 30px rgba(0,0,0,.2);opacity:0;pointer-events:none;transition:opacity .25s,transform .35s cubic-bezier(.3,1.6,.5,1);text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0) scale(1)}.toast small{display:block;font:700 .82rem var(--f-body);color:var(--soft)}
+.medal.lock{filter:grayscale(1) opacity(.55)}.medal.won{animation:medalin .7s cubic-bezier(.3,1.6,.5,1)}
+@keyframes medalin{0%{transform:scale(.3) rotate(-20deg)}70%{transform:scale(1.2) rotate(6deg)}100%{transform:none}}
+.dyk-b.done{background:#e9f7df;border-color:#9fd18a}.dyk-b.done::after{content:" ✓"}
+.cta.all{box-shadow:0 8px 0 #1f6b37,0 0 0 6px #ffc93c}.cta .trophy{display:none;font:800 1.2rem var(--f-disp);color:#ffe36b}.cta.all .trophy{display:block;animation:slotpop .6s cubic-bezier(.3,1.6,.5,1)}
+.cta.all .btn{animation:pulse 1.4s ease-in-out infinite}@keyframes pulse{50%{transform:scale(1.06)}}
 .mus{position:fixed;right:calc(14px + env(safe-area-inset-right,0px));bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:5;font:800 .95rem var(--f-body);border:3px solid var(--card-edge);background:var(--paper);color:var(--ink);border-radius:99px;padding:9px 16px;box-shadow:0 4px 0 #d8c995;cursor:pointer}
 .mus[aria-pressed="true"]{background:var(--coin)}
 .bob{animation:bob 2.4s ease-in-out infinite;transform-box:fill-box;transform-origin:bottom}
@@ -90,6 +103,8 @@ h2{font-family:var(--f-disp);font-weight:800;font-size:1.42rem;line-height:1.15;
 </style>
 
 <div class="sky" aria-hidden="true"><div class="cl" style="width:120px;height:36px;top:4%;animation-delay:-5s;animation-duration:55s"></div><div class="cl" style="width:90px;height:28px;top:14%;animation-delay:-30s;animation-duration:70s"></div><div class="cl" style="width:150px;height:42px;top:26%;animation-delay:-12s;animation-duration:80s"></div><div class="cl" style="width:100px;height:30px;top:38%;animation-delay:-44s;animation-duration:65s"></div><div class="cl" style="width:130px;height:38px;top:50%;animation-delay:-20s;animation-duration:75s"></div><div class="cl" style="width:80px;height:24px;top:62%;animation-delay:-8s;animation-duration:60s"></div><div class="cl" style="width:140px;height:40px;top:74%;animation-delay:-50s;animation-duration:85s"></div><div class="cl" style="width:110px;height:32px;top:86%;animation-delay:-33s;animation-duration:70s"></div><div class="cl" style="width:95px;height:28px;top:95%;animation-delay:-15s;animation-duration:58s"></div></div>
+<canvas id="fx" aria-hidden="true"></canvas>
+<div class="hud" aria-live="polite"><div class="hud-m"><span class="slot" data-w="1">1</span><span class="slot" data-w="2">2</span><span class="slot" data-w="3">3</span></div><div class="hud-t" id="hud-t">Scroll to collect 3 wins</div><div class="hud-i">💡 <b id="ins">0</b>/4</div></div>
 <button id="mus" class="mus" aria-pressed="false">🎵 Play music</button>
 
 <div class="wrap">
@@ -124,7 +139,7 @@ h2{font-family:var(--f-disp);font-weight:800;font-size:1.42rem;line-height:1.15;
   </section>
 
   <section class="scene">
-    <div class="stage"><span class="medal">WIN #1</span><span class="badge r" style="background:var(--leaf)">With me</span><svg viewBox="0 0 640 360" id="s3" role="img" aria-label="Parents under a money tree that drops coins to them, while your investments jar stays full"></svg></div>
+    <div class="stage"><span class="medal lock" data-w="1">WIN #1</span><span class="badge r" style="background:var(--leaf)">With me</span><svg viewBox="0 0 640 360" id="s3" role="img" aria-label="Parents under a money tree that drops coins to them, while your investments jar stays full"></svg></div>
     <div class="txt"><span class="step">With me · Win #1</span><h2>Their money tree pays them every month. Your investments stay 100% yours.</h2>
     <p>Mum and Dad's own savings are planted as a money tree. It gives them <b>fruit</b> every month to live on, while the tree itself stays standing. No more pocket money from you.</p>
     <div class="cols">
@@ -141,7 +156,7 @@ h2{font-family:var(--f-disp);font-weight:800;font-size:1.42rem;line-height:1.15;
   </section>
 
   <section class="scene">
-    <div class="stage"><span class="medal">WIN #2</span><span class="medal r">WIN #3</span><svg viewBox="0 0 640 360" id="s4" role="img" aria-label="You in your 40s on a beach with your own full jar, and the money tree passed to you"></svg></div>
+    <div class="stage"><span class="medal lock" data-w="2">WIN #2</span><span class="medal lock r" data-w="3">WIN #3</span><svg viewBox="0 0 640 360" id="s4" role="img" aria-label="You in your 40s on a beach with your own full jar, and the money tree passed to you"></svg></div>
     <div class="txt"><span class="step">Later · Win #2 and Win #3</span><h2>Your jar grew for you. And one day, the tree is passed to you too.</h2>
     <p><b>Win #2:</b> because your investments were never touched, you can retire on your own terms, even in your 40s.</p>
     <p><b>Win #3:</b> after Mum and Dad pass on, the money tree is still standing. It is passed to you as a lump sum, on top of your own jar.</p>
@@ -149,6 +164,7 @@ h2{font-family:var(--f-disp);font-weight:800;font-size:1.42rem;line-height:1.15;
   </section>
 
   <section class="cta" id="cta">
+    <div class="trophy">🏆 All 3 wins collected</div>
     <h2>Show this to Mum and Dad</h2>
     <p class="big">This isn't for everyone.</p><p>It depends on your parents' savings, health and CPF, so a short <b style="color:#fff">30-minute conversation</b> is needed to walk through it properly before anyone decides. If it fits, I'll take the three of you through it step by step.</p>
     <button class="btn" id="copy">Copy link to share</button>
@@ -279,9 +295,9 @@ S("s4",`<rect width="640" height="360" fill="#ffd9a8"/><rect width="640" height=
 // Did you know? one short fact per scene
 const DYK={s1:"At 55, Mum and Dad's CPF Special Account closes. Their savings move into a Retirement Account, and most of it stays there for CPF LIFE instead of being free to use.",
  s2:"CPF LIFE monthly payouts only start at 65. Between stopping work and 65, many parents live on their savings, or on their children.",
- s3:`<b>Traditional vs modern retirement.</b> The usual way is a <b>drawdown</b>: save up, then spend it down, so the money shrinks and may run out before they pass on, leaving less for loved ones. The modern way keeps the capital <b>intact</b>: they live on the payout, the capital stays and can even grow, and it goes to loved ones later.<svg class="tvm" viewBox="0 0 320 110" role="img" aria-label="Traditional retirement triangle shrinking to zero versus modern retirement block that stays level"><g font-family="Nunito,sans-serif" font-weight="800" font-size="11" fill="#3b3a2f"><path d="M10,90 L70,30 L150,90Z" fill="#f0e6d2"/><path d="M10,90 L70,30 L70,90Z" fill="#f3b800"/><text x="80" y="104" text-anchor="middle">Traditional: runs out</text><path d="M180,90 L230,30 L310,30 L310,90Z" fill="#f0e6d2"/><path d="M180,90 L230,30 L230,90Z" fill="#f3b800"/><path d="M230,28 L310,20" stroke="#2f8f4e" stroke-width="2" stroke-dasharray="3 3"/><text x="245" y="104" text-anchor="middle">Modern: capital stays</text></g></svg>`,
+ s3:`<b>Traditional vs modern retirement</b><div class="tvm2"><div class="tv"><svg viewBox="0 0 150 90"><path d="M8,80 L58,20 L142,80Z" fill="#e6ddc8"/><path d="M8,80 L58,20 L58,80Z" fill="#c9bfa6"/><path d="M58,14 v-6 M58,8 l-4,4 M58,8 l4,4" stroke="#8a8270" stroke-width="2" fill="none"/><text x="142" y="76" font-size="9" font-weight="800" fill="#c0392b" text-anchor="end">$0</text></svg><b>Traditional</b><span>Save up, then spend it down</span><span class="bad">Can run out before they pass on</span><span class="bad">Less left for loved ones</span></div><div class="tv mod"><svg viewBox="0 0 150 90"><path d="M8,80 L58,20 L142,20 L142,80Z" fill="#ffe8a3"/><path d="M8,80 L58,20 L58,80Z" fill="#f3b800"/><path d="M58,20 L142,10" stroke="#2f8f4e" stroke-width="2.5" stroke-dasharray="4 3" fill="none"/><path d="M142,10 l-5,2 M142,10 l-2,5" stroke="#2f8f4e" stroke-width="2.5" fill="none"/></svg><b>Modern</b><span>Live on the payout, capital stays</span><span class="good">Income for life</span><span class="good">Capital passed to loved ones</span></div></div>`,
  s4:"Who receives what's left depends on how the plan is set up and who is nominated, so it's worth doing properly while everyone is well."};
-document.querySelectorAll(".dyk").forEach(w=>{w.innerHTML=`<button class="dyk-b" aria-expanded="false">💡 Did you know?</button><p class="dyk-t" hidden>${DYK[w.dataset.k]}</p>`;
+document.querySelectorAll(".dyk").forEach(w=>{w.innerHTML=`<button class="dyk-b" aria-expanded="false">💡 Did you know?</button><div class="dyk-t" hidden>${DYK[w.dataset.k]}</div>`;
  const b=w.querySelector(".dyk-b"),p=w.querySelector(".dyk-t");b.onclick=()=>{const o=p.hidden;p.hidden=!o;b.setAttribute("aria-expanded",o)}});
 const W=(id,html)=>{const s=document.getElementById(id);defs(s);s.insertAdjacentHTML("beforeend",html)};
 W("w1",person(55,112,.55,"dad","bob")+person(105,112,.52,"mum","bob2"));W("w2",person(80,112,.56,"son","bob"));
@@ -296,6 +312,23 @@ function note(m,t0,d,type,vol){if(!m)return;const o=ac.createOscillator(),g=ac.c
 function loop(){const b=.22,t0=ac.currentTime+.05;MEL.forEach((m,i)=>{note(m,t0+i*b,b*1.6,"triangle",.09);if(i%2===0)note(m+12,t0+i*b+.01,.12,"sine",.025)});BASS.forEach((m,i)=>note(m,t0+i*b*4,b*3.5,"sine",.08));timer=setTimeout(loop,MEL.length*b*1000)}
 document.getElementById("mus").onclick=e=>{const b=e.currentTarget;on=!on;b.setAttribute("aria-pressed",on);b.textContent=on?"🔇 Stop music":"🎵 Play music";
   if(on){ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume();loop()}else{clearTimeout(timer);ac&&ac.suspend()}};
+// Gamification: medals unlock as you reach each win, insights count up, confetti and chimes
+const fx=document.getElementById("fx"),cx=fx.getContext("2d");let parts=[];
+function resize(){fx.width=innerWidth*devicePixelRatio;fx.height=innerHeight*devicePixelRatio}resize();addEventListener("resize",resize);
+function burst(x,y,n=60,coins=false){for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,v=4+Math.random()*7;parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-5,r:coins?5+Math.random()*4:3+Math.random()*4,c:coins?"#ffc93c":["#ffc93c","#ff6b5b","#7cc95a","#8fd3f4","#b39cff","#fff"][i%6],l:60+Math.random()*30,coin:coins,rot:Math.random()*6})}if(parts.length===n)tick()}
+function tick(){cx.clearRect(0,0,fx.width,fx.height);cx.save();cx.scale(devicePixelRatio,devicePixelRatio);parts=parts.filter(p=>p.l-->0);parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.35;p.vx*=.98;p.rot+=.1;cx.globalAlpha=Math.min(1,p.l/20);cx.fillStyle=p.c;if(p.coin){cx.beginPath();cx.ellipse(p.x,p.y,p.r,p.r*Math.abs(Math.cos(p.rot)),0,0,7);cx.fill();cx.strokeStyle="#d99400";cx.stroke()}else{cx.fillRect(p.x,p.y,p.r,p.r*1.6)}});cx.restore();if(parts.length)requestAnimationFrame(tick)}
+function chime(k=0){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();if(ac.state!=="running")return;const t0=ac.currentTime;[[0,76],[.08,80],[.16,84],[.26,88]].slice(0,k?4:3).forEach(([d,m])=>{const o=ac.createOscillator(),g=ac.createGain();o.type="sine";o.frequency.value=440*Math.pow(2,(m-69)/12);g.gain.setValueAtTime(0,t0+d);g.gain.linearRampToValueAtTime(.12,t0+d+.01);g.gain.exponentialRampToValueAtTime(.0001,t0+d+.35);o.connect(g).connect(ac.destination);o.start(t0+d);o.stop(t0+d+.4)})}catch(e){}}
+const toast=document.createElement("div");toast.className="toast";document.body.appendChild(toast);let tt;
+function say(h,s){toast.innerHTML=`${h}<small>${s||""}</small>`;toast.classList.add("show");clearTimeout(tt);tt=setTimeout(()=>toast.classList.remove("show"),1700)}
+const won=new Set(),hudT=document.getElementById("hud-t");const WT={1:"Win #1 collected",2:"Win #2 collected",3:"All 3 wins collected 🏆"};
+function win(n){if(won.has(n))return;won.add(n);const m=document.querySelector(`.medal[data-w="${n}"]`);m.classList.remove("lock");m.classList.add("won");const s=document.querySelector(`.slot[data-w="${n}"]`);s.classList.add("on");const r=m.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,70,true);chime(n===3);
+ hudT.textContent=WT[n];say(`🏅 ${WT[n]}`,n<3?`${3-won.size} more to go`:"Scroll down for your next step");
+ if(won.size===3){document.getElementById("cta").classList.add("all");setTimeout(()=>burst(innerWidth/2,innerHeight*.3,160),500)}}
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.dataset.w.split(",").forEach(n=>win(+n))}),{threshold:.3});
+document.querySelectorAll(".scene .medal[data-w]").forEach(m=>{const st=m.parentElement;st.dataset.w=(st.dataset.w?st.dataset.w+",":"")+m.dataset.w;io.observe(st)});
+addEventListener("scroll",()=>{document.querySelectorAll(".stage[data-w]").forEach(st=>{if(st.getBoundingClientRect().top<innerHeight*.75)st.dataset.w.split(",").forEach(n=>win(+n))})},{passive:true});
+let ins=0;document.querySelectorAll(".dyk-b").forEach(b=>b.addEventListener("click",e=>{if(b.classList.contains("done"))return;b.classList.add("done");ins++;document.getElementById("ins").textContent=ins;const r=b.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,30);chime();say(`💡 Insight ${ins}/4`,ins===4?"You know more than most people now":"Nice one")}));
+let rev=0;document.querySelectorAll(".win").forEach(w=>w.addEventListener("click",()=>{if(w.dataset.done)return;w.dataset.done=1;rev++;const r=w.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,30);chime();say(rev<3?`✨ ${rev}/3 revealed`:"✨ All 3 revealed",rev<3?"Tap the others":"Now scroll to collect them")}));
 document.getElementById("copy").onclick=()=>{const u=location.href.split("#")[0],o=document.getElementById("copied");
   navigator.clipboard.writeText(u).then(()=>o.textContent="Link copied. Paste it in your family chat.").catch(()=>{o.textContent=u})};
 </script>
