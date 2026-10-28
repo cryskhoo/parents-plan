@@ -1,0 +1,302 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>The Tan Family Plan</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@500;700;800&display=swap">
+<style>
+/* Layout: one column of storybook "island" cards, each a soft-3D cartoon scene with one line of story. Single sunny look by choice. */
+:root{
+  --sky:#8fd3f4; --sky2:#d9f3ff; --grass:#7cc95a; --grass2:#5fb043;
+  --ink:#3b3a2f; --soft:#6b6a58; --paper:#fffbea; --leaf:#2f8f4e;
+  --coin:#ffc93c; --coin2:#e9a100; --red:#ff6b5b; --card-edge:#e8dcb5;
+  --f-disp:"Baloo 2","Trebuchet MS",system-ui,sans-serif; --f-body:"Nunito","Segoe UI",system-ui,sans-serif;
+  color-scheme:light;
+}
+html{background:var(--sky)}
+body{background:linear-gradient(180deg,var(--sky) 0%,var(--sky2) 420px,#eaf8d8 900px,#e2f4cf 100%);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.5;
+  padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px));padding-block:28px 70px;overflow-x:hidden}
+.wrap{max-width:620px;margin:0 auto;display:grid;gap:34px;position:relative;z-index:2}
+.sky{position:fixed;inset:0;pointer-events:none;z-index:-1;overflow:hidden}
+.cl{position:absolute;background:#fff;border-radius:99px;opacity:.75;animation:drift 38s linear infinite;box-shadow:inset 0 -6px 0 #e6f5ff}
+.cl::before,.cl::after{content:"";position:absolute;background:#fff;border-radius:50%}
+.cl::before{width:55%;height:150%;left:15%;top:-60%}.cl::after{width:40%;height:120%;right:12%;top:-40%}
+@keyframes drift{from{transform:translateX(-25vw)}to{transform:translateX(110vw)}}
+header{text-align:center;padding-top:10px;display:grid;gap:12px;justify-items:center}
+h1{font-family:var(--f-disp);font-weight:800;font-size:clamp(1.9rem,6.5vw,2.7rem);line-height:1.08;margin:0;text-wrap:balance;color:#fff;text-shadow:0 3px 0 #4aa3cf,0 6px 14px rgba(40,110,150,.35)}
+.sub{margin:0;color:#1f4d63;font-weight:800;font-size:1.02rem;max-width:40ch;background:rgba(255,255,255,.78);border-radius:18px;padding:9px 16px}
+.aimwrap{display:grid;gap:12px}
+.aim{font-family:var(--f-disp);font-weight:800;font-size:1.35rem;text-align:center;margin:0;color:var(--leaf)}
+.wins{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.win{all:unset;box-sizing:border-box;cursor:pointer;background:var(--paper);border:4px solid var(--card-edge);border-radius:24px;padding:12px 12px 14px;display:grid;gap:6px;justify-items:center;align-content:start;text-align:center;box-shadow:0 6px 0 #d8c995;transition:transform .15s}
+.win:hover{transform:translateY(-3px)}.win:focus-visible{outline:3px solid var(--leaf);outline-offset:3px}
+.win .n{font-family:var(--f-disp);font-weight:800;font-size:.8rem;color:#fff;background:var(--coin2);border-radius:99px;padding:2px 10px;letter-spacing:.06em}
+.win svg{width:100%;max-width:88px;height:auto}.win b{font-family:var(--f-disp);font-size:1.08rem;line-height:1.15;color:var(--ink)}
+.win .more{display:none;color:var(--soft);font-weight:700;font-size:.9rem}.win[aria-expanded="true"] .more{display:block;animation:pop .35s ease}.win[aria-expanded="true"] .hint{display:none}
+.win[aria-expanded="true"]{border-color:#9fd18a;background:#f4fbe9}
+.mosaic{filter:blur(5px);user-select:none;pointer-events:none}.lock{color:var(--coin2)!important}
+.hint{font-size:.76rem;font-weight:800;color:#fff;background:var(--leaf);border-radius:99px;padding:3px 12px}
+@keyframes pop{from{opacity:0;transform:translateY(-4px)}to{opacity:1}}
+@media(max-width:560px){.wins{grid-template-columns:1fr}.win{grid-template-columns:70px 1fr;justify-items:start;text-align:left;column-gap:12px;padding:10px 14px}.win svg{grid-row:span 4;max-width:70px}}
+.scene{background:var(--paper);border:4px solid var(--card-edge);border-radius:34px;box-shadow:0 8px 0 #d8c995,0 18px 30px rgba(80,120,60,.18);overflow:hidden;display:grid}
+.stage{position:relative;aspect-ratio:16/9;max-width:100%;background:linear-gradient(180deg,#bfe9ff,#e8f8ff 60%);overflow:hidden}
+.stage svg{position:absolute;inset:0;width:100%;height:100%}
+.badge{position:absolute;top:12px;left:12px;z-index:2;font-family:var(--f-disp);font-weight:800;font-size:1.05rem;color:#fff;background:var(--coin2);border:3px solid #fff;border-radius:99px;padding:4px 16px;box-shadow:0 4px 10px rgba(0,0,0,.18);letter-spacing:.04em}
+.badge.red{background:var(--red)}.badge.r{left:auto;right:12px}
+.medal{position:absolute;top:6px;left:8px;z-index:2;width:clamp(50px,11vw,72px);aspect-ratio:74/84;filter:drop-shadow(0 3px 4px rgba(0,0,0,.25))}
+.medal svg{width:100%;height:100%;display:block}.medal.r{left:auto;right:8px}.medal.sm{position:static;width:58px}
+.txt{padding:20px 24px 24px;display:grid;gap:10px}
+.step{font-family:var(--f-disp);font-weight:800;font-size:.85rem;color:var(--coin2);letter-spacing:.06em;text-transform:uppercase}
+h2{font-family:var(--f-disp);font-weight:800;font-size:1.42rem;line-height:1.15;margin:0;text-wrap:balance}
+.txt p{margin:0;color:var(--soft)}
+.txt b{color:var(--ink)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.col{border-radius:20px;padding:12px 10px 14px;display:grid;justify-items:center;gap:4px;text-align:center}
+.col.them{background:#eef8e4;border:2px solid #cfe7bd}.col.you{background:#fff4dc;border:2px solid #f0cf8c}
+.who{width:100%;max-width:150px;height:auto}.ch{font-family:var(--f-disp);font-weight:800;font-size:1.05rem;margin-bottom:4px}
+.st{display:grid;justify-items:center;gap:2px;font-size:.82rem;font-weight:800;line-height:1.15}.st svg{width:50px;height:42px}.dn{color:var(--leaf);font-weight:800;font-size:1.2rem;line-height:1}
+.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:6px;background:#eef8e4;border:2px solid #cfe7bd;border-radius:18px;padding:12px 10px}
+.flow .f{display:grid;justify-items:center;gap:4px;text-align:center;font-size:.8rem;font-weight:800;line-height:1.15}
+.flow svg{width:54px;height:46px}.flow .ar{font-size:1.4rem;color:var(--leaf);font-weight:800}
+.flow.you{grid-template-columns:auto 1fr;background:#fff4dc;border-color:#f0cf8c;justify-items:start}.flow.you .f{grid-template-columns:auto 1fr;text-align:left;column-gap:10px;align-items:center}
+.kaya{display:grid;grid-template-columns:110px 1fr;gap:12px;align-items:center;background:#fff4dc;border:3px dashed #f0cf8c;border-radius:20px;padding:12px 14px}.kaya svg{width:110px;height:84px}.kaya table{border-collapse:collapse;font-size:.9rem;width:100%}.kaya td{padding:3px 6px;font-variant-numeric:tabular-nums}.kaya td:last-child{text-align:right;font-weight:800}.kaya .k-h{font-family:var(--f-disp);font-weight:800;font-size:1.02rem;color:var(--ink)}@media(max-width:440px){.kaya{grid-template-columns:1fr;justify-items:center}}
+.src{font-size:.75rem!important;color:#8a8a72!important}.src a{color:inherit}
+.dyk{display:grid;gap:8px;margin-top:2px;justify-items:start}
+.dyk-b{font:800 .9rem var(--f-body);border:2px solid #f0cf8c;background:#fff4dc;color:var(--ink);border-radius:99px;padding:7px 14px;cursor:pointer}
+.dyk-b[aria-expanded="true"]{background:var(--coin);border-color:var(--coin2)}
+.tvm{width:100%;max-width:340px;height:auto;display:block;margin-top:8px}.dyk-t b{color:var(--ink)}
+.dyk-t{margin:0!important;background:#fff4dc;border-radius:14px;padding:10px 12px;color:var(--ink)!important;font-size:.95rem;width:100%;box-sizing:border-box}
+.cta{background:var(--leaf);color:#fff;border-radius:34px;padding:26px 22px;display:grid;gap:12px;text-align:center;box-shadow:0 8px 0 #1f6b37}
+.cta h2{color:#fff}.cta .big{font-family:var(--f-disp);font-weight:800;font-size:clamp(1.5rem,5.5vw,2.1rem);color:#fff!important;line-height:1.1}.cta p{margin:0;color:#dff5e3}
+.btn{font:800 1rem var(--f-body);border:0;border-radius:99px;padding:12px 20px;cursor:pointer;background:var(--coin);color:var(--ink);box-shadow:0 4px 0 var(--coin2);transition:transform .1s;justify-self:center}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--coin2)}.btn:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.me{display:grid;gap:4px;margin-top:6px}.me b{font-family:var(--f-disp);font-size:1.15rem}
+.acc{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}.acc span{background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.5);border-radius:99px;padding:3px 12px;font-size:.82rem;font-weight:800}
+.fine{font-size:.78rem;color:#5d6b50;text-align:center;max-width:56ch;margin:0 auto}
+.mus{position:fixed;right:calc(14px + env(safe-area-inset-right,0px));bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:5;font:800 .95rem var(--f-body);border:3px solid var(--card-edge);background:var(--paper);color:var(--ink);border-radius:99px;padding:9px 16px;box-shadow:0 4px 0 #d8c995;cursor:pointer}
+.mus[aria-pressed="true"]{background:var(--coin)}
+.bob{animation:bob 2.4s ease-in-out infinite;transform-box:fill-box;transform-origin:bottom}
+.bob2{animation:bob 2.4s ease-in-out -1.2s infinite;transform-box:fill-box;transform-origin:bottom}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.sway{animation:sway 4s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
+@keyframes sway{0%,100%{transform:rotate(-1.5deg)}50%{transform:rotate(1.5deg)}}
+.coinflow{animation:flow 2.6s linear infinite}
+@keyframes flow{0%{transform:translate(0,0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translate(var(--dx),var(--dy));opacity:0}}
+.drop{animation:drop 2.2s ease-in infinite}
+@keyframes drop{0%{transform:translateY(-10px);opacity:0}15%{opacity:1}100%{transform:translateY(46px);opacity:0}}
+.twinkle{animation:tw 1.8s ease-in-out infinite}
+@keyframes tw{0%,100%{opacity:.2}50%{opacity:1}}
+.bfly{animation:fly 6s ease-in-out infinite}.bfly>g{animation:flap .25s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center}@keyframes fly{0%,100%{translate:0 0}25%{translate:30px -14px}50%{translate:60px 4px}75%{translate:24px 12px}}@keyframes flap{to{transform:scaleX(.4)}}.wave{animation:wv 3s ease-in-out infinite}@keyframes wv{50%{transform:translateX(8px)}}.fire{animation:fl .4s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:bottom}@keyframes fl{to{transform:scaleY(1.15) scaleX(.92)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+
+<div class="sky" aria-hidden="true"><div class="cl" style="width:120px;height:36px;top:4%;animation-delay:-5s;animation-duration:55s"></div><div class="cl" style="width:90px;height:28px;top:14%;animation-delay:-30s;animation-duration:70s"></div><div class="cl" style="width:150px;height:42px;top:26%;animation-delay:-12s;animation-duration:80s"></div><div class="cl" style="width:100px;height:30px;top:38%;animation-delay:-44s;animation-duration:65s"></div><div class="cl" style="width:130px;height:38px;top:50%;animation-delay:-20s;animation-duration:75s"></div><div class="cl" style="width:80px;height:24px;top:62%;animation-delay:-8s;animation-duration:60s"></div><div class="cl" style="width:140px;height:40px;top:74%;animation-delay:-50s;animation-duration:85s"></div><div class="cl" style="width:110px;height:32px;top:86%;animation-delay:-33s;animation-duration:70s"></div><div class="cl" style="width:95px;height:28px;top:95%;animation-delay:-15s;animation-duration:58s"></div></div>
+<button id="mus" class="mus" aria-pressed="false">🎵 Play music</button>
+
+<div class="wrap">
+  <header>
+    <h1>Let's reach a win-win for you and your Mummy and Daddy</h1>
+    <p class="sub">Help your parents settle their retirement fund with a steady payout, while preserving wealth for you, instead of the usual drawdown approach.</p>
+  </header>
+
+  <div class="aimwrap">
+    <h3 class="aim">This is what I aim to do for you</h3>
+    <div class="wins">
+      <button class="win" aria-expanded="false"><svg viewBox="0 0 160 110" aria-hidden="true"><ellipse cx="80" cy="104" rx="76" ry="10" fill="#8fd768"/><path d="M40,100 v-40 h80 v40Z" fill="#fff6e0"/><path d="M32,62 L80,26 L128,62Z" fill="#ff8f6b"/><rect x="72" y="76" width="16" height="24" rx="4" fill="#a0673b"/><rect x="50" y="70" width="14" height="12" rx="3" fill="#a9d8ef"/><rect x="96" y="70" width="14" height="12" rx="3" fill="#a9d8ef"/><path d="M80,10 l3,6 6,1 -4,4 1,6 -6,-3 -6,3 1,-6 -4,-4 6,-1Z" fill="#ffc93c"/></svg><span class="medal sm">WIN #1</span><b>Mum and Dad's retirement, settled</b><small class="more">Paid from their own savings, so they never need to ask you.</small><span class="hint">Tap to see</span></button>
+      <button class="win" aria-expanded="false"><svg viewBox="0 0 160 110" aria-hidden="true"><path d="M0,80 h160 v30 h-160Z" fill="#f6dfa8"/><path d="M0,70 h160 v12 h-160Z" fill="#4cc3e8"/><path d="M36,100 q-6,-36 8,-62" stroke="#c9915a" stroke-width="7" fill="none"/><g fill="#4fb348"><ellipse cx="62" cy="38" rx="22" ry="7"/><ellipse cx="26" cy="40" rx="20" ry="6" transform="rotate(-20 26 40)"/><ellipse cx="46" cy="26" rx="18" ry="6" transform="rotate(60 46 26)"/></g><circle cx="128" cy="30" r="14" fill="#ffe36b"/><path d="M96,98 q-6,-26 0,-34 h28 q6,8 0,34Z" fill="#eaf8ff" stroke="#9fd3ea" stroke-width="2.5"/><circle cx="104" cy="90" r="6" fill="#ffc93c"/><circle cx="116" cy="90" r="6" fill="#ffc93c"/><circle cx="110" cy="80" r="6" fill="#ffc93c"/><rect x="94" y="58" width="32" height="8" rx="3" fill="#ffc93c"/></svg><span class="medal sm">WIN #2</span><b>Your investments stay 100% yours</b><small class="more">Grow them for your 40s, and retire on your own terms.</small><span class="hint">Tap to see</span></button>
+      <button class="win" aria-expanded="false"><svg viewBox="0 0 160 110" aria-hidden="true"><ellipse cx="80" cy="104" rx="76" ry="10" fill="#8fd768"/><rect x="74" y="58" width="12" height="44" rx="5" fill="#a0673b"/><circle cx="80" cy="44" r="34" fill="#4fb348"/><circle cx="56" cy="58" r="20" fill="#4fb348"/><circle cx="104" cy="56" r="21" fill="#4fb348"/><circle cx="66" cy="36" r="6" fill="#ffc93c" stroke="#d99400"/><circle cx="92" cy="30" r="6" fill="#ffc93c" stroke="#d99400"/><circle cx="80" cy="54" r="6" fill="#ffc93c" stroke="#d99400"/><circle cx="104" cy="52" r="6" fill="#ffc93c" stroke="#d99400"/><circle cx="58" cy="56" r="6" fill="#ffc93c" stroke="#d99400"/><path d="M120,96 l14,-14 m0,0 v9 m0,-9 h-9" stroke="#2f8f4e" stroke-width="4" fill="none" stroke-linecap="round"/></svg><span class="medal sm">WIN #3</span><b>Their money tree is passed to you</b><small class="more mosaic" aria-label="Hidden until we talk">What's left in their plan comes to you as a lump sum.</small><small class="more lock">🔒 Unlocked in our 30-minute chat</small><span class="hint">Tap to see</span></button>
+    </div>
+  </div>
+
+  <section class="scene">
+    <div class="stage"><svg viewBox="0 0 640 360" id="s1" role="img" aria-label="A Singaporean family of four standing on grass in front of HDB blocks"></svg></div>
+    <div class="txt"><span class="step">Meet the Tans</span><h2>Dad is 57, Mum is 53.<br>You're busy building your own life.</h2>
+    <div class="dyk" data-k="s1"></div></div>
+  </section>
+
+  <section class="scene">
+    <div class="stage"><span class="badge red r">Without me</span><svg viewBox="0 0 640 360" id="s2" role="img" aria-label="Pocket money flowing from your investments jar to your parents, whose savings sit in a bank"></svg></div>
+    <div class="txt"><span class="step">Without me</span><h2>Their savings sit in the bank. Your investments become their pocket money.</h2>
+    <p>Fixed deposits pay about 2.1% a year, but prices rise about 2.2%. So their savings slowly buy less, and when they run short, <b>you</b> top them up every month. That top-up comes out of <b>your investments</b>, so your jar shrinks instead of growing.</p>
+    <div class="kaya" id="kaya"><svg viewBox="0 0 120 90" aria-hidden="true"><ellipse cx="60" cy="80" rx="54" ry="7" fill="#e8d3a2"/><ellipse cx="34" cy="66" rx="30" ry="9" fill="#e5463a"/><path d="M12,64 l40,-6 l6,10 l-40,6Z" fill="#d9a35b"/><path d="M14,58 l40,-6 l4,8 l-40,6Z" fill="#e8b46a"/><path d="M16,60 l38,-6" stroke="#5e8f2e" stroke-width="3"/><path d="M18,62 l34,-5" stroke="#ffe36b" stroke-width="2"/><ellipse cx="88" cy="70" rx="22" ry="8" fill="#e5463a"/><ellipse cx="88" cy="66" rx="18" ry="6" fill="#fff8ec"/><ellipse cx="84" cy="66" rx="5" ry="3" fill="#ffb648"/><ellipse cx="93" cy="66" rx="5" ry="3" fill="#ffb648"/><path d="M66,20 h28 v26 q0,8 -8,8 h-12 q-8,0 -8,-8Z" fill="#fff" stroke="#d8cdb8" stroke-width="2"/><ellipse cx="80" cy="22" rx="14" ry="4" fill="#8a5a33"/><path d="M94,26 q10,2 6,12 q-3,5 -6,4" stroke="#d8cdb8" stroke-width="3" fill="none"/><path d="M74,12 q3,-6 0,-10 M82,12 q3,-6 0,-10" stroke="#c9b9a0" stroke-width="2" fill="none"/></svg>
+      <div><div class="k-h">What do rising prices look like?</div><table><tr><td>Ya Kun Set A, Jan 2021</td><td>S$4.80</td></tr><tr><td>Ya Kun Set A, Dec 2023</td><td>S$6.30</td></tr><tr><td colspan="2" style="text-align:left;color:var(--coin2);font-weight:800">Up 31% in under 3 years</td></tr><tr><td>In 10 more years, at 2.2% a year</td><td>S$7.83</td></tr></table><small style="color:#8a8a72">Prices as reported by <a href="https://mustsharenews.com/ya-kun-kaya-toast-set-meals/" target="_blank" rel="noopener" style="color:inherit">MS News</a> and <a href="https://gutzy.asia/2023/12/08/ya-kun-kaya-toast-faces-criticism-as-price-for-12-5-increase-for-set-a-meal/" target="_blank" rel="noopener" style="color:inherit">Gutzy Asia</a> (latest reported price).</small></div></div>
+    <p class="src">Best 12-month fixed deposits about 2.1% a year (promotional rates, Oct 2026, <a href="https://growbeansprout.com/insights/savings/singapore-best-fixed-deposit-rate" target="_blank" rel="noopener">Beansprout</a>); big banks closer to 1%. Prices up 2.2% in the year to Sept 2026 (<a href="https://tradingeconomics.com/singapore/inflation-cpi" target="_blank" rel="noopener">MAS/SingStat via Trading Economics</a>).</p>
+    <div class="dyk" data-k="s2"></div></div>
+  </section>
+
+  <section class="scene">
+    <div class="stage"><span class="medal">WIN #1</span><span class="badge r" style="background:var(--leaf)">With me</span><svg viewBox="0 0 640 360" id="s3" role="img" aria-label="Parents under a money tree that drops coins to them, while your investments jar stays full"></svg></div>
+    <div class="txt"><span class="step">With me · Win #1</span><h2>Their money tree pays them every month. Your investments stay 100% yours.</h2>
+    <p>Mum and Dad's own savings are planted as a money tree. It gives them <b>fruit</b> every month to live on, while the tree itself stays standing. No more pocket money from you.</p>
+    <div class="cols">
+      <div class="col them"><svg class="who" id="w1" viewBox="0 0 160 120" aria-hidden="true"></svg><div class="ch">Mum &amp; Dad</div>
+        <div class="st"><svg viewBox="0 0 60 50"><ellipse cx="30" cy="44" rx="26" ry="5" fill="#d8c995"/><g fill="#ffc93c" stroke="#d99400" stroke-width="1.5"><ellipse cx="18" cy="38" rx="12" ry="5"/><ellipse cx="42" cy="38" rx="12" ry="5"/><ellipse cx="30" cy="30" rx="12" ry="5"/><ellipse cx="22" cy="22" rx="12" ry="5"/><ellipse cx="38" cy="22" rx="12" ry="5"/><ellipse cx="30" cy="14" rx="12" ry="5"/></g></svg>Their savings</div><span class="dn">↓</span>
+        <div class="st"><svg viewBox="0 0 60 50"><rect x="27" y="28" width="6" height="20" rx="3" fill="#a0673b"/><circle cx="30" cy="20" r="16" fill="#4fb348"/><circle cx="18" cy="28" r="10" fill="#4fb348"/><circle cx="42" cy="28" r="10" fill="#4fb348"/><circle cx="24" cy="16" r="4" fill="#ffc93c" stroke="#d99400"/><circle cx="36" cy="24" r="4" fill="#ffc93c" stroke="#d99400"/><circle cx="34" cy="10" r="4" fill="#ffc93c" stroke="#d99400"/></svg>Their money tree</div><span class="dn">↓</span>
+        <div class="st"><svg viewBox="0 0 60 50"><rect x="10" y="8" width="40" height="38" rx="6" fill="#fff" stroke="#d8cdb8" stroke-width="2"/><rect x="10" y="8" width="40" height="10" rx="4" fill="#ff6b5b"/><circle cx="30" cy="32" r="9" fill="#ffc93c" stroke="#d99400" stroke-width="1.5"/><text x="30" y="36" text-anchor="middle" font-size="11" font-weight="800" fill="#b37800">$</text></svg>Monthly income, for life</div></div>
+      <div class="col you"><svg class="who" id="w2" viewBox="0 0 160 120" aria-hidden="true"></svg><div class="ch">You</div>
+        <div class="st"><svg viewBox="0 0 60 50"><path d="M16,14 q-6,4 -6,14 v12 q0,8 8,8 h24 q8,0 8,-8 v-12 q0,-10 -6,-14Z" fill="#eaf8ff" stroke="#9fd3ea" stroke-width="2.5"/><rect x="14" y="6" width="32" height="8" rx="3" fill="#ffc93c" stroke="#d99400"/><circle cx="22" cy="40" r="5" fill="#ffc93c"/><circle cx="34" cy="40" r="5" fill="#ffc93c"/><circle cx="28" cy="31" r="5" fill="#ffc93c"/><circle cx="40" cy="31" r="5" fill="#ffc93c"/></svg>Your investments</div><span class="dn">↓</span>
+        <div class="st"><svg viewBox="0 0 60 50"><path d="M30,6 l6,12 13,2 -9,9 2,13 -12,-6 -12,6 2,-13 -9,-9 13,-2Z" fill="#ffc93c" stroke="#d99400" stroke-width="1.5"/></svg>Untouched, 100% yours</div><span class="dn">↓</span>
+        <div class="st"><svg viewBox="0 0 60 50"><path d="M8,40 Q30,0 52,40Z" fill="#4fb348"/><circle cx="30" cy="12" r="7" fill="#ffe36b"/><rect x="6" y="40" width="48" height="6" rx="3" fill="#f6dfa8"/></svg>Keeps growing for you</div></div>
+    </div>
+    <div class="dyk" data-k="s3"></div></div>
+  </section>
+
+  <section class="scene">
+    <div class="stage"><span class="medal">WIN #2</span><span class="medal r">WIN #3</span><svg viewBox="0 0 640 360" id="s4" role="img" aria-label="You in your 40s on a beach with your own full jar, and the money tree passed to you"></svg></div>
+    <div class="txt"><span class="step">Later · Win #2 and Win #3</span><h2>Your jar grew for you. And one day, the tree is passed to you too.</h2>
+    <p><b>Win #2:</b> because your investments were never touched, you can retire on your own terms, even in your 40s.</p>
+    <p><b>Win #3:</b> after Mum and Dad pass on, the money tree is still standing. It is passed to you as a lump sum, on top of your own jar.</p>
+    <div class="dyk" data-k="s4"></div></div>
+  </section>
+
+  <section class="cta" id="cta">
+    <h2>Show this to Mum and Dad</h2>
+    <p class="big">This isn't for everyone.</p><p>It depends on your parents' savings, health and CPF, so a short <b style="color:#fff">30-minute conversation</b> is needed to walk through it properly before anyone decides. If it fits, I'll take the three of you through it step by step.</p>
+    <button class="btn" id="copy">Copy link to share</button>
+    <p id="copied" aria-live="polite" style="min-height:1.2em;font-weight:800"></p>
+    <div class="me"><b>Crystal Khoo</b><span>Financial Adviser</span><span style="font-style:italic;color:#dff5e3">Knowing you better to serve you best</span>
+      <div class="acc"><span>MDRT 2026</span><span>MDRT 2027</span><span>Financial adviser to many mums</span></div></div>
+  </section>
+
+  <p class="fine">For illustration only, not a quote or a recommendation. Dividend payouts are not guaranteed and depend on fund performance; the plan's value can go up or down. Who receives the remaining value depends on how the policy is set up and nominations. Using CPF savings follows CPF's rules. Your situation will be reviewed properly before anything is recommended.</p>
+</div>
+
+<script>
+const NS="http://www.w3.org/2000/svg";
+let gid=0;
+function defs(svg){svg.insertAdjacentHTML("afterbegin",`<defs>
+ <radialGradient id="skin" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#ffe2c6"/><stop offset=".7" stop-color="#f6c39b"/><stop offset="1" stop-color="#e3a77d"/></radialGradient>
+ <radialGradient id="coin" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff2a8"/><stop offset=".55" stop-color="#ffc93c"/><stop offset="1" stop-color="#d99400"/></radialGradient>
+ <radialGradient id="leafg" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#9be27a"/><stop offset=".6" stop-color="#4fb348"/><stop offset="1" stop-color="#2f8a3a"/></radialGradient>
+ <linearGradient id="grass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fd768"/><stop offset="1" stop-color="#5fb043"/></linearGradient>
+ <linearGradient id="hdb" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff6e0"/><stop offset="1" stop-color="#f0dfb6"/></linearGradient>
+ <linearGradient id="sunset" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7fd0e8"/><stop offset=".7" stop-color="#bfe8d8"/><stop offset="1" stop-color="#ffe2b0"/></linearGradient>
+ <filter id="sh" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#2f5a2a" flood-opacity=".25"/></filter>
+</defs>`)}
+function shade(c,id){return `<radialGradient id="${id}" cx=".35" cy=".25" r=".9"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset=".35" stop-color="${c}"/><stop offset="1" stop-color="${c}" stop-opacity="1"/></radialGradient>`}
+// chibi person. kind: dad|mum|son|daughter
+function person(x,y,s,kind,cls=""){
+  const P={dad:{shirt:"#5b9be6",pants:"#55607a",hair:"#9a9a9a"},mum:{shirt:"#ff9bb0",pants:"#8a6cc2",hair:"#3a2a22"},son:{shirt:"#ffb648",pants:"#3f6fb5",hair:"#2a1d18"},daughter:{shirt:"#b39cff",pants:"#ff8fa3",hair:"#3a2a22"}}[kind];
+  const g="p"+(gid++);s*=1.08;
+  const shoe=kind==="mum"||kind==="daughter"?"#ff6b8b":"#ffffff";
+  let back="",front="";
+  if(kind==="dad")front=`<path d="M-31,-66 C-32,-96 -10,-104 4,-102 C22,-100 33,-90 31,-66 C27,-80 18,-88 4,-88 C-8,-88 -20,-84 -31,-66Z" fill="${P.hair}"/>`;
+  if(kind==="son")front=`<path d="M-32,-62 C-34,-98 -6,-106 6,-104 C26,-102 36,-88 32,-62 C30,-74 24,-80 18,-82 C10,-74 -8,-72 -20,-80 C-26,-76 -30,-70 -32,-62Z" fill="${P.hair}"/>`;
+  if(kind==="mum"){back=`<circle cx="0" cy="-102" r="13" fill="${P.hair}"/><path d="M-34,-60 C-36,-98 36,-98 34,-60 L34,-46 Q30,-42 28,-50 L-28,-50 Q-30,-42 -34,-46Z" fill="${P.hair}"/>`;front=`<path d="M-31,-70 C-28,-98 28,-98 31,-70 C20,-84 0,-86 -10,-76 C-16,-82 -26,-80 -31,-70Z" fill="${P.hair}"/>`}
+  if(kind==="daughter"){back=`<circle cx="-30" cy="-92" r="11" fill="${P.hair}"/><circle cx="30" cy="-92" r="11" fill="${P.hair}"/><path d="M-34,-58 C-36,-98 36,-98 34,-58 Q30,-50 26,-56 L-26,-56 Q-30,-50 -34,-58Z" fill="${P.hair}"/>`;front=`<path d="M-31,-70 C-28,-100 28,-100 31,-70 L24,-74 L16,-80 L8,-75 L0,-80 L-8,-75 L-16,-80 L-24,-74Z" fill="${P.hair}"/><circle cx="-30" cy="-92" r="4" fill="#ff6b8b"/><circle cx="30" cy="-92" r="4" fill="#ff6b8b"/>`}
+  const specs=kind==="dad"?`<g fill="none" stroke="#4a3a2a" stroke-width="2.2"><rect x="-19" y="-66" width="15" height="12" rx="5"/><rect x="4" y="-66" width="15" height="12" rx="5"/><path d="M-4,-61h8"/></g>`:"";
+  const top=kind==="dad"?`<path d="M-8,-40 L0,-32 L8,-40Z" fill="#fff"/><circle cx="0" cy="-26" r="1.6" fill="#fff"/><circle cx="0" cy="-19" r="1.6" fill="#fff"/>`:kind==="mum"?`<path d="M-8,-40 Q0,-30 8,-40" stroke="#fff" stroke-width="2.4" fill="none"/>`:kind==="son"?`<path d="M-8,-40 Q0,-34 8,-40" stroke="#e8962a" stroke-width="2.4" fill="none"/>`:`<path d="M-17,-18 h34 l4,8 h-42Z" fill="#9a84f0"/><path d="M-8,-40 Q0,-34 8,-40" stroke="#fff" stroke-width="2.4" fill="none"/>`;
+  return `<g transform="translate(${x},${y}) scale(${s})" filter="url(#sh)"><g class="${cls}">
+   <defs>${shade(P.shirt,g+"s")}${shade(P.pants,g+"p")}</defs>
+   <ellipse cx="0" cy="3" rx="24" ry="5" fill="#2f5a2a" opacity=".18"/>
+   <rect x="-13" y="-16" width="11" height="17" rx="5" fill="url(#${g}p)"/><rect x="2" y="-16" width="11" height="17" rx="5" fill="url(#${g}p)"/>
+   <ellipse cx="-8" cy="2" rx="8" ry="4.5" fill="${shoe}" stroke="#d8cdb8"/><ellipse cx="8" cy="2" rx="8" ry="4.5" fill="${shoe}" stroke="#d8cdb8"/>
+   <path d="M-17,-40 Q-20,-14 -16,-12 H16 Q20,-14 17,-40 Q0,-46 -17,-40Z" fill="url(#${g}s)"/>${top}
+   <rect x="-26" y="-38" width="10" height="20" rx="5" fill="url(#${g}s)" transform="rotate(12 -21 -38)"/><rect x="16" y="-38" width="10" height="20" rx="5" fill="url(#${g}s)" transform="rotate(-12 21 -38)"/>
+   <circle cx="-25" cy="-18" r="5" fill="url(#skin)"/><circle cx="25" cy="-18" r="5" fill="url(#skin)"/>
+   ${back}
+   <ellipse cx="0" cy="-68" rx="31" ry="29" fill="url(#skin)"/>
+   ${kind==="mum"?`<circle cx="-30" cy="-58" r="2.5" fill="#ffe36b"/><circle cx="30" cy="-58" r="2.5" fill="#ffe36b"/>`:""}
+   ${front}
+   <ellipse cx="-11" cy="-60" rx="4.2" ry="5.6" fill="#2b2420"/><ellipse cx="11" cy="-60" rx="4.2" ry="5.6" fill="#2b2420"/>
+   <circle cx="-9.6" cy="-62.4" r="1.7" fill="#fff"/><circle cx="12.4" cy="-62.4" r="1.7" fill="#fff"/>
+   ${specs}
+   <ellipse cx="-19" cy="-50" rx="5" ry="3" fill="#ff8f8f" opacity=".5"/><ellipse cx="19" cy="-50" rx="5" ry="3" fill="#ff8f8f" opacity=".5"/>
+   <path d="M-4,-49 Q0,-45 4,-49" stroke="#7a3a2a" stroke-width="2" fill="none" stroke-linecap="round"/>
+  </g></g>`}
+function tag(x,y,txt,c="#2f8f4e"){const w=txt.length*7.5+20;return `<g transform="translate(${x},${y})"><rect x="${-w/2}" y="-12" width="${w}" height="22" rx="11" fill="${c}" stroke="#fff" stroke-width="2"/><path d="M-5,10 L0,16 L5,10Z" fill="${c}"/><text y="4" text-anchor="middle" font-family="Nunito,sans-serif" font-weight="800" font-size="12" fill="#fff">${txt}</text></g>`}
+function ground(){return `<ellipse cx="320" cy="400" rx="520" ry="150" fill="url(#grass)"/><g fill="#fff" opacity=".7"><circle cx="90" cy="300" r="4"/><circle cx="100" cy="296" r="4"/><circle cx="540" cy="320" r="4"/><circle cx="550" cy="316" r="4"/></g>`}
+function hdb(x,y,w,h,c){let s=`<g transform="translate(${x},${y})"><rect width="${w}" height="${h}" rx="10" fill="url(#hdb)"/><rect width="${w}" height="16" rx="8" fill="${c}"/>`;
+  for(let r=0;r<(h-30)/22;r++)for(let k=0;k<w/24-1;k++)s+=`<rect x="${10+k*24}" y="${26+r*22}" width="14" height="12" rx="3" fill="#a9d8ef"/>`;return s+"</g>"}
+function tree(x,y,s,coins){let c="";if(coins)for(const [cx,cy] of [[-30,-120],[24,-138],[0,-100],[40,-104],[-44,-92]])c+=`<circle cx="${cx}" cy="${cy}" r="9" fill="url(#coin)" stroke="#d99400" stroke-width="1.5"/>`;
+  return `<g transform="translate(${x},${y}) scale(${s})" filter="url(#sh)"><g class="sway"><rect x="-10" y="-70" width="20" height="72" rx="8" fill="#a0673b"/><circle cx="0" cy="-118" r="60" fill="url(#leafg)"/><circle cx="-42" cy="-92" r="34" fill="url(#leafg)"/><circle cx="44" cy="-96" r="36" fill="url(#leafg)"/>${c}</g></g>`}
+function jar(x,y,s,fill,label){const n=Math.round(fill*10);let c="";const pos=[[-16,-12],[0,-12],[16,-12],[-8,-24],[8,-24],[-16,-36],[0,-36],[16,-36],[-8,-48],[8,-48]];
+  for(let i=0;i<n;i++){const [cx,cy]=pos[i];c+=`<g transform="translate(${cx},${cy})"><circle r="9" fill="url(#coin)" stroke="#d99400" stroke-width="1.3"/><circle r="5.5" fill="none" stroke="#e9a100" stroke-width="1" opacity=".7"/><ellipse cx="-3" cy="-3" rx="2.5" ry="1.5" fill="#fff" opacity=".8"/></g>`}
+  const w=label?label.length*7.5+20:0;
+  return `<g transform="translate(${x},${y}) scale(${s})" filter="url(#sh)"><ellipse cx="0" cy="2" rx="38" ry="7" fill="#2f5a2a" opacity=".18"/>
+   <path d="M-30,-62 q-10,6 -10,22 v26 q0,16 16,16 h48 q16,0 16,-16 v-26 q0,-16 -10,-22Z" fill="#eaf8ff" fill-opacity=".55" stroke="#9fd3ea" stroke-width="3"/>
+   <clipPath id="jc${gid}"><path d="M-30,-62 q-10,6 -10,22 v26 q0,16 16,16 h48 q16,0 16,-16 v-26 q0,-16 -10,-22Z"/></clipPath><g clip-path="url(#jc${gid++})">${c}</g>
+   <path d="M-32,-46 q-2,20 2,36" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".8" fill="none"/><path d="M26,-50 q3,6 3,12" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".6" fill="none"/>
+   <rect x="-32" y="-74" width="64" height="14" rx="5" fill="#ffc93c" stroke="#d99400" stroke-width="2"/><path d="M-28,-70 h56" stroke="#fff3b0" stroke-width="2"/>
+   <path d="M-34,-62 q34,10 68,0" stroke="#ff6b8b" stroke-width="4" fill="none"/><path d="M28,-60 l10,10 l-6,2 Z M28,-60 l2,14 l5,-4Z" fill="#ff6b8b"/>
+   ${label?`<g transform="translate(0,-30)"><rect x="${-w/2}" y="-11" width="${w}" height="22" rx="8" fill="#fffbea" stroke="#e8dcb5" stroke-width="2"/><text y="5" text-anchor="middle" font-family="Baloo 2,sans-serif" font-weight="800" font-size="12" fill="#3b3a2f">${label}</text></g>`:""}</g>`}
+function coin(x,y,r=10){return `<circle cx="${x}" cy="${y}" r="${r}" fill="url(#coin)" stroke="#d99400" stroke-width="1.5"/><text x="${x}" y="${y+4}" text-anchor="middle" font-size="${r}" font-weight="800" fill="#b37800" font-family="Nunito,sans-serif">$</text>`}
+function bubble(x,y,t,w){return `<g transform="translate(${x},${y})"><rect x="${-w/2}" y="-22" width="${w}" height="34" rx="17" fill="#fff" stroke="#e8dcb5" stroke-width="3"/><text y="1" text-anchor="middle" font-family="Nunito,sans-serif" font-weight="800" font-size="15" fill="#3b3a2f">${t}</text></g>`}
+function flowers(list){return list.map(([x,y,c])=>`<g transform="translate(${x},${y})"><circle r="3.5" cx="-4" fill="${c}"/><circle r="3.5" cx="4" fill="${c}"/><circle r="3.5" cy="-4" fill="${c}"/><circle r="3.5" cy="4" fill="${c}"/><circle r="2.5" fill="#ffe36b"/></g>`).join("")}
+function lamp(x,y){return `<g transform="translate(${x},${y})"><rect x="-2.5" y="-60" width="5" height="60" rx="2" fill="#3d4a55"/><rect x="-9" y="-74" width="18" height="16" rx="4" fill="#3d4a55"/><rect x="-6" y="-71" width="12" height="10" rx="2" fill="#fff3b0"/><rect x="-7" y="-3" width="14" height="5" rx="2" fill="#3d4a55"/></g>`}
+function fence(x,y,n){let s=`<g transform="translate(${x},${y})"><rect x="0" y="-16" width="${n*18}" height="4" rx="2" fill="#a0673b"/><rect x="0" y="-8" width="${n*18}" height="4" rx="2" fill="#a0673b"/>`;for(let i=0;i<=n;i++)s+=`<rect x="${i*18-3}" y="-24" width="6" height="26" rx="3" fill="#c48550"/>`;return s+"</g>"}
+function palm(x,y,s){return `<g transform="translate(${x},${y}) scale(${s})"><g class="sway"><path d="M-6,0 Q-14,-60 4,-110 L12,-108 Q0,-60 6,0Z" fill="#c9915a"/>${[-150,-110,-60,-20,20].map(a=>`<ellipse cx="0" cy="0" rx="46" ry="12" fill="#4fb348" transform="translate(8,-110) rotate(${a}) translate(40,0)"/>`).join("")}<circle cx="2" cy="-104" r="7" fill="#8dbb4a"/><circle cx="14" cy="-102" r="7" fill="#8dbb4a"/></g></g>`}
+function pine(x,y,s){return `<g transform="translate(${x},${y}) scale(${s})" class="sway"><rect x="-5" y="-14" width="10" height="16" fill="#8a5a33"/><path d="M0,-90 L28,-40 L-28,-40Z M0,-70 L34,-14 L-34,-14Z" fill="#2f8a52"/><path d="M0,-90 L28,-40 L6,-40Z" fill="#46a868"/></g>`}
+function rock(x,y,s){return `<g transform="translate(${x},${y}) scale(${s})"><path d="M-22,0 Q-24,-18 -6,-22 Q14,-26 22,-8 Q24,0 18,2Z" fill="#9aa3a8"/><path d="M-6,-22 Q14,-26 22,-8 Q8,-14 -6,-22Z" fill="#c3cacd"/></g>`}
+function bfly(x,y,c,d){return `<g class="bfly" style="animation-delay:${d}s" transform="translate(${x},${y})"><g><ellipse cx="-4" cy="0" rx="5" ry="7" fill="${c}"/><ellipse cx="4" cy="0" rx="5" ry="7" fill="${c}"/><rect x="-1" y="-5" width="2" height="10" fill="#3b3a2f"/></g></g>`}
+function mailbox(x,y){return `<g transform="translate(${x},${y})"><rect x="-2" y="-30" width="4" height="30" fill="#a0673b"/><rect x="-14" y="-44" width="28" height="18" rx="8" fill="#ff5f57"/><rect x="10" y="-52" width="3" height="14" fill="#3b3a2f"/><rect x="10" y="-52" width="10" height="6" fill="#ffe36b"/></g>`}
+function cliffSea(){return `<rect x="0" y="150" width="640" height="80" fill="#4cc3e8"/><g fill="#fff" opacity=".6" class="wave"><rect x="40" y="170" width="60" height="4" rx="2"/><rect x="300" y="186" width="80" height="4" rx="2"/><rect x="520" y="166" width="50" height="4" rx="2"/></g><path d="M500,150 q30,-22 70,-10 q30,-8 70,6 v4Z" fill="#5aa86a" opacity=".7"/>`}
+function river(){return `<path d="M0,250 C120,240 140,300 260,300 S420,330 470,360 L420,360 C390,340 300,320 240,322 S110,290 0,282Z" fill="#5fc9ef"/><path d="M60,262 c20,-2 40,2 50,6 M250,310 c20,0 40,4 50,8" stroke="#fff" stroke-width="3" opacity=".7" fill="none" stroke-linecap="round"/>`}
+function path(d){return `<path d="${d}" fill="none" stroke="#e8d3a2" stroke-width="26" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#f2e2b9" stroke-width="18" stroke-linecap="round"/>`}
+function beach(){return `<rect x="0" y="150" width="640" height="110" fill="#4cc3e8"/><path d="M0,240 C160,210 360,232 640,214 V360 H0Z" fill="#f6dfa8"/><path d="M0,240 C160,210 360,232 640,214" stroke="#fff" stroke-width="7" fill="none" opacity=".9" class="wave"/>`}
+const sun=`<circle cx="575" cy="58" r="30" fill="#ffe36b"/><circle cx="575" cy="58" r="42" fill="#ffe36b" opacity=".3"/>`;
+const S=(id,html)=>{const s=document.getElementById(id);defs(s);s.insertAdjacentHTML("beforeend",html)};
+
+// Scene 1: meet the family
+const F1=[[70,315,"#ff6b8b"],[86,326,"#fff"],[590,330,"#ffe36b"],[606,320,"#ff6b8b"],[330,340,"#a98bff"],[346,348,"#fff"],[160,340,"#ff8f6b"]];
+S("s1",sun+cliffSea()+hdb(30,70,110,170,"#ff8f6b")+hdb(150,100,90,140,"#5fb0e6")+hdb(520,90,100,150,"#7cc95a")+pine(260,232,.7)+pine(495,236,.8)+ground()+path("M0,330 C200,300 420,330 640,300")+
+  fence(20,290,4)+lamp(130,305)+lamp(520,300)+mailbox(575,318)+tree(600,290,.45,false)+flowers(F1)+rock(470,330,.8)+
+  person(175,318,1.1,"dad","bob")+person(265,318,1.0,"mum","bob2")+person(365,318,.92,"son","bob")+person(450,318,.88,"daughter","bob2")+
+  bfly(90,220,"#ffb3c7",0)+bfly(470,200,"#fff2a8",-2)+tag(175,180,"Dad, 57","#3f7fd0")+tag(265,188,"Mum, 53","#e05a7a")+tag(365,200,"You","#2f8f4e")+tag(450,206,"Sis","#7a5cd0"));
+
+// Scene 2: without me. Pocket money flows from your jar to parents.
+let flow="";for(let i=0;i<5;i++)flow+=`<g class="coinflow" style="--dx:-300px;--dy:-60px;animation-delay:${-i*.52}s">${coin(520,232,11)}</g>`;
+S("s2",cliffSea()+pine(40,236,.7)+pine(610,236,.75)+ground()+path("M0,340 C220,320 420,345 640,322")+
+  `<g opacity=".9">${rock(330,335,.7)}</g>`+flowers([[40,320,"#ff6b8b"],[300,345,"#fff"],[600,330,"#a98bff"]])+
+  `<path d="M505,232 C440,150 290,150 215,226" stroke="#ff6b5b" stroke-width="5" stroke-dasharray="4 10" fill="none" stroke-linecap="round"/><path d="M228,214 L212,228 L232,232Z" fill="#ff6b5b"/>`+
+  `<g transform="translate(150,200)" filter="url(#sh)"><path d="M-80,-50 L0,-88 L80,-50Z" fill="#e8d3a2"/><rect x="-74" y="-52" width="148" height="10" rx="3" fill="#d6bf8a"/>${[-56,-28,0,28,56].map(x=>`<rect x="${x-6}" y="-40" width="12" height="54" rx="4" fill="#fff6e0"/>`).join("")}<rect x="-80" y="12" width="160" height="10" rx="3" fill="#d6bf8a"/><text y="-60" text-anchor="middle" font-family="Baloo 2,sans-serif" font-weight="800" font-size="15" fill="#7a5a2a">BANK</text>
+  <g transform="translate(0,-130)"><rect x="-92" y="-26" width="184" height="54" rx="12" fill="#3b3a2f"/><text x="-80" y="-6" font-family="Nunito,sans-serif" font-weight="800" font-size="13" fill="#ffe36b">Fixed deposit ~2.1%</text><text x="-80" y="16" font-family="Nunito,sans-serif" font-weight="800" font-size="13" fill="#ff8f7a">Prices rising 2.2%</text></g></g>`+
+  person(95,320,1.0,"dad","bob")+person(205,320,.95,"mum","bob2")+
+  person(385,318,1.0,"son","bob")+jar(548,300,1.0,.3,"Your investments")+flow+
+  tag(360,112,"Pocket money every month, from you","#ff6b5b")+
+  `<g transform="translate(616,262)"><path d="M0,-26 v34 M-10,0 L0,10 L10,0" stroke="#ff6b5b" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>`+
+  tag(548,178,"Shrinking","#ff6b5b"));
+
+// Scene 3: with me, win 1. Tree pays parents, your jar stays full.
+let drops="";for(let i=0;i<3;i++)drops+=`<g class="drop" style="animation-delay:${-i*.7}s">${coin(120+i*55,175,9)}</g>`;
+S("s3",sun+cliffSea()+pine(380,236,.65)+pine(420,240,.55)+ground()+river()+
+  `<path d="M300,318 h70 v10 h-70Z" fill="#c48550"/><path d="M300,318 h70" stroke="#8a5a33" stroke-width="2"/>`+
+  tree(190,285,1.05,true)+drops+person(115,300,.95,"dad","bob")+person(255,300,.9,"mum","bob2")+fence(520,330,5)+
+  person(455,305,1.0,"son","bob")+jar(560,300,1.0,1,"Your investments")+flowers([[60,320,"#ffe36b"],[330,300,"#ff6b8b"],[620,320,"#fff"]])+
+  bfly(330,210,"#ffb3c7",-1)+`<g class="twinkle" fill="#fff"><path d="M600,190 l4,10 l10,4 l-10,4 l-4,10 l-4,-10 l-10,-4 l10,-4Z"/></g>`+
+  tag(300,56,"Their money tree pays them","#2f8f4e")+tag(560,170,"Untouched, still growing","#2f8f4e"));
+
+// Scene 4: win 2 + win 3. You in your 40s on the beach with your jar; the tree is now yours.
+S("s4",`<rect width="640" height="360" fill="#ffd9a8"/><rect width="640" height="200" fill="url(#sunset)"/>`+`<circle cx="330" cy="140" r="44" fill="#fff1b8" opacity=".9"/>`+beach()+
+  `<path d="M40,150 q40,-40 90,-20 q20,6 30,20Z" fill="#7b8a99" opacity=".7"/>`+palm(70,255,.9)+
+  `<g transform="translate(120,318)"><path d="M-55,0 h110 l-10,20 h-90Z" fill="#3ec1b0"/><path d="M-46,5 h92 M-42,12 h84" stroke="#ffe36b" stroke-width="3"/></g>`+
+  `<rect x="208" y="262" width="44" height="40" rx="8" fill="#6b4a2b"/><ellipse cx="230" cy="262" rx="22" ry="6" fill="#a0673b"/>`+person(230,264,1.0,"son","bob")+
+  `<g transform="translate(300,318)"><path d="M-20,4 l40,-12 M-20,-8 l40,12" stroke="#7a4a26" stroke-width="6" stroke-linecap="round"/><g class="fire"><path d="M0,-4 C-14,-12 -9,-30 0,-44 C9,-30 14,-12 0,-4Z" fill="#ff8f3c"/><path d="M0,-6 C-7,-12 -5,-22 0,-30 C5,-22 7,-12 0,-6Z" fill="#ffe36b"/></g></g>`+
+  jar(395,312,1.0,1,"Your investments")+tree(560,318,.9,true)+
+  `<g transform="translate(470,262)"><path d="M-30,0 h40 M2,-12 L16,0 L2,12" stroke="#2f8f4e" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>`+
+  tag(230,170,"You at 45","#2f8f4e")+tag(395,200,"Your own jar","#2f8f4e")+tag(470,112,"Their tree, passed to you","#e09a00")+
+  `<g class="twinkle" fill="#fff"><path d="M600,180 l4,10 l10,4 l-10,4 l-4,10 l-4,-10 l-10,-4 l10,-4Z"/></g>`);
+
+// Did you know? one short fact per scene
+const DYK={s1:"At 55, Mum and Dad's CPF Special Account closes. Their savings move into a Retirement Account, and most of it stays there for CPF LIFE instead of being free to use.",
+ s2:"CPF LIFE monthly payouts only start at 65. Between stopping work and 65, many parents live on their savings, or on their children.",
+ s3:`<b>Traditional vs modern retirement.</b> The usual way is a <b>drawdown</b>: save up, then spend it down, so the money shrinks and may run out before they pass on, leaving less for loved ones. The modern way keeps the capital <b>intact</b>: they live on the payout, the capital stays and can even grow, and it goes to loved ones later.<svg class="tvm" viewBox="0 0 320 110" role="img" aria-label="Traditional retirement triangle shrinking to zero versus modern retirement block that stays level"><g font-family="Nunito,sans-serif" font-weight="800" font-size="11" fill="#3b3a2f"><path d="M10,90 L70,30 L150,90Z" fill="#f0e6d2"/><path d="M10,90 L70,30 L70,90Z" fill="#f3b800"/><text x="80" y="104" text-anchor="middle">Traditional: runs out</text><path d="M180,90 L230,30 L310,30 L310,90Z" fill="#f0e6d2"/><path d="M180,90 L230,30 L230,90Z" fill="#f3b800"/><path d="M230,28 L310,20" stroke="#2f8f4e" stroke-width="2" stroke-dasharray="3 3"/><text x="245" y="104" text-anchor="middle">Modern: capital stays</text></g></svg>`,
+ s4:"Who receives what's left depends on how the plan is set up and who is nominated, so it's worth doing properly while everyone is well."};
+document.querySelectorAll(".dyk").forEach(w=>{w.innerHTML=`<button class="dyk-b" aria-expanded="false">💡 Did you know?</button><p class="dyk-t" hidden>${DYK[w.dataset.k]}</p>`;
+ const b=w.querySelector(".dyk-b"),p=w.querySelector(".dyk-t");b.onclick=()=>{const o=p.hidden;p.hidden=!o;b.setAttribute("aria-expanded",o)}});
+const W=(id,html)=>{const s=document.getElementById(id);defs(s);s.insertAdjacentHTML("beforeend",html)};
+W("w1",person(55,112,.55,"dad","bob")+person(105,112,.52,"mum","bob2"));W("w2",person(80,112,.56,"son","bob"));
+document.querySelectorAll(".medal").forEach(m=>{const n=m.textContent.trim();m.innerHTML=`<svg viewBox="0 0 74 84" aria-label="${n}"><path d="M26 52 L14 82 L26 76 L34 84 L40 56Z" fill="#c62828"/><path d="M48 52 L60 82 L48 76 L40 84 L34 56Z" fill="#b71c1c"/><circle cx="37" cy="32" r="31" fill="#e0a100"/><circle cx="37" cy="32" r="27" fill="#ffd54f"/><circle cx="37" cy="32" r="21" fill="#f3b800"/><circle cx="37" cy="32" r="18" fill="#ffe082"/><text x="37" y="36.5" text-anchor="middle" font-family="Baloo 2,sans-serif" font-weight="800" font-size="12.5" fill="#7a4a00">${n}</text></svg>`});
+document.querySelectorAll(".win").forEach(w=>w.onclick=()=>w.setAttribute("aria-expanded",w.getAttribute("aria-expanded")!=="true"));
+
+// Music: a small looping tune made in the browser, starts only on tap
+let ac,timer,on=false;
+const MEL=[72,76,79,76,74,77,81,77,72,76,79,84,83,79,76,0, 74,77,81,77,76,79,83,79,72,74,76,79,77,74,72,0];
+const BASS=[48,48,53,53,55,55,48,48];
+function note(m,t0,d,type,vol){if(!m)return;const o=ac.createOscillator(),g=ac.createGain();o.type=type;o.frequency.value=440*Math.pow(2,(m-69)/12);g.gain.setValueAtTime(0,t0);g.gain.linearRampToValueAtTime(vol,t0+.02);g.gain.exponentialRampToValueAtTime(.0001,t0+d);o.connect(g).connect(ac.destination);o.start(t0);o.stop(t0+d+.05)}
+function loop(){const b=.22,t0=ac.currentTime+.05;MEL.forEach((m,i)=>{note(m,t0+i*b,b*1.6,"triangle",.09);if(i%2===0)note(m+12,t0+i*b+.01,.12,"sine",.025)});BASS.forEach((m,i)=>note(m,t0+i*b*4,b*3.5,"sine",.08));timer=setTimeout(loop,MEL.length*b*1000)}
+document.getElementById("mus").onclick=e=>{const b=e.currentTarget;on=!on;b.setAttribute("aria-pressed",on);b.textContent=on?"🔇 Stop music":"🎵 Play music";
+  if(on){ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume();loop()}else{clearTimeout(timer);ac&&ac.suspend()}};
+document.getElementById("copy").onclick=()=>{const u=location.href.split("#")[0],o=document.getElementById("copied");
+  navigator.clipboard.writeText(u).then(()=>o.textContent="Link copied. Paste it in your family chat.").catch(()=>{o.textContent=u})};
+</script>
+</body></html>
