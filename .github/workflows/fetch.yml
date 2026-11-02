@@ -1,0 +1,30 @@
+name: Fetch fund data
+on:
+  schedule:
+    - cron: "17 10 * * 1-5"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: fetch
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Fetch prices
+        run: python tracker/fetch.py 2>&1 | tee fetch.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fetch-log
+          path: fetch.log
+      - name: Commit data
+        run: |
+          git config user.name "fund-tracker-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add tracker/data.js
+          git diff --cached --quiet || git commit -m "Update fund data $(date -u +%F)"
+          git push
