@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Fund Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@700;800&family=Nunito:wght@500;700;800&display=swap">
+<style>
+/* Layout: one column; big plain-English answer first, chart second, fees and brokers after. Crystal Khoo brand palette, light only. */
+:root{--paper:#f8f6f0;--cream:#e1d4c2;--ink:#29251E;--soft:#6b6253;--red:#8b0203;--gold:#b8962e;--line:#e3dccb;--card:#fffdf8;
+ --aia:#8b0203;--etf1:#1f6f8b;--etf2:#2e8b57;--etf3:#6a4fb3;--etf4:#d08a1e;--bad:#c0392b;--good:#2f8f4e;
+ --f-num:"League Spartan",system-ui,sans-serif;--f-body:"Nunito",system-ui,sans-serif;color-scheme:light}
+*{box-sizing:border-box}html{background:var(--paper)}
+body{margin:0;background:linear-gradient(180deg,#f8f6f0,#efe6d6);color:var(--ink);font:17px/1.5 var(--f-body);padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px));padding-block:22px 70px;overflow-x:hidden}
+.wrap{max-width:760px;margin:0 auto;display:grid;gap:26px}
+header{display:grid;gap:8px}
+.eyebrow{font-weight:800;letter-spacing:.14em;font-size:.76rem;color:var(--red);text-transform:uppercase}
+h1{font:800 clamp(2rem,7vw,3rem)/1 var(--f-num);margin:0;letter-spacing:-.01em}
+.lede{margin:0;color:var(--soft);max-width:56ch}
+.card{min-width:0;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px 20px;box-shadow:0 10px 30px rgba(80,60,20,.08)}
+h2{font:800 1.35rem/1.15 var(--f-num);margin:0 0 6px}
+h3{font:800 1.05rem/1.2 var(--f-num);margin:0 0 4px}
+.note{font-size:.85rem;color:var(--soft);margin:6px 0 0}
+.pick{display:grid;gap:12px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chip{border:2px solid var(--line);background:#fff;border-radius:999px;padding:7px 14px;font:700 .9rem var(--f-body);cursor:pointer;color:var(--ink);display:inline-flex;align-items:center;gap:7px}
+.chip i{width:10px;height:10px;border-radius:50%;background:var(--c,#999);display:inline-block}
+.chip.on{border-color:var(--c,var(--ink));background:color-mix(in srgb,var(--c,#999) 10%,#fff)}
+.chip.off{opacity:.45}.chip:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.chip .soon{font-size:.7rem;color:var(--soft);font-weight:700}
+label.lbl{font-size:.78rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
+.answer{display:grid;gap:14px}
+.big{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.tile{border-radius:18px;padding:14px 16px;background:#fff;border:1px solid var(--line);display:grid;gap:2px;border-top:5px solid var(--c)}
+.tile small{color:var(--soft);font-size:.8rem;font-weight:700}.tile b{font:800 1.9rem/1 var(--f-num);font-variant-numeric:tabular-nums}
+.tile .pc{font-weight:800;font-size:.95rem}.up{color:var(--good)}.dn{color:var(--bad)}
+.chartwrap{position:relative}
+svg.ch{width:100%;height:auto;display:block;touch-action:pan-y;user-select:none;-webkit-user-select:none}.chartwrap{user-select:none}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:.82rem;font-weight:700;color:var(--soft)}.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}
+.ctrl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.seg{display:inline-flex;border:2px solid var(--line);border-radius:999px;overflow:hidden;background:#fff}
+.seg button{all:unset;cursor:pointer;padding:6px 13px;font:700 .85rem var(--f-body);color:var(--soft)}.seg button.on{background:var(--ink);color:#fff}
+.sw{display:inline-flex;align-items:center;gap:8px;font:700 .9rem var(--f-body);cursor:pointer}
+.sw input{appearance:none;width:44px;height:26px;border-radius:999px;background:#d8cfbd;position:relative;cursor:pointer;transition:.2s}
+.sw input::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.sw input:checked{background:var(--red)}.sw input:checked::after{left:21px}
+.measure{background:#fff;border:1px dashed var(--gold);border-radius:14px;padding:10px 14px;font-size:.92rem;display:none}
+.measure.on{display:block}
+.bs{display:grid;gap:8px;margin-top:10px}
+.bs .ev{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:9px 13px;background:#fff;font-size:.9rem}
+.bs .ev b{font-family:var(--f-num)}.bs .ev .dd{font:800 1.15rem var(--f-num);color:var(--bad);font-variant-numeric:tabular-nums}
+.bs .ev small{grid-column:1/-1;color:var(--soft)}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+th{text-align:left;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--soft);padding:8px 8px;border-bottom:2px solid var(--line)}
+td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tblwrap{overflow-x:auto;max-width:100%}table{min-width:560px}
+.flag{background:#fff4dc;border:1px solid #f0cf8c;border-radius:14px;padding:10px 14px;font-size:.9rem}
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.vs .side{border-radius:18px;padding:14px;background:#fff;border:1px solid var(--line);display:grid;gap:6px}
+.vs .side.a{border-top:5px solid var(--aia)}.vs .side.e{border-top:5px solid var(--etf1)}
+.vs .side .v{font:800 1.7rem/1 var(--f-num);font-variant-numeric:tabular-nums}
+.vs .side ul{margin:4px 0 0;padding-left:18px;font-size:.86rem;color:var(--soft)}
+.inp{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.inp div{display:grid;gap:4px}
+input[type=number],select{font:700 1rem var(--f-body);padding:9px 12px;border:2px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);width:100%}
+input[type=range]{width:100%;accent-color:var(--red)}
+.proj{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.proj .p{background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px;display:grid;gap:6px;text-align:center}
+.proj .p small{font-weight:800;color:var(--soft);font-size:.78rem;letter-spacing:.06em;text-transform:uppercase}
+.proj .p .a{color:var(--aia)}.proj .p .e{color:var(--etf1)}.proj .p b{font:800 1.25rem/1 var(--f-num);display:block;font-variant-numeric:tabular-nums}
+.proj .p span{font-size:.78rem;color:var(--soft)}
+.fine{font-size:.78rem;color:var(--soft);text-align:center;max-width:60ch;margin:0 auto}
+.src a{color:inherit}
+details summary{cursor:pointer;font-weight:800}
+@media(max-width:560px){.vs{grid-template-columns:1fr}.proj{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Fund tracker · updated <span id="upd"></span></span>
+    <h1>If you had put in S$10,000...</h1>
+    <p class="lede">See how an AIA fund and a plain ETF actually grew, side by side, in Singapore dollars. Then see what each one costs you, honestly.</p>
+  </header>
+
+  <section class="card pick">
+    <div><label class="lbl">Pick an AIA fund</label><div class="row" id="aia-chips"></div></div>
+    <div><label class="lbl">Compare with</label><div class="row" id="etf-chips"></div></div>
+    <div class="flag" id="aia-flag" hidden></div>
+  </section>
+
+  <section class="card answer">
+    <div class="ctrl">
+      <div class="seg" id="per"><button data-y="1">1 yr</button><button data-y="3">3 yrs</button><button data-y="5" class="on">5 yrs</button><button data-y="10">10 yrs</button><button data-y="0">Max</button></div>
+      <label class="sw"><input type="checkbox" id="bs-on"> Show Black Swan events</label>
+    </div>
+    <div class="big" id="tiles"></div>
+    <div class="chartwrap"><svg class="ch" id="ch" viewBox="0 0 900 420" role="img" aria-label="Growth of S$10,000 over time for the chosen funds"></svg></div>
+    <div class="legend" id="leg"></div>
+    <div class="measure" id="meas"></div>
+    <p class="note">Drag across the chart to measure any period. Prices are in SGD, dividends reinvested, each line already net of its own fund fee. Platform and broker costs are shown separately below, so the picture stays fair.</p>
+    <div class="bs" id="bs-list" hidden></div>
+  </section>
+
+  <section class="card">
+    <h2>What each one costs you</h2>
+    <p class="note" style="margin-bottom:12px">Both charts above are already after the fund's own yearly fee. These are the <b>extra</b> costs that sit on top, which is where the real difference is.</p>
+    <div class="vs" id="vs"></div>
+    <p class="note" id="vs-note"></p>
+  </section>
+
+  <section class="card">
+    <h2>What it could look like in 5, 10 and 15 years</h2>
+    <p class="note" style="margin-bottom:12px">Same money in, same market growth on both sides. The only difference is fees and bonuses. This is a projection, not a promise.</p>
+    <div class="inp">
+      <div><label class="lbl" for="p-amt">Yearly amount (S$)</label><input id="p-amt" type="number" min="2400" step="100" value="12000"></div>
+      <div><label class="lbl" for="p-yrs">Pay for (years)</label><select id="p-yrs"><option>10</option><option>15</option><option>20</option></select></div>
+      <div><label class="lbl" for="p-g">Market growth a year <b id="p-gv"></b></label><input id="p-g" type="range" min="4" max="10" step="0.5" value="8"></div>
+      <div><label class="lbl" for="p-brk">Broker for the ETF</label><select id="p-brk"></select></div>
+    </div>
+    <div class="proj" id="proj" style="margin-top:14px"></div>
+    <p class="note" id="proj-note"></p>
+  </section>
+
+  <section class="card">
+    <h2>Singapore brokers: what they charge</h2>
+    <p class="note" style="margin-bottom:10px">For buying an ETF like CSPX or IWDA. Figures are indicative, from Singapore comparison sites dated 2026, and should be checked on each broker's own pricing page before you quote them.</p>
+    <div class="tblwrap"><table id="brk"></table></div>
+    <p class="note src" id="brk-src"></p>
+  </section>
+
+  <section class="card">
+    <h2>How we keep this fair</h2>
+    <ul style="margin:6px 0 0;padding-left:20px;font-size:.95rem;color:var(--soft);display:grid;gap:6px">
+      <li>Same start date and the same S$10,000 for every line. Everything converted to Singapore dollars at that day's rate.</li>
+      <li>Fund prices are already after the fund manager's yearly fee, on both sides. We don't double count it.</li>
+      <li>Platform charges, bonuses, broker commissions, FX and custody fees are added in the cost and projection sections, with the source named.</li>
+      <li>ETF dividends are reinvested (we use accumulating ETFs or adjusted prices). AIA fund prices include reinvested income.</li>
+      <li>Things that don't fit in a chart: free fund switches, a human adviser, and the discipline of a plan are on the AIA side; flexibility to sell any day is on the ETF side.</li>
+    </ul>
+  </section>
+
+  <p class="fine">Past performance is not indicative of future performance. Not financial advice. ETF prices from Yahoo Finance (LSE listings, converted to SGD). AIA fund data from fundsingapore.com. Fees cited where shown. Crystal Khoo · Knowing you better to serve you best.</p>
+</div>
+
+<script src="data.js"></script>
+<script>
+const D=window.TRACK,$=s=>document.querySelector(s);
+document.getElementById("upd").textContent=new Date(D.updated).toLocaleDateString("en-SG",{day:"numeric",month:"short",year:"numeric"});
+const money=n=>"S$"+Math.round(n).toLocaleString("en-SG"),pct=n=>(n>=0?"+":"")+n.toFixed(1)+"%";
+const COL={CSPX:"var(--etf1)",IWDA:"var(--etf2)",VWRA:"var(--etf3)",EQQQ:"var(--etf4)"};
+
+// Black Swan windows: start and bottom dates. Drop % is computed from the data on screen, never hardcoded.
+const BS=[
+ ["Dot-com crash","2000-03-24","2002-10-09"],["Global Financial Crisis","2007-10-09","2009-03-09"],["Euro debt crisis","2011-05-02","2011-10-03"],
+ ["China shock","2015-08-10","2016-02-11"],["Q4 2018 sell-off","2018-09-20","2018-12-24"],["Covid crash","2020-02-19","2020-03-23"],
+ ["2022 rate shock","2022-01-03","2022-10-12"],["2025 tariff shock","2025-02-19","2025-04-08"],["2026 energy shock","2026-01-28","2026-03-30"]];
+
+// APA 3.0 figures from the FC's projection calculator (verified against the Product Summary in the vault)
+const APA={fee:0.039,feeYears:10,sb:[[10,20,0.05],[21,99,0.08]],bands:[2400,4800,7200,12000],
+ wb:{10:[[.05,.05,.10,.15],[0,.08,.13,.18],[0,.10,.15,.20]],15:[[.08,.08,.13,.18],[0,.11,.16,.21],[0,.14,.19,.24]],20:[[.10,.10,.15,.20],[0,.15,.20,.25],[0,.20,.25,.30]]}};
+function apaProject(prem,iip,years,g){let bi=-1;APA.bands.forEach((b,i)=>{if(prem>=b)bi=i});if(bi<0)return null;const out=[];let prev=0,cnt=0;
+ for(let t=1;t<=years;t++){const rp=t<=iip?prem:0;if(rp>0)cnt++;const wb=t<=3?prem*APA.wb[iip][t-1][bi]:0;let sr=0;if(rp>0)APA.sb.forEach(([a,b,r])=>{if(cnt>=a&&cnt<=b)sr=r});
+  const n=(prev+rp+wb+sr*rp)*(1+g),fee=t<=APA.feeYears?n*APA.fee:0;prev=n-fee;out.push(prev)}return out}
+
+// Brokers: indicative figures from 2026 Singapore comparison sites (see sources). comm = per-trade cost in SGD for a typical ~S$1,000 to S$12,000 buy; fx = conversion markup; cust = yearly custody % ; plat = yearly platform %
+const BRK=[
+ {n:"Interactive Brokers (Tiered)",comm:2.5,fx:0.0003,cust:0,plat:0,note:"LSE ETF about GBP 1.70 min; US stocks US$0.005/share min US$1. Tiny FX markup (~0.03%)."},
+ {n:"moomoo SG",comm:1.35,fx:0.003,cust:0,plat:0,note:"US$0 commission, US$0.99 platform fee per order after the free first year. FX about 0.3% (check)."},
+ {n:"Tiger Brokers",comm:2.7,fx:0.003,cust:0,plat:0,note:"About US$1.99 per order all-in on small trades."},
+ {n:"Syfe Trade",comm:2.7,fx:0.004,cust:0,plat:0,note:"US$0.99 to US$1.99 per trade, platform fee included."},
+ {n:"FSMOne",comm:12,fx:0.004,cust:0,plat:0,note:"0.08% of trade, min about S$10 (SGX); no custody fee. LSE access limited; check."},
+ {n:"Saxo",comm:10,fx:0.0025,cust:0.0012,plat:0,note:"Around 0.08% to 0.10%, min S$3 to S$10; 0.12%/yr custody if you opt out of stock lending."},
+ {n:"POEMS",comm:25,fx:0.004,cust:0,plat:0,note:"Standard 0.28% min S$25; cheaper Cash Plus tier exists."},
+ {n:"DBS Vickers (Cash Upfront)",comm:10.9,fx:0.005,cust:0,plat:0,note:"0.12%, min S$10.90, CDP-linked."},
+ {n:"Endowus (fund platform)",comm:0,fx:0,cust:0,plat:0.003,note:"No trade fee; 0.30%/yr platform fee on top of fund fees. Funds, not ETFs."}];
+const BRK_SRC='Sources: <a href="https://growbeansprout.com/best-online-brokerage-singapore" target="_blank" rel="noopener">Beansprout, Oct 2026</a>; <a href="https://thekopinotes.com/articles/investing/singapore-brokerage-guide-2026/" target="_blank" rel="noopener">The Kopi Notes brokerage guide 2026</a>; <a href="https://www.moneysmart.sg/investments/interactive-brokers-brokerage" target="_blank" rel="noopener">MoneySmart IBKR 2026</a>; <a href="https://thekopinotes.com/articles/digital-banks/moomoo-vs-tiger-broker-singapore/" target="_blank" rel="noopener">Kopi Notes moomoo vs Tiger</a>. Broker fees change often; the official pricing pages were not reachable when this was built, so treat every figure as indicative.';
+
+// ---------- state ----------
+const aiaKeys=Object.keys(D.aia),etfKeys=Object.keys(D.etf);
+let sel={aia:aiaKeys[1],etfs:new Set(["CSPX"]),years:5,bs:false};
+try{Object.assign(sel,JSON.parse(localStorage.getItem("trk")||"{}"),{etfs:new Set(JSON.parse(localStorage.getItem("trk-etfs")||'["CSPX"]'))})}catch(e){}
+const saveS=()=>{try{localStorage.setItem("trk",JSON.stringify({aia:sel.aia,years:sel.years,bs:sel.bs}));localStorage.setItem("trk-etfs",JSON.stringify([...sel.etfs]))}catch(e){}};
+
+function chips(){
+ $("#aia-chips").innerHTML=aiaKeys.map(k=>{const f=D.aia[k],has=f.series.length>0;return `<button class="chip ${k===sel.aia?"on":""} ${has?"":"off"}" data-a="${k}" style="--c:var(--aia)"><i></i>${f.short}${has?"":'<span class="soon">· prices loading</span>'}</button>`}).join("");
+ $("#etf-chips").innerHTML=etfKeys.map(k=>{const f=D.etf[k],has=f.series.length>0;return `<button class="chip ${sel.etfs.has(k)?"on":""} ${has?"":"off"}" data-e="${k}" style="--c:${COL[k]}"><i></i>${k}${has?"":'<span class="soon">· soon</span>'}</button>`}).join("");
+ document.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>{sel.aia=b.dataset.a;saveS();render()});
+ document.querySelectorAll("[data-e]").forEach(b=>b.onclick=()=>{const k=b.dataset.e;if(!D.etf[k].series.length)return;sel.etfs.has(k)?sel.etfs.delete(k):sel.etfs.add(k);saveS();render()});
+ document.querySelectorAll("#per button").forEach(b=>{b.classList.toggle("on",+b.dataset.y===sel.years);b.onclick=()=>{sel.years=+b.dataset.y;saveS();render()}});
+ $("#bs-on").checked=sel.bs;$("#bs-on").onchange=e=>{sel.bs=e.target.checked;saveS();render()};
+}
+
+function lines(){
+ const out=[];const a=D.aia[sel.aia];if(a.series.length)out.push({k:sel.aia,name:a.short+" (AIA)",col:"var(--aia)",s:a.series,plain:a.plain});
+ [...sel.etfs].forEach(k=>{const e=D.etf[k];if(e.series.length)out.push({k,name:e.name,col:COL[k],s:e.series,plain:e.plain})});return out}
+
+function windowed(L){
+ if(!L.length)return{L:[],start:null};
+ const latest=L.map(l=>l.s[l.s.length-1][0]).sort().slice(-1)[0];
+ const earliest=L.map(l=>l.s[0][0]).sort().slice(-1)[0];
+ let start=earliest;if(sel.years){const d=new Date(latest);d.setFullYear(d.getFullYear()-sel.years);const iso=d.toISOString().slice(0,10);if(iso>start)start=iso}
+ const W=L.map(l=>{const s=l.s.filter(p=>p[0]>=start);const base=s[0][1];return{...l,pts:s.map(p=>[p[0],p[1]/base*10000])}});
+ return{L:W,start:W[0].pts[0][0],end:latest}}
+
+let drag=null;
+function render(){
+ chips();const {L,start,end}=windowed(lines());const svg=$("#ch");
+ const a=D.aia[sel.aia];$("#aia-flag").hidden=a.series.length>0;
+ $("#aia-flag").innerHTML=`<b>${a.name}</b>: daily prices are being connected from fundsingapore.com and will appear here automatically. Meanwhile, published returns: 1 yr ${a.returns["1y"]??"n/a"}% · 3 yrs ${a.returns["3y"]??"n/a"}% · 5 yrs ${a.returns["5y"]??"n/a"}% · 10 yrs ${a.returns["10y"]??"n/a"}% (total, SGD, fundsingapore.com, 2 Nov 2026). ${a.plain}.`;
+ if(!L.length){svg.innerHTML="";$("#tiles").innerHTML="";$("#leg").innerHTML="";return}
+ $("#tiles").innerHTML=L.map(l=>{const v=l.pts[l.pts.length-1][1],g=(v/10000-1)*100;return `<div class="tile" style="--c:${l.col}"><small>${l.name}</small><b>${money(v)}</b><span class="pc ${g>=0?"up":"dn"}">${pct(g)} since ${fmt(start)}</span><small>${l.plain}</small></div>`}).join("");
+ const W=900,H=420,Lm=70,R=20,T=18,B=40;const all=L.flatMap(l=>l.pts.map(p=>p[1]));const mn=Math.min(...all)*0.95,mx=Math.max(...all)*1.05;
+ const t0=+new Date(start),t1=+new Date(end);const X=d=>Lm+(+new Date(d)-t0)/(t1-t0)*(W-Lm-R),Y=v=>H-B-(v-mn)/(mx-mn)*(H-T-B);
+ let s="";const raw=(mx-mn)/5,pw=Math.pow(10,Math.floor(Math.log10(raw))),st=[1,2,2.5,5,10].find(m=>m*pw>=raw)*pw;
+ for(let v=Math.ceil(mn/st)*st;v<=mx;v+=st)s+=`<line x1="${Lm}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="#e8e1d1"/><text x="${Lm-8}" y="${Y(v)+4}" text-anchor="end" font-size="12" fill="#6b6253">${v>=1000?"S$"+Math.round(v/1000)+"k":"S$"+Math.round(v)}</text>`;
+ s+=`<line x1="${Lm}" x2="${W-R}" y1="${Y(10000)}" y2="${Y(10000)}" stroke="#b8962e" stroke-dasharray="4 4"/><text x="${W-R}" y="${Y(10000)-5}" text-anchor="end" font-size="11" fill="#b8962e">what you put in</text>`;
+ const yrs=(t1-t0)/31557600000,step=yrs>12?2:1;for(let y=new Date(start).getFullYear()+1;y<=new Date(end).getFullYear();y+=step){const d=`${y}-01-01`;if(+new Date(d)>t0)s+=`<text x="${X(d)}" y="${H-12}" text-anchor="middle" font-size="12" fill="#6b6253">${y}</text>`}
+ // black swans
+ const evs=[];if(sel.bs)BS.forEach(([n,a0,b0])=>{if(a0<start||a0>end)return;const b1=b0>end?end:b0;s+=`<rect x="${X(a0)}" y="${T}" width="${Math.max(2,X(b1)-X(a0))}" height="${H-T-B}" fill="#8b0203" opacity=".09"/><text x="${X(a0)+4}" y="${T+12}" font-size="11" fill="#8b0203" font-weight="700">${n}</text>`;
+  const row={n,a0,b0:b1,drops:L.map(l=>{const at=v=>{const p=l.pts.filter(q=>q[0]<=v);return p.length?p[p.length-1][1]:null};const pa=at(a0),pb=lowest(l.pts,a0,b1);const rec=pa&&recover(l.pts,b1,pa);return{name:l.name,col:l.col,dd:pa&&pb?(pb/pa-1)*100:null,rec}})};evs.push(row)});
+ L.forEach(l=>{s+=`<path d="${l.pts.map((p,i)=>(i?"L":"M")+X(p[0]).toFixed(1)+","+Y(p[1]).toFixed(1)).join("")}" fill="none" stroke="${l.col}" stroke-width="2.6" stroke-linejoin="round"/>`;const e=l.pts[l.pts.length-1];s+=`<circle cx="${X(e[0])}" cy="${Y(e[1])}" r="5" fill="${l.col}" stroke="#fff" stroke-width="2"/>`});
+ if(drag&&drag.a&&drag.b){const xa=X(drag.a),xb=X(drag.b);s+=`<rect x="${Math.min(xa,xb)}" y="${T}" width="${Math.abs(xb-xa)}" height="${H-T-B}" fill="#29251E" opacity=".08"/><line x1="${xa}" x2="${xa}" y1="${T}" y2="${H-B}" stroke="#29251E"/><line x1="${xb}" x2="${xb}" y1="${T}" y2="${H-B}" stroke="#29251E"/>`}
+ s+=`<rect id="hit" x="${Lm}" y="${T}" width="${W-Lm-R}" height="${H-T-B}" fill="transparent"/>`;
+ svg.innerHTML=s;
+ $("#leg").innerHTML=L.map(l=>`<span><i style="background:${l.col}"></i>${l.name}</span>`).join("")+(sel.bs?'<span><i style="background:#e8c4c4"></i>Black Swan period</span>':"");
+ // measure
+ const hit=$("#hit"),dateAt=e=>{const bb=svg.getBoundingClientRect();const x=(e.clientX-bb.left)/bb.width*W;const t=t0+(x-Lm)/(W-Lm-R)*(t1-t0);return new Date(Math.max(t0,Math.min(t1,t))).toISOString().slice(0,10)};
+ hit.onpointerdown=e=>{drag={a:dateAt(e),b:null};hit.setPointerCapture(e.pointerId)};hit.onpointermove=e=>{if(drag&&drag.a&&e.buttons){drag.b=dateAt(e);render()}};hit.onpointerup=e=>{if(drag){drag.b=dateAt(e);if(drag.a===drag.b)drag=null;render()}};
+ const m=$("#meas");if(drag&&drag.a&&drag.b&&drag.a!==drag.b){const [a0,b0]=[drag.a,drag.b].sort();m.className="measure on";m.innerHTML=`<b>${fmt(a0)} → ${fmt(b0)}</b> · `+L.map(l=>{const at=v=>{const p=l.pts.filter(q=>q[0]<=v);return p.length?p[p.length-1][1]:null};const pa=at(a0),pb=at(b0);return pa&&pb?`<span style="color:${l.col};font-weight:800">${l.name.split(" (")[0]} ${pct((pb/pa-1)*100)}</span>`:""}).join(" · ")+' <button class="chip" style="padding:2px 10px;margin-left:8px" onclick="drag=null;render()">clear</button>'}else m.className="measure";
+ // black swan list
+ const bl=$("#bs-list");bl.hidden=!sel.bs;if(sel.bs)bl.innerHTML=(evs.length?evs.map(r=>`<div class="ev"><div><b>${r.n}</b><div style="font-size:.8rem;color:var(--soft)">${fmt(r.a0)} to ${fmt(r.b0)}</div></div><div style="text-align:right">${r.drops.map(d=>d.dd==null?"":`<div><span style="color:${d.col};font-weight:800;font-size:.8rem">${d.name.split(" (")[0]}</span> <span class="dd">${d.dd.toFixed(0)}%</span></div>`).join("")}</div><small>${r.drops.filter(d=>d.rec).map(d=>`${d.name.split(" (")[0]}: back to where it was in ${d.rec}`).join(" · ")||"Not yet back to its previous level in this window."}</small></div>`).join(""):'<div class="ev"><small>No Black Swan events fall inside this period. Choose a longer period.</small></div>');
+ renderVs();renderProj();
+}
+function lowest(pts,a,b){let m=null;pts.forEach(p=>{if(p[0]>=a&&p[0]<=b&&(m==null||p[1]<m))m=p[1]});return m}
+function recover(pts,fromDate,level){const p=pts.find(q=>q[0]>fromDate&&q[1]>=level);if(!p)return null;const days=Math.round((+new Date(p[0])-+new Date(fromDate))/86400000);return days<60?days+" days":Math.round(days/30)+" months"}
+function fmt(d){return new Date(d).toLocaleDateString("en-SG",{month:"short",year:"numeric"})}
+
+// ---------- costs ----------
+function renderVs(){
+ const a=D.aia[sel.aia],ek=[...sel.etfs][0]||"CSPX",e=D.etf[ek];const brk=BRK[+($("#p-brk").value||0)];
+ $("#vs").innerHTML=`<div class="side a"><small class="lbl">${a.short} via AIA Pro Achiever 3.0</small><div class="v">3.9% a year</div><div>platform charge, years 1 to 10, then <b>0%</b></div><ul><li>Fund fee ${a.ter.toFixed(2)}% a year (already inside the price)</li><li>Welcome bonus 5% to 30% of your first 3 years' premiums, special bonus 5% to 8% from year 10 (depends on amount and term)</li><li>Fund switches: free, unlimited</li><li>Adviser included</li></ul></div>
+ <div class="side e"><small class="lbl">${ek} via ${brk.n}</small><div class="v">${brk.plat?(brk.plat*100).toFixed(2)+"% a year":money(brk.comm)+" a trade"}</div><div>${brk.plat?"platform fee":"commission and platform fee"}${brk.fx?`, plus about ${(brk.fx*100).toFixed(2)}% when you change SGD to USD`:""}${brk.cust?`, ${(brk.cust*100).toFixed(2)}%/yr custody`:""}</div><ul><li>Fund fee ${e.ter.toFixed(2)}% a year (already inside the price)</li><li>No bonuses</li><li>Sell any day, no lock-in</li><li>You manage it yourself</li></ul></div>`;
+ $("#vs-note").innerHTML=`Fund fees: ${a.short} ${a.ter}% (${a.terSrc}); ${ek} ${e.ter}% (${e.terSrc}). APA 3.0 charge and bonuses: AIA Pro Achiever 3.0 Product Summary, as modelled in Crystal's projection calculator.`;
+}
+// ---------- projections ----------
+function renderProj(){
+ const amt=+$("#p-amt").value||12000,iip=+$("#p-yrs").value,g=+$("#p-g").value/100;$("#p-gv").textContent=(g*100).toFixed(1)+"%";
+ const a=D.aia[sel.aia],ek=[...sel.etfs][0]||"CSPX",e=D.etf[ek],brk=BRK[+($("#p-brk").value||0)];
+ const apa=apaProject(amt,iip,15,g-a.ter/100);
+ // ETF: same gross g minus ETF TER, minus broker costs; yearly lump buy
+ const etf=[];let v=0;for(let t=1;t<=15;t++){const buy=t<=iip?amt:0;const cost=buy?(brk.comm+buy*brk.fx):0;v=(v+buy-cost)*(1+g-e.ter/100);v-=v*(brk.cust+brk.plat);etf.push(v)}
+ const paid=amt*iip;
+ $("#proj").innerHTML=[5,10,15].map(y=>{const A=apa?apa[y-1]:null,E=etf[y-1],pd=amt*Math.min(y,iip);return `<div class="p"><small>Year ${y} · put in ${money(pd)}</small><div><span class="a">${a.short}</span><b class="a">${A?money(A):"n/a"}</b></div><div><span class="e">${ek}</span><b class="e">${money(E)}</b></div><span>${A?(A>=E?"AIA ahead by "+money(A-E):"ETF ahead by "+money(E-A)):"Minimum S$2,400 a year"}</span></div>`}).join("");
+ $("#proj-note").textContent=`Assumes the market returns ${(g*100).toFixed(1)}% a year before fees on both sides, so each side is shown net of its own fund fee (${a.short} ${a.ter}%, ${ek} ${e.ter}%). AIA side: APA 3.0 platform charge 3.9% for years 1 to 10, welcome and special bonuses as per the product summary, premiums paid for ${iip} years. ETF side: one buy a year through ${brk.n} at ${money(brk.comm)} plus ${(brk.fx*100).toFixed(2)}% FX${brk.cust?` and ${(brk.cust*100).toFixed(2)}% yearly custody`:""}${brk.plat?` and ${(brk.plat*100).toFixed(2)}% yearly platform fee`:""}. No tax, no surrender charges, no early withdrawals. Not guaranteed.`;
+}
+$("#p-brk").innerHTML=BRK.map((b,i)=>`<option value="${i}">${b.n}</option>`).join("");
+["p-amt","p-yrs","p-g","p-brk"].forEach(id=>$("#"+id).addEventListener("input",()=>{renderVs();renderProj()}));
+$("#brk").innerHTML=`<thead><tr><th>Broker</th><th class="n">Per trade</th><th class="n">FX markup</th><th class="n">Yearly fee</th><th>Notes</th></tr></thead><tbody>`+BRK.map(b=>`<tr><td><b>${b.n}</b></td><td class="n">${b.comm?money(b.comm):"none"}</td><td class="n">${b.fx?(b.fx*100).toFixed(2)+"%":"none"}</td><td class="n">${b.cust||b.plat?((b.cust+b.plat)*100).toFixed(2)+"%":"none"}</td><td style="color:var(--soft);font-size:.84rem">${b.note}</td></tr>`).join("")+"</tbody>";
+$("#brk-src").innerHTML=BRK_SRC;
+render();
+</script>
+</body>
+</html>
