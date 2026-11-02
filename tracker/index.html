@@ -11,7 +11,7 @@
 :root{--paper:#f8f6f0;--cream:#e1d4c2;--ink:#29251E;--soft:#6b6253;--red:#8b0203;--gold:#b8962e;--line:#e3dccb;--card:#fffdf8;
  --aia:#8b0203;--etf1:#1f6f8b;--etf2:#2e8b57;--etf3:#6a4fb3;--etf4:#d08a1e;--bad:#c0392b;--good:#2f8f4e;
  --f-num:"League Spartan",system-ui,sans-serif;--f-body:"Nunito",system-ui,sans-serif;color-scheme:light}
-*{box-sizing:border-box}html{background:var(--paper)}
+*{box-sizing:border-box}[hidden]{display:none!important}html{background:var(--paper)}
 body{margin:0;background:linear-gradient(180deg,#f8f6f0,#efe6d6);color:var(--ink);font:17px/1.5 var(--f-body);padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px));padding-block:22px 70px;overflow-x:hidden}
 .wrap{max-width:760px;margin:0 auto;display:grid;gap:26px}
 header{display:grid;gap:8px}
@@ -27,10 +27,20 @@ h3{font:800 1.05rem/1.2 var(--f-num);margin:0 0 4px}
 .pfbox .pr{display:grid;grid-template-columns:1fr 70px 24px 1fr 70px;gap:8px;align-items:center;font-size:.86rem}
 .pfbox .pr input{width:100%;padding:5px 8px;font-size:.9rem}.pfbox .pr select{padding:5px 6px;font-size:.86rem}
 .pfbox .tot{font-weight:800;font-size:.85rem;color:var(--soft)}
+.alloc{display:grid;grid-template-columns:1fr 1fr;gap:12px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px 16px}
+.alloc h4{margin:0 0 6px;font:800 .8rem var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
+.alloc .bar{display:flex;height:14px;border-radius:7px;overflow:hidden;margin-bottom:8px}.alloc .bar i{display:block;height:100%}
+.alloc ul{margin:0;padding:0;list-style:none;display:grid;gap:3px;font-size:.88rem}.alloc li{display:flex;justify-content:space-between;gap:8px}.alloc li b{font-variant-numeric:tabular-nums}
+.alloc li i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:middle}
+@media(max-width:560px){.alloc{grid-template-columns:1fr}}
 .fxbox{background:#fff4dc;border:1px solid #f0cf8c;border-radius:18px;padding:14px 16px;display:grid;gap:10px}
 .fxbox .fr{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
 .fxbox .fr div{background:#fff;border-radius:12px;padding:10px 12px;display:grid;gap:2px}.fxbox .fr small{color:var(--soft);font-weight:700;font-size:.76rem}.fxbox .fr b{font:800 1.3rem/1 var(--f-num);font-variant-numeric:tabular-nums}
 .fxbox p{margin:0;font-size:.9rem}
+.fxrow{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:10px;align-items:center}.fxc{min-width:0}.fxrow.one{grid-template-columns:1fr}
+.fxc{background:#fff;border-radius:14px;padding:12px 14px;display:grid;gap:2px;text-align:center}.fxc small{color:var(--soft);font-weight:700;font-size:.78rem}.fxc b{font:800 1.9rem/1 var(--f-num);font-variant-numeric:tabular-nums}
+.fxc.u b{color:var(--etf1)}.fxc.s{border:2px solid var(--good)}.fxc.s b{color:var(--good)}.fxc.a{border-top:4px solid var(--aia)}.fxc.a b{color:var(--aia)}
+.fxar{font-size:1.8rem;color:var(--soft)}
 @media(max-width:560px){.pfbox .pr{grid-template-columns:1fr 60px 16px 1fr 60px;font-size:.78rem}}
 .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .chip{border:2px solid var(--line);background:#fff;border-radius:999px;padding:7px 14px;font:700 .9rem var(--f-body);cursor:pointer;color:var(--ink);display:inline-flex;align-items:center;gap:7px}
@@ -39,7 +49,7 @@ h3{font:800 1.05rem/1.2 var(--f-num);margin:0 0 4px}
 .chip.off{opacity:.45}.chip:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 .chip .soon{font-size:.7rem;color:var(--soft);font-weight:700}
 label.lbl{font-size:.78rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
-.answer{display:grid;gap:14px}
+.answer{display:grid;gap:14px;min-width:0}.chartwrap{min-width:0}
 .big{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
 .tile{border-radius:18px;padding:14px 16px;background:#fff;border:1px solid var(--line);display:grid;gap:2px;border-top:5px solid var(--c)}
 .tile small{color:var(--soft);font-size:.8rem;font-weight:700}.tile b{font:800 1.9rem/1 var(--f-num);font-variant-numeric:tabular-nums}
@@ -48,7 +58,7 @@ label.lbl{font-size:.78rem;font-weight:800;letter-spacing:.08em;text-transform:u
 svg.ch{width:100%;height:auto;display:block;touch-action:pan-y;user-select:none;-webkit-user-select:none}.chartwrap{user-select:none}
 .legend{display:flex;flex-wrap:wrap;gap:12px;font-size:.82rem;font-weight:700;color:var(--soft)}.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}
 .ctrl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
-.seg{display:inline-flex;border:2px solid var(--line);border-radius:999px;overflow:hidden;background:#fff}
+.seg{display:inline-flex;flex-wrap:wrap;border:2px solid var(--line);border-radius:22px;overflow:hidden;background:#fff;max-width:100%}
 .seg button{all:unset;cursor:pointer;padding:6px 13px;font:700 .85rem var(--f-body);color:var(--soft)}.seg button.on{background:var(--ink);color:#fff}
 .sw{display:inline-flex;align-items:center;gap:8px;font:700 .9rem var(--f-body);cursor:pointer}
 .sw input{appearance:none;width:44px;height:26px;border-radius:999px;background:#d8cfbd;position:relative;cursor:pointer;transition:.2s}
@@ -57,9 +67,11 @@ svg.ch{width:100%;height:auto;display:block;touch-action:pan-y;user-select:none;
 .measure{background:#fff;border:1px dashed var(--gold);border-radius:14px;padding:10px 14px;font-size:.92rem;display:none}
 .measure.on{display:block}
 .bs{display:grid;gap:8px;margin-top:10px}
-.bs .ev{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:9px 13px;background:#fff;font-size:.9rem}
-.bs .ev b{font-family:var(--f-num)}.bs .ev .dd{font:800 1.15rem var(--f-num);color:var(--bad);font-variant-numeric:tabular-nums}
-.bs .ev small{grid-column:1/-1;color:var(--soft)}.bs .ev .arts a{color:var(--red)}
+.bs .ev{display:grid;grid-template-columns:minmax(0,1fr) auto;min-width:0;gap:6px 14px;align-items:center;border:1px solid var(--line);border-radius:16px;padding:14px 16px;background:#fff;font-size:1.02rem}
+.bs .ev b{font-family:var(--f-num);font-size:1.2rem}.bs .ev .dd{font:800 1.5rem var(--f-num);color:var(--bad);font-variant-numeric:tabular-nums}
+.bs .ev small{grid-column:1/-1;color:var(--soft);font-size:.95rem;line-height:1.45}
+.bs .ev .verdict{grid-column:1/-1;font-weight:800;font-size:1rem;padding:8px 12px;border-radius:10px;background:#eef8e4;color:var(--good)}.bs .ev .verdict.worse{background:#fdecea;color:var(--bad)}
+.bs .ev .zm{grid-column:1/-1;justify-self:start}.bs .ev .arts a{color:var(--red)}
 table{width:100%;border-collapse:collapse;font-size:.9rem}
 th{text-align:left;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--soft);padding:8px 8px;border-bottom:2px solid var(--line)}
 td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
@@ -82,7 +94,7 @@ input[type=range]{width:100%;accent-color:var(--red)}
 .proj .p span{font-size:.78rem;color:var(--soft)}
 .fine{font-size:.78rem;color:var(--soft);text-align:center;max-width:60ch;margin:0 auto}
 .src a{color:inherit}
-details summary{cursor:pointer;font-weight:800}
+details summary{cursor:pointer;font-weight:800;list-style:none;display:flex;align-items:center;gap:10px;flex-wrap:wrap}details summary::-webkit-details-marker{display:none}details summary::after{content:"▾";margin-left:auto;color:var(--soft)}details[open] summary::after{content:"▴"}details[open] summary{margin-bottom:10px}
 @media(max-width:560px){.vs{grid-template-columns:1fr}.proj{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -105,11 +117,13 @@ details summary{cursor:pointer;font-weight:800}
 
   <section class="card answer">
     <div class="ctrl">
-      <div class="seg" id="per"><button data-y="1">1 yr</button><button data-y="3">3 yrs</button><button data-y="5" class="on">5 yrs</button><button data-y="10">10 yrs</button><button data-y="0">Max</button></div>
+      <div class="seg" id="per"><button data-y="ytd" class="on">YTD</button><button data-y="1">1 yr</button><button data-y="2">2 yrs</button><button data-y="3">3 yrs</button><button data-y="4">4 yrs</button><button data-y="5">5 yrs</button><button data-y="10">10 yrs</button><button data-y="0">Max</button></div>
+      <button class="chip" id="zoom-off" type="button" hidden>✕ Exit zoom</button>
       <label class="sw"><input type="checkbox" id="bs-on"> Show Black Swan events</label>
       <label class="sw"><input type="checkbox" id="fx-on"> What you really get in SGD</label>
     </div>
     <div class="big" id="tiles"></div>
+    <div class="alloc" id="alloc" hidden></div>
     <div class="fxbox" id="fx-box" hidden></div>
     <div class="chartwrap"><svg class="ch" id="ch" viewBox="0 0 900 420" role="img" aria-label="Growth of S$10,000 over time for the chosen funds"></svg></div>
     <div class="legend" id="leg"></div>
@@ -118,12 +132,12 @@ details summary{cursor:pointer;font-weight:800}
     <div class="bs" id="bs-list" hidden></div>
   </section>
 
-  <section class="card">
-    <h2>What each one costs you</h2>
+  <details class="card">
+    <summary><h2 style="display:inline">What each one costs you</h2> <span class="note">tap to open</span></summary>
     <p class="note" style="margin-bottom:12px">Both charts above are already after the fund's own yearly fee. These are the <b>extra</b> costs that sit on top, which is where the real difference is.</p>
     <div class="vs" id="vs"></div>
     <p class="note" id="vs-note"></p>
-  </section>
+  </details>
 
   <section class="card">
     <h2>What it could look like in 5, 10 and 15 years</h2>
@@ -138,15 +152,15 @@ details summary{cursor:pointer;font-weight:800}
     <p class="note" id="proj-note"></p>
   </section>
 
-  <section class="card">
-    <h2>Singapore brokers: what they charge</h2>
+  <details class="card">
+    <summary><h2 style="display:inline">Singapore brokers: what they charge</h2> <span class="note">tap to open</span></summary>
     <p class="note" style="margin-bottom:10px">For buying an ETF like CSPX or IWDA. Figures are indicative, from Singapore comparison sites dated 2026, and should be checked on each broker's own pricing page before you quote them.</p>
     <div class="tblwrap"><table id="brk"></table></div>
     <p class="note src" id="brk-src"></p>
-  </section>
+  </details>
 
-  <section class="card">
-    <h2>How we keep this fair</h2>
+  <details class="card">
+    <summary><h2 style="display:inline">How we keep this fair</h2> <span class="note">tap to open</span></summary>
     <ul style="margin:6px 0 0;padding-left:20px;font-size:.95rem;color:var(--soft);display:grid;gap:6px">
       <li>Same start date and the same S$10,000 for every line. Everything converted to Singapore dollars at that day's rate.</li>
       <li>Fund prices are already after the fund manager's yearly fee, on both sides. We don't double count it.</li>
@@ -154,7 +168,7 @@ details summary{cursor:pointer;font-weight:800}
       <li>ETF dividends are reinvested (we use accumulating ETFs or adjusted prices). AIA fund prices include reinvested income.</li>
       <li>Things that don't fit in a chart: free fund switches, a human adviser, and the discipline of a plan are on the AIA side; flexibility to sell any day is on the ETF side.</li>
     </ul>
-  </section>
+  </details>
 
   <p class="fine">Past performance is not indicative of future performance. Not financial advice. AIA fund prices: Morningstar daily NAV in SGD. UCITS ETFs: justETF total-return series. US ETFs: Nasdaq daily close. FX: European Central Bank. All converted to SGD daily. Fees cited where shown. Crystal Khoo · Knowing you better to serve you best.</p>
 </div>
@@ -207,18 +221,20 @@ let pf=PF_DEFAULT.map(x=>x.slice());try{const s=JSON.parse(localStorage.getItem(
 D.etf.BND=D.etf.BND||{name:"Vanguard Total Bond Market (BND)",plain:"US bonds, lower risk, US-listed",ter:0.03,terSrc:"Vanguard factsheet (verify)",series:[],priceOnly:true};
 D.etf.QQQ=D.etf.QQQ||{name:"Invesco QQQ (Nasdaq-100)",plain:"100 biggest US tech-heavy companies, US-listed",ter:0.20,terSrc:"Invesco factsheet (verify)",series:[],priceOnly:true};
 const aiaKeys=Object.keys(D.aia),etfKeys=Object.keys(D.etf);
-let sel={aia:aiaKeys[1],etfs:new Set([MATCH[aiaKeys[1]]]),years:5,bs:false,pf:false,fx:false};
+let sel={aia:aiaKeys[1],etfs:new Set([MATCH[aiaKeys[1]]]),years:"ytd",bs:false,pf:false,fx:false};let zoom=null;
 try{Object.assign(sel,JSON.parse(localStorage.getItem("trk")||"{}"),{etfs:new Set(JSON.parse(localStorage.getItem("trk-etfs")||'["CSPX"]'))})}catch(e){}
 const saveS=()=>{try{localStorage.setItem("trk",JSON.stringify({aia:sel.aia,years:sel.years,bs:sel.bs,pf:sel.pf,fx:sel.fx}));localStorage.setItem("trk-etfs",JSON.stringify([...sel.etfs]))}catch(e){}};
 
 function chips(){
+ $("#aia-chips").parentElement.style.display=sel.pf?"none":"";$("#etf-chips").parentElement.style.display=sel.pf?"none":"";
  $("#aia-chips").innerHTML=aiaKeys.map(k=>{const f=D.aia[k],has=f.series.length>0;return `<button class="chip ${k===sel.aia?"on":""} ${has?"":"off"}" data-a="${k}" style="--c:var(--aia)"><i></i>${f.short}${has?"":'<span class="soon">· prices loading</span>'}</button>`}).join("");
  $("#etf-chips").innerHTML=etfKeys.map(k=>{const f=D.etf[k],has=f.series.length>0;return `<button class="chip ${sel.etfs.has(k)?"on":""} ${has?"":"off"}" data-e="${k}" style="--c:${COL[k]}"><i></i>${k}${has?"":'<span class="soon">· soon</span>'}</button>`}).join("");
  document.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>{sel.aia=b.dataset.a;const m=MATCH[sel.aia];if(m&&D.etf[m]&&D.etf[m].series.length){sel.etfs=new Set([m])}saveS();render()});
  $("#pf-on").checked=sel.pf;$("#pf-on").onchange=e=>{sel.pf=e.target.checked;saveS();render()};$("#fx-on").checked=sel.fx;$("#fx-on").onchange=e=>{sel.fx=e.target.checked;saveS();render()};
  $("#pf-edit").onclick=()=>{const b=$("#pf-box");b.hidden=!b.hidden;if(!b.hidden)pfEdit()};
  document.querySelectorAll("[data-e]").forEach(b=>b.onclick=()=>{const k=b.dataset.e;if(!D.etf[k].series.length)return;sel.etfs.has(k)?sel.etfs.delete(k):sel.etfs.add(k);saveS();render()});
- document.querySelectorAll("#per button").forEach(b=>{b.classList.toggle("on",+b.dataset.y===sel.years);b.onclick=()=>{sel.years=+b.dataset.y;saveS();render()}});
+ document.querySelectorAll("#per button").forEach(b=>{b.classList.toggle("on",!zoom&&String(b.dataset.y)===String(sel.years));b.onclick=()=>{sel.years=b.dataset.y==="ytd"?"ytd":+b.dataset.y;zoom=null;saveS();render()}});
+ $("#zoom-off").hidden=!zoom;$("#zoom-off").onclick=()=>{zoom=null;render()};
  $("#bs-on").checked=sel.bs;$("#bs-on").onchange=e=>{sel.bs=e.target.checked;saveS();render()};
 }
 
@@ -241,9 +257,12 @@ function windowed(L){
  if(!L.length)return{L:[],start:null};
  const latest=L.map(l=>l.s[l.s.length-1][0]).sort().slice(-1)[0];
  const earliest=L.map(l=>l.s[0][0]).sort().slice(-1)[0];
- let start=earliest;if(sel.years){const d=new Date(latest);d.setFullYear(d.getFullYear()-sel.years);const iso=d.toISOString().slice(0,10);if(iso>start)start=iso}
- const W=L.map(l=>{const s=l.s.filter(p=>p[0]>=start);const base=s[0][1];return{...l,pts:s.map(p=>[p[0],p[1]/base*10000])}});
- return{L:W,start:W[0].pts[0][0],end:latest}}
+ let start=earliest,end=latest;
+ if(zoom){start=zoom[0]>start?zoom[0]:start;end=zoom[1]<latest?zoom[1]:latest}
+ else if(sel.years==="ytd"){const iso=latest.slice(0,4)+"-01-01";if(iso>start)start=iso}
+ else if(sel.years){const d=new Date(latest);d.setFullYear(d.getFullYear()-sel.years);const iso=d.toISOString().slice(0,10);if(iso>start)start=iso}
+ const W=L.map(l=>{const s=l.s.filter(p=>p[0]>=start&&p[0]<=end);const base=s[0][1];return{...l,pts:s.map(p=>[p[0],p[1]/base*10000])}});
+ return{L:W,start:W[0].pts[0][0],end:W[0].pts[W[0].pts.length-1][0]}}
 
 let drag=null;
 function render(){
@@ -251,7 +270,10 @@ function render(){
  const a=D.aia[sel.aia];$("#aia-flag").hidden=a.series.length>0;
  $("#aia-flag").innerHTML=`<b>${a.name}</b>: daily prices are being connected from fundsingapore.com and will appear here automatically. Meanwhile, published returns: 1 yr ${a.returns["1y"]??"n/a"}% · 3 yrs ${a.returns["3y"]??"n/a"}% · 5 yrs ${a.returns["5y"]??"n/a"}% · 10 yrs ${a.returns["10y"]??"n/a"}% (total, SGD, fundsingapore.com, 2 Nov 2026). ${a.plain}.`;
  if(!L.length){svg.innerHTML="";$("#tiles").innerHTML="";$("#leg").innerHTML="";return}
- $("#tiles").innerHTML=L.map(l=>{const v=l.pts[l.pts.length-1][1],g=(v/10000-1)*100;return `<div class="tile" style="--c:${l.col}"><small>${l.name}</small><b>${money(v)}</b><span class="pc ${g>=0?"up":"dn"}">${pct(g)} since ${fmt(start)}</span><small>${l.plain}${l.priceOnly?" · price only, dividends not included":""}</small></div>`}).join("");
+ $("#tiles").innerHTML=L.map(l=>{const v=l.pts[l.pts.length-1][1],g=(v/10000-1)*100;return `<div class="tile" style="--c:${l.col}"><small>${l.name}</small><b>${money(v)}</b><span class="pc ${g>=0?"up":"dn"}">${pct(g)} ${sel.years==="ytd"&&!zoom?"this year":"since "+fmt(start)}</span><small>${sel.pf?(l.priceOnly?"price only, dividends not included":""):l.plain+(l.priceOnly?" · price only, dividends not included":"")}</small></div>`}).join("");
+ const al=$("#alloc");al.hidden=!sel.pf;if(sel.pf){const PAL=["#8b0203","#c0392b","#e67e22","#b8962e","#6b6253","#9b2d6f"],PAL2=["#1f6f8b","#2e8b57","#6a4fb3","#d08a1e","#0f4c81","#3c8d2f"];const tw=pf.reduce((a,r)=>a+(+r[1]||0),0)||1;
+  const side=(title,items,pal)=>`<div><h4>${title}</h4><div class="bar">${items.map((x,i)=>`<i style="width:${x.w/tw*100}%;background:${pal[i%pal.length]}"></i>`).join("")}</div><ul>${items.map((x,i)=>`<li><span><i style="background:${pal[i%pal.length]}"></i>${x.n}</span><b>${Math.round(x.w/tw*100)}%</b></li>`).join("")}</ul></div>`;
+  al.innerHTML=side("My AIA allocation",pf.map(([k,w])=>({n:D.aia[k].short,w:+w||0})),PAL)+side("Same mix in ETFs",pf.map(([k,w,ek])=>({n:ek+(D.etf[ek]&&D.etf[ek].series.length?"":" (not loaded)"),w:+w||0})),PAL2)}
  const W=900,H=420,Lm=70,R=20,T=18,B=40;const all=L.flatMap(l=>l.pts.map(p=>p[1]));const mn=Math.min(...all)*0.95,mx=Math.max(...all)*1.05;
  const t0=+new Date(start),t1=+new Date(end);const X=d=>Lm+(+new Date(d)-t0)/(t1-t0)*(W-Lm-R),Y=v=>H-B-(v-mn)/(mx-mn)*(H-T-B);
  let s="";const raw=(mx-mn)/5,pw=Math.pow(10,Math.floor(Math.log10(raw))),st=[1,2,2.5,5,10].find(m=>m*pw>=raw)*pw;
@@ -259,7 +281,7 @@ function render(){
  s+=`<line x1="${Lm}" x2="${W-R}" y1="${Y(10000)}" y2="${Y(10000)}" stroke="#b8962e" stroke-dasharray="4 4"/><text x="${W-R}" y="${Y(10000)-5}" text-anchor="end" font-size="11" fill="#b8962e">what you put in</text>`;
  const yrs=(t1-t0)/31557600000,step=yrs>12?2:1;for(let y=new Date(start).getFullYear()+1;y<=new Date(end).getFullYear();y+=step){const d=`${y}-01-01`;if(+new Date(d)>t0)s+=`<text x="${X(d)}" y="${H-12}" text-anchor="middle" font-size="12" fill="#6b6253">${y}</text>`}
  // black swans
- const evs=[];if(sel.bs)BS.forEach(([n,a0,b0,why,arts])=>{if(a0<start||a0>end)return;const b1=b0>end?end:b0;s+=`<rect x="${X(a0)}" y="${T}" width="${Math.max(2,X(b1)-X(a0))}" height="${H-T-B}" fill="#8b0203" opacity=".09"/><text x="${X(a0)+4}" y="${T+12}" font-size="11" fill="#8b0203" font-weight="700">${n}</text>`;
+ const evs=[];if(sel.bs||zoom)BS.forEach(([n,a0,b0,why,arts])=>{if(a0<start||a0>end)return;const b1=b0>end?end:b0;s+=`<rect x="${X(a0)}" y="${T}" width="${Math.max(2,X(b1)-X(a0))}" height="${H-T-B}" fill="#8b0203" opacity=".09"/><text x="${X(a0)+4}" y="${T+12}" font-size="11" fill="#8b0203" font-weight="700">${n}</text>`;
   const row={n,a0,b0:b1,why,arts,drops:L.map(l=>{const at=v=>{const p=l.pts.filter(q=>q[0]<=v);return p.length?p[p.length-1][1]:null};const pa=at(a0),pb=lowest(l.pts,a0,b1);const rec=pa&&recover(l.pts,b1,pa);return{name:l.name,col:l.col,dd:pa&&pb?(pb/pa-1)*100:null,rec}})};evs.push(row)});
  L.forEach(l=>{s+=`<path d="${l.pts.map((p,i)=>(i?"L":"M")+X(p[0]).toFixed(1)+","+Y(p[1]).toFixed(1)).join("")}" fill="none" stroke="${l.col}" stroke-width="2.6" stroke-linejoin="round"/>`;const e=l.pts[l.pts.length-1];s+=`<circle cx="${X(e[0])}" cy="${Y(e[1])}" r="5" fill="${l.col}" stroke="#fff" stroke-width="2"/>`});
  if(drag&&drag.a&&drag.b){const xa=X(drag.a),xb=X(drag.b);s+=`<rect x="${Math.min(xa,xb)}" y="${T}" width="${Math.abs(xb-xa)}" height="${H-T-B}" fill="#29251E" opacity=".08"/><line x1="${xa}" x2="${xa}" y1="${T}" y2="${H-B}" stroke="#29251E"/><line x1="${xb}" x2="${xb}" y1="${T}" y2="${H-B}" stroke="#29251E"/>`}
@@ -271,7 +293,9 @@ function render(){
  hit.onpointerdown=e=>{drag={a:dateAt(e),b:null};hit.setPointerCapture(e.pointerId)};hit.onpointermove=e=>{if(drag&&drag.a&&e.buttons){drag.b=dateAt(e);render()}};hit.onpointerup=e=>{if(drag){drag.b=dateAt(e);if(drag.a===drag.b)drag=null;render()}};
  const m=$("#meas");if(drag&&drag.a&&drag.b&&drag.a!==drag.b){const [a0,b0]=[drag.a,drag.b].sort();m.className="measure on";m.innerHTML=`<b>${fmt(a0)} → ${fmt(b0)}</b> · `+L.map(l=>{const at=v=>{const p=l.pts.filter(q=>q[0]<=v);return p.length?p[p.length-1][1]:null};const pa=at(a0),pb=at(b0);return pa&&pb?`<span style="color:${l.col};font-weight:800">${l.name.split(" (")[0]} ${pct((pb/pa-1)*100)}</span>`:""}).join(" · ")+' <button class="chip" style="padding:2px 10px;margin-left:8px" onclick="drag=null;render()">clear</button>'}else m.className="measure";
  // black swan list
- const bl=$("#bs-list");bl.hidden=!sel.bs;if(sel.bs)bl.innerHTML=(evs.length?evs.map(r=>`<div class="ev"><div><b>${r.n}</b><div style="font-size:.8rem;color:var(--soft)">${fmt(r.a0)} to ${fmt(r.b0)}</div></div><div style="text-align:right">${r.drops.map(d=>d.dd==null?"":`<div><span style="color:${d.col};font-weight:800;font-size:.8rem">${d.name.split(" (")[0]}</span> <span class="dd">${d.dd.toFixed(0)}%</span></div>`).join("")}</div><small>${r.why} ${r.drops.filter(d=>d.rec).map(d=>`${d.name.split(" (")[0]}: back to where it was in ${d.rec}`).join(" · ")||"Not yet back to its previous level in this window."}</small><small class="arts">Read more: ${r.arts.map(([t,u])=>`<a href="${u}" target="_blank" rel="noopener">${t}</a>`).join(" · ")}</small></div>`).join(""):'<div class="ev"><small>No Black Swan events fall inside this period. Choose a longer period.</small></div>');
+ const bl=$("#bs-list");bl.hidden=!sel.bs;if(sel.bs)bl.innerHTML=(evs.length?evs.map(r=>{const a=r.drops.find(d=>String(d.col).includes("aia")),e=r.drops.find(d=>!String(d.col).includes("aia"));let v="";if(a&&e&&a.dd!=null&&e.dd!=null){const diff=a.dd-e.dd;v=`<div class="verdict ${diff>=0?"":"worse"}">${diff>=0?`✓ ${a.name.split(" (")[0]} held up better: fell ${Math.abs(diff).toFixed(0)} points less than ${e.name.split(" (")[0]}`:`${a.name.split(" (")[0]} fell ${Math.abs(diff).toFixed(0)} points more than ${e.name.split(" (")[0]} here`}</div>`}
+  return `<div class="ev"><div><b>${r.n}</b><div style="font-size:.85rem;color:var(--soft)">${fmt(r.a0)} to ${fmt(r.b0)}</div></div><div style="text-align:right">${r.drops.map(d=>d.dd==null?"":`<div><span style="color:${d.col};font-weight:800;font-size:.85rem">${d.name.split(" (")[0]}</span> <span class="dd">${d.dd.toFixed(0)}%</span></div>`).join("")}</div>${v}<small>${r.why} ${r.drops.filter(d=>d.rec).map(d=>`${d.name.split(" (")[0]}: back to where it was in ${d.rec}`).join(" · ")||"Not yet back to its previous level in this window."}</small><button class="chip zm" data-zm="${r.a0}|${r.b0}">🔍 Zoom into this dip</button><small class="arts">Read more: ${r.arts.map(([t,u])=>`<a href="${u}" target="_blank" rel="noopener">${t}</a>`).join(" · ")}</small></div>`}).join(""):'<div class="ev"><small>No Black Swan events fall inside this period. Choose a longer period.</small></div>');
+ bl.querySelectorAll("[data-zm]").forEach(b=>b.onclick=()=>{const [a0,b0]=b.dataset.zm.split("|");const s=new Date(a0);s.setMonth(s.getMonth()-2);const e=new Date(b0);e.setMonth(e.getMonth()+8);zoom=[s.toISOString().slice(0,10),e.toISOString().slice(0,10)];render();$("#ch").scrollIntoView({behavior:"smooth",block:"center"})});
  renderFx(L,start,end);renderVs();renderProj();
 }
 function pfEdit(){
@@ -292,10 +316,10 @@ function renderFx(L,start,end){
  if(!f0||!f1){box.innerHTML='<p>Exchange-rate data not loaded for this period.</p>';return}
  const usdMove=(f1/f0-1)*100,yrs=Math.max(.5,(+new Date(end)-+new Date(start))/31557600000);
  const etfs=L.filter(l=>!String(l.k).startsWith("F0")&&!String(l.k).startsWith("F000")&&l.k!=="pf-aia");
- const cards=etfs.map(l=>{const vS=l.pts[l.pts.length-1][1];const rS=(vS/10000-1)*100;const rU=((vS/f1)/(10000/f0)-1)*100;const sp=brk.fx*100,spf=sp<0.01?sp.toFixed(3):sp.toFixed(2);const rNet=((1+rS/100)*(1-brk.fx)*(1-brk.fx)-1)*100;
-  return `<div><small>${l.name.split(" (")[0]}</small><b>${pct(rU)}</b><small>what the app shows (USD)</small></div><div><small>in Singapore dollars</small><b>${pct(rS)}</b><small>after the US dollar moved ${pct(usdMove)}</small></div><div><small>after ${brk.n.split(" (")[0]} FX spread</small><b>${pct(rNet)}</b><small>${spf}% to buy USD, ${spf}% to sell back${brk.n.startsWith("Interactive")?", min US$2 each way":""}</small></div>`}).join("");
  const aia=L.find(l=>String(l.k).startsWith("F0")||String(l.k).startsWith("F000")||l.k==="pf-aia");
- box.innerHTML=`<p><b>The US dollar ${usdMove<0?"fell":"rose"} ${Math.abs(usdMove).toFixed(1)}% against the Singapore dollar</b> between ${fmt(start)} and ${fmt(end)} (about ${(Math.abs(usdMove)/yrs).toFixed(1)}% a year). A USD ETF's return looks bigger in the app than what you can spend in Singapore.</p><div class="fr">${cards}${aia?`<div style="border-top:4px solid var(--aia)"><small>${aia.name.split(" (")[0]}</small><b>${pct((aia.pts[aia.pts.length-1][1]/10000-1)*100)}</b><small>already in SGD, nothing to convert</small></div>`:""}</div><p class="note" style="margin:0">USD/SGD: ${D.fx&&D.fx.src?D.fx.src:"ECB daily rate"}. Broker spread: indicative, from 2026 Singapore comparison sites; moomoo and Tiger publish their rate only inside the app. You retire in Singapore dollars, so this is the number that matters.</p>`;
+ const rows=etfs.map(l=>{const vS=l.pts[l.pts.length-1][1];const rS=(vS/10000-1)*100;const rU=((vS/f1)/(10000/f0)-1)*100;const rNet=((1+rS/100)*(1-brk.fx)*(1-brk.fx)-1)*100;
+  return `<div class="fxrow"><div class="fxc u"><small>${l.name.split(" (")[0]} in the app</small><b>${pct(rU)}</b><small>US dollars</small></div><div class="fxar">→</div><div class="fxc s"><small>in your pocket</small><b>${pct(rNet)}</b><small>Singapore dollars${brk.fx?", after FX spread":""}</small></div></div>`}).join("");
+ box.innerHTML=`<p style="font-weight:800;font-size:1.05rem">The US dollar ${usdMove<0?"fell":"rose"} ${Math.abs(usdMove).toFixed(1)}% against the Singapore dollar in this period.</p>${rows}${aia?`<div class="fxrow one"><div class="fxc a"><small>${aia.name.split(" (")[0]}</small><b>${pct((aia.pts[aia.pts.length-1][1]/10000-1)*100)}</b><small>already in Singapore dollars</small></div></div>`:""}<p class="note" style="margin:0">Converted at the daily USD/SGD rate (${D.fx&&D.fx.src&&D.fx.src.includes("Central")?"European Central Bank":"Yahoo Finance"}), then ${brk.n.split(" (")[0]}'s FX spread both ways (indicative). You retire in Singapore dollars, so the right-hand number is the one to compare with the AIA fund.</p>`;
 }
 function lowest(pts,a,b){let m=null;pts.forEach(p=>{if(p[0]>=a&&p[0]<=b&&(m==null||p[1]<m))m=p[1]});return m}
 function recover(pts,fromDate,level){const p=pts.find(q=>q[0]>fromDate&&q[1]>=level);if(!p)return null;const days=Math.round((+new Date(p[0])-+new Date(fromDate))/86400000);return days<60?days+" days":Math.round(days/30)+" months"}
