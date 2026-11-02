@@ -301,6 +301,7 @@ def main():
     D = {"updated": datetime.date.today().isoformat(), "etf": old.get("etf", {}), "aia": old.get("aia", {}), "log": []}
 
     log("== FX"); usd = fx_series("usdsgd"); gbp = fx_series("gbpsgd"); chf = fx_series("chfsgd"); eur = fx_series("eursgd"); log(f"  USD/SGD {len(usd)} GBP/SGD {len(gbp)} CHF {len(chf)} EUR {len(eur)}")
+    D["fx"] = {"USDSGD": [[d, round(v, 5)] for d, v in sorted(usd.items())], "src": "European Central Bank reference rates via frankfurter.app (USD to SGD, daily)"}
     global FXX; FXX = {"CHF": chf, "EUR": eur}
 
     log("== ETFs")
