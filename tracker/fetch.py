@@ -48,12 +48,30 @@ def yahoo_search(q, types=("MUTUALFUND", "ETF")):
     try: return [x for x in json.loads(txt).get("quotes", []) if x.get("quoteType") in types]
     except Exception: return []
 
+# ---------- Stooq (CSV, no rate limit) ----------
+def stooq(sym):
+    txt = get(f"https://stooq.com/q/d/l/?s={sym}&i=d", retries=2, timeout=30)
+    if not txt or "Date" not in txt[:50]: 
+        log(f"  stooq {sym}: {(txt or '')[:80]!r}"); return None
+    out = []
+    for line in txt.splitlines()[1:]:
+        c = line.split(",")
+        if len(c) >= 5 and c[4] not in ("", "null"):
+            try: out.append([c[0], float(c[4])])
+            except ValueError: pass
+    return out if len(out) > 50 else None
+
 # ---------- FX ----------
 def fx_series(sym):
-    s, _ = yahoo_chart(sym, "2000-01-01"); return {d: v for d, v in (s or [])}
+    s = stooq(sym.lower())
+    if not s:
+        ymap = {"usdsgd": "SGD=X", "gbpsgd": "GBPSGD=X", "chfsgd": "CHFSGD=X", "eursgd": "EURSGD=X"}
+        s, _ = yahoo_chart(ymap.get(sym.lower(), sym), "2000-01-01")
+    return {d: v for d, v in (s or [])}
 
 def to_sgd(series, ccy, usd, gbp, scale=1.0):
     fx = {"USD": usd, "GBP": gbp, "GBp": gbp, "SGD": None}.get(ccy, None)
+    if fx is None and ccy in globals().get("FXX", {}): fx = FXX[ccy]
     if ccy == "GBp": scale *= 0.01
     if ccy == "SGD" or fx is None and ccy == "SGD": return [[d, round(v*scale, 4)] for d, v in series]
     if fx is None: log(f"  no FX for {ccy}, keeping native"); return [[d, round(v*scale, 4)] for d, v in series]
@@ -77,8 +95,8 @@ def fundsg_history(secid):
         f"https://api.newwealth.cloud/api/v2/imas_fund_sg/price-history?secId={secid}",
     ]
     hdr = {"Origin": "https://www.fundsingapore.com", "Referer": "https://www.fundsingapore.com/"}
-    for u in cands:
-        txt = get(u, hdr, retries=1, timeout=12)
+    for u in cands[:1]:
+        txt = get(u, hdr, retries=1, timeout=8)
         if not txt: continue
         log(f"  fundsg {u.split('imas_fund_sg')[1][:40]} -> {len(txt)} bytes: {txt[:160].replace(chr(10),' ')}")
         ser = extract_series(txt)
@@ -151,27 +169,44 @@ def ft_symbol(name):
     m = re.search(r'tearsheet/summary\?s=([A-Z0-9:\-\.]+)', txt)
     return m.group(1) if m else None
 
+def ft_rows(txt):
+    rows = []
+    for tr in re.findall(r'<tr[^>]*>(.*?)</tr>', txt, re.S):
+        cells = re.findall(r'<td[^>]*>(.*?)</td>', tr, re.S)
+        if len(cells) < 5: continue
+        dm = re.search(r'([A-Z][a-z]+, [A-Z][a-z]+ \d{2}, \d{4})', re.sub(r'<[^>]+>', ' ', cells[0]))
+        if not dm: continue
+        nums = [re.sub(r'<[^>]+>', '', c).replace(',', '').strip() for c in cells[1:5]]
+        try:
+            d = datetime.datetime.strptime(dm.group(1), "%A, %B %d, %Y").date().isoformat()
+            rows.append([d, float(nums[3])])
+        except Exception: continue
+    return rows
+
 def ft_history(symbol, years=16):
-    out = []
-    end = datetime.date.today()
+    out = []; end = datetime.date.today(); dumped = False
     for k in range(years):
         a = end.replace(year=end.year-1) + datetime.timedelta(days=1)
         u = f"https://markets.ft.com/data/funds/tearsheet/historical?s={symbol}&startDate={a.strftime('%Y/%m/%d')}&endDate={end.strftime('%Y/%m/%d')}"
-        txt = get(u, retries=1)
+        txt = get(u, retries=1, timeout=20)
         if not txt: break
-        rows = re.findall(r'<span class="mod-ui-hide-small-below">([^<]+)</span></td>\s*<td>([\d,\.]+)</td>\s*<td>([\d,\.]+)</td>\s*<td>([\d,\.]+)</td>\s*<td>([\d,\.]+)</td>', txt)
+        rows = ft_rows(txt)
         if not rows:
-            rows = re.findall(r'(\w+, \w+ \d{2}, \d{4})</span></td>\s*<td>([\d,\.]+)</td>\s*<td>([\d,\.]+)</td>\s*<td>([\d,\.]+)</td>\s*<td>([\d,\.]+)</td>', txt)
-        if not rows: break
-        for r in rows:
-            try:
-                d = datetime.datetime.strptime(r[0].strip(), "%A, %B %d, %Y").date().isoformat()
-                out.append([d, float(r[4].replace(",", ""))])
-            except Exception: continue
-        end = a - datetime.timedelta(days=1)
-        time.sleep(0.3)
+            if not dumped:
+                i = txt.find("<tbody"); log(f"  FT sample {symbol} k={k} len={len(txt)}: " + re.sub(r"\s+", " ", txt[i:i+700] if i>0 else txt[:400])); dumped = True
+            break
+        out += rows; end = a - datetime.timedelta(days=1); time.sleep(0.3)
     out = sorted({d: v for d, v in out}.items())
     return [[d, v] for d, v in out] if len(out) > 50 else None
+
+# ---------- AIA ILP funds: probe aia.com.sg from the runner, log what the fund page loads ----------
+def aia_probe():
+    u = "https://www.aia.com.sg/en/our-products/save-and-invest/aia-funds-information/aia-fund-price/aia-global-technology-fund"
+    txt = get(u, retries=1, timeout=25)
+    if not txt: log("  aia.com.sg: no response"); return
+    urls = sorted(set(re.findall(r'https?://[^"\'\s<>]+(?:price|fund|chart|api|json)[^"\'\s<>]*', txt, re.I)))
+    log(f"  aia.com.sg page {len(txt)} bytes; candidate urls: " + " | ".join(urls[:25]))
+    for m in re.findall(r'(?:data-[a-z-]*(?:url|api|src)|fetch\(|axios\.get\()\s*=?\s*["\']([^"\']+)', txt)[:20]: log("  aia attr: " + m)
 
 # ---------- main ----------
 def main():
@@ -182,12 +217,18 @@ def main():
         log("no previous data.js", e)
     D = {"updated": datetime.date.today().isoformat(), "etf": old.get("etf", {}), "aia": old.get("aia", {}), "log": []}
 
-    log("== FX"); usd = fx_series("SGD=X"); gbp = fx_series("GBPSGD=X"); log(f"  USD/SGD {len(usd)} GBP/SGD {len(gbp)}")
+    log("== FX"); usd = fx_series("usdsgd"); gbp = fx_series("gbpsgd"); chf = fx_series("chfsgd"); eur = fx_series("eursgd"); log(f"  USD/SGD {len(usd)} GBP/SGD {len(gbp)} CHF {len(chf)} EUR {len(eur)}")
+    global FXX; FXX = {"CHF": chf, "EUR": eur}
 
     log("== ETFs")
     ETF = {"CSPX": "CSPX.L", "IWDA": "IWDA.L", "VWRA": "VWRA.L", "EQQQ": "EQQQ.L", "VOO": "VOO", "VT": "VT", "VWO": "VWO", "EWJ": "EWJ", "XLV": "XLV"}
+    STQ = {"CSPX": ("cspx.uk", "USD"), "IWDA": ("iwda.uk", "USD"), "VWRA": ("vwra.uk", "USD"), "EQQQ": ("eqqq.uk", "GBp"), "VOO": ("voo.us", "USD"), "VT": ("vt.us", "USD"), "VWO": ("vwo.us", "USD"), "EWJ": ("ewj.us", "USD"), "XLV": ("xlv.us", "USD")}
     def do_etf(item):
-        k, sym = item; s, ccy = yahoo_chart(sym, "2000-01-01")
+        k, sym = item; s = None; ccy = None
+        if k in STQ:
+            s = stooq(STQ[k][0]); ccy = STQ[k][1]
+            if s: log(f"  {k} via stooq {STQ[k][0]} {len(s)}")
+        if not s: s, ccy = yahoo_chart(sym, "2000-01-01")
         if s:
             D["etf"].setdefault(k, {"name": k, "plain": "", "ter": None, "terSrc": ""})
             D["etf"][k]["series"] = to_sgd(s, ccy, usd, gbp); D["etf"][k]["src"] = f"Yahoo Finance {sym} ({ccy}), converted to SGD"
@@ -202,10 +243,19 @@ def main():
             f["series"] = ser; f["src"] = "fundsingapore.com (Morningstar) daily NAV, SGD"
             log(f"  {f['short']} {len(ser)} {ser[0][0]}..{ser[-1][0]}")
         else: log(f"  {f['short']} FAILED")
+    KNOWN_FT = {"F0HKG0704C": ["IE00B0JY6M65:USD", "IE000V48PUB9:CHF"], "F0HKG0704U": ["IE00BKDWB100:SGD"], "F0HKG070J2": ["LU0269904917:USD"], "F0HKG0704H": ["LU0058720904:USD"],
+                "F0HKG0704D": ["LU0109392836:USD", "LU0260870158:EUR"], "F0HKG070IS": ["SG9999000780:SGD", "SG9999000798:SGD"]}
+    KNOWN_Q = {"F0HKG0704D": "Franklin Technology Fund A Acc USD", "F0HKG070IS": "Nikko AM Shenton Japan Fund"}
     def do_under(item):
         secid, f = item; u = f.get("underlying")
         if not u: return
         ser = None; pick = None
+        for sym in KNOWN_FT.get(secid, []):
+            s = ft_history(sym)
+            if s:
+                ccy = sym.split(":")[-1]; f["underlyingSeries"] = to_sgd(s, ccy, usd, gbp); f["underlyingSrc2"] = f"FT markets {sym}, converted to SGD"
+                log(f"  {f['short']} <- FT {sym} {len(s)} {s[0][0]}..{s[-1][0]}"); return
+        u = KNOWN_Q.get(secid, u)
         for q in (u, u.replace(" Fund", "") + " A Acc USD", u.split(" (")[0]):
             for r in yahoo_search(q):
                 nm = (r.get("longname") or r.get("shortname") or "").lower()
@@ -226,16 +276,15 @@ def main():
                     f["underlyingSeries"] = to_sgd(s, ccy, usd, gbp); f["underlyingSrc2"] = f"FT markets {sym}, converted to SGD"
                     log(f"  {f['short']} <- FT {sym} {len(s)}")
                 else: log(f"  {f['short']} underlying FAILED")
-    with ThreadPoolExecutor(8) as ex:
-        list(ex.map(do_etf, ETF.items()))
+    for it in ETF.items(): do_etf(it); time.sleep(1.5)
+    log("== AIA probe"); aia_probe()
     log("== AIA funds (fundsingapore / FT)")
-    with ThreadPoolExecutor(8) as ex:
+    with ThreadPoolExecutor(4) as ex:
         list(ex.map(do_aia, list(D["aia"].items())))
     log("== Underlying funds (Yahoo search, then FT)")
-    with ThreadPoolExecutor(8) as ex:
-        list(ex.map(do_under, list(D["aia"].items())))
+    for it in list(D["aia"].items()): do_under(it); time.sleep(1.5)
 
-    D["log"] = LOG[-60:]
+    D["log"] = LOG[-120:]
     open(OUT, "w").write("window.TRACK=" + json.dumps(D, separators=(",", ":")) + ";")
     log(f"wrote {OUT} {len(json.dumps(D))//1024} KB")
 
