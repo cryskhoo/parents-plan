@@ -23,6 +23,15 @@ h2{font:800 1.35rem/1.15 var(--f-num);margin:0 0 6px}
 h3{font:800 1.05rem/1.2 var(--f-num);margin:0 0 4px}
 .note{font-size:.85rem;color:var(--soft);margin:6px 0 0}
 .pick{display:grid;gap:12px}
+.pfbox{display:grid;gap:8px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px}
+.pfbox .pr{display:grid;grid-template-columns:1fr 70px 24px 1fr 70px;gap:8px;align-items:center;font-size:.86rem}
+.pfbox .pr input{width:100%;padding:5px 8px;font-size:.9rem}.pfbox .pr select{padding:5px 6px;font-size:.86rem}
+.pfbox .tot{font-weight:800;font-size:.85rem;color:var(--soft)}
+.fxbox{background:#fff4dc;border:1px solid #f0cf8c;border-radius:18px;padding:14px 16px;display:grid;gap:10px}
+.fxbox .fr{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.fxbox .fr div{background:#fff;border-radius:12px;padding:10px 12px;display:grid;gap:2px}.fxbox .fr small{color:var(--soft);font-weight:700;font-size:.76rem}.fxbox .fr b{font:800 1.3rem/1 var(--f-num);font-variant-numeric:tabular-nums}
+.fxbox p{margin:0;font-size:.9rem}
+@media(max-width:560px){.pfbox .pr{grid-template-columns:1fr 60px 16px 1fr 60px;font-size:.78rem}}
 .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .chip{border:2px solid var(--line);background:#fff;border-radius:999px;padding:7px 14px;font:700 .9rem var(--f-body);cursor:pointer;color:var(--ink);display:inline-flex;align-items:center;gap:7px}
 .chip i{width:10px;height:10px;border-radius:50%;background:var(--c,#999);display:inline-block}
@@ -50,7 +59,7 @@ svg.ch{width:100%;height:auto;display:block;touch-action:pan-y;user-select:none;
 .bs{display:grid;gap:8px;margin-top:10px}
 .bs .ev{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:9px 13px;background:#fff;font-size:.9rem}
 .bs .ev b{font-family:var(--f-num)}.bs .ev .dd{font:800 1.15rem var(--f-num);color:var(--bad);font-variant-numeric:tabular-nums}
-.bs .ev small{grid-column:1/-1;color:var(--soft)}
+.bs .ev small{grid-column:1/-1;color:var(--soft)}.bs .ev .arts a{color:var(--red)}
 table{width:100%;border-collapse:collapse;font-size:.9rem}
 th{text-align:left;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--soft);padding:8px 8px;border-bottom:2px solid var(--line)}
 td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
@@ -88,7 +97,9 @@ details summary{cursor:pointer;font-weight:800}
 
   <section class="card pick">
     <div><label class="lbl">Pick an AIA fund</label><div class="row" id="aia-chips"></div></div>
-    <div><label class="lbl">Compare with</label><div class="row" id="etf-chips"></div></div>
+    <div><label class="lbl">Compare with <span class="note" style="font-weight:700">(the matching ETF is picked for you; add more if you like)</span></label><div class="row" id="etf-chips"></div></div>
+    <div class="row" style="justify-content:space-between"><label class="sw"><input type="checkbox" id="pf-on"> <b>Show my fund allocation vs the same mix in ETFs</b></label><button class="chip" id="pf-edit" type="button">Edit allocation</button></div>
+    <div id="pf-box" class="pfbox" hidden></div>
     <div class="flag" id="aia-flag" hidden></div>
   </section>
 
@@ -96,8 +107,10 @@ details summary{cursor:pointer;font-weight:800}
     <div class="ctrl">
       <div class="seg" id="per"><button data-y="1">1 yr</button><button data-y="3">3 yrs</button><button data-y="5" class="on">5 yrs</button><button data-y="10">10 yrs</button><button data-y="0">Max</button></div>
       <label class="sw"><input type="checkbox" id="bs-on"> Show Black Swan events</label>
+      <label class="sw"><input type="checkbox" id="fx-on"> What you really get in SGD</label>
     </div>
     <div class="big" id="tiles"></div>
+    <div class="fxbox" id="fx-box" hidden></div>
     <div class="chartwrap"><svg class="ch" id="ch" viewBox="0 0 900 420" role="img" aria-label="Growth of S$10,000 over time for the chosen funds"></svg></div>
     <div class="legend" id="leg"></div>
     <div class="measure" id="meas"></div>
@@ -151,13 +164,19 @@ details summary{cursor:pointer;font-weight:800}
 const D=window.TRACK,$=s=>document.querySelector(s);
 document.getElementById("upd").textContent=new Date(D.updated).toLocaleDateString("en-SG",{day:"numeric",month:"short",year:"numeric"});
 const money=n=>"S$"+Math.round(n).toLocaleString("en-SG"),pct=n=>(n>=0?"+":"")+n.toFixed(1)+"%";
-const COL={CSPX:"var(--etf1)",IWDA:"var(--etf2)",VWRA:"var(--etf3)",EQQQ:"var(--etf4)",VOO:"#0f4c81",VT:"#3c8d2f",VWO:"#b5651d",EWJ:"#9b2d6f",XLV:"#2a9d8f"};
+const COL={CSPX:"var(--etf1)",IWDA:"var(--etf2)",VWRA:"var(--etf3)",EQQQ:"var(--etf4)",VOO:"#0f4c81",VT:"#3c8d2f",VWO:"#b5651d",EWJ:"#9b2d6f",XLV:"#2a9d8f",BND:"#6c757d",QQQ:"#7b2cbf"};
 
 // Black Swan windows: start and bottom dates. Drop % is computed from the data on screen, never hardcoded.
 const BS=[
- ["Dot-com crash","2000-03-24","2002-10-09"],["Global Financial Crisis","2007-10-09","2009-03-09"],["Euro debt crisis","2011-05-02","2011-10-03"],
- ["China shock","2015-08-10","2016-02-11"],["Q4 2018 sell-off","2018-09-20","2018-12-24"],["Covid crash","2020-02-19","2020-03-23"],
- ["2022 rate shock","2022-01-03","2022-10-12"],["2025 tariff shock","2025-02-19","2025-04-08"],["2026 energy shock","2026-01-28","2026-03-30"]];
+ ["Dot-com crash","2000-03-24","2002-10-09","Internet stocks collapsed; the Nasdaq lost about 78% from its peak.",[["Wikipedia: Dot-com bubble","https://en.wikipedia.org/wiki/Dot-com_bubble"],["EBSCO: Nasdaq dive prompts dot-com crash","https://www.ebsco.com/research-starters/economics/nasdaq-dive-prompts-dot-com-crash"],["Fox Business: history of bear markets since 1929","https://www.foxbusiness.com/markets/history-of-bear-markets-since-1929"]]],
+ ["Global Financial Crisis","2007-10-09","2009-03-09","US housing and banking collapse; Lehman Brothers failed. S&P 500 fell 57%.",[["Federal Reserve History: the Great Recession","https://www.federalreservehistory.org/essays/great-recession-of-200709"],["Wikipedia: bear market of 2007 to 2009","https://en.wikipedia.org/wiki/United_States_bear_market_of_2007%E2%80%932009"],["Wikipedia: bankruptcy of Lehman Brothers","https://en.wikipedia.org/wiki/Bankruptcy_of_Lehman_Brothers"]]],
+ ["Euro debt crisis","2011-05-02","2011-10-03","Greece, Italy and Spain debt fears, plus the US credit downgrade. S&P 500 fell about 19%.",[["CNN Money: Europe, Asia stocks close sharply lower","https://money.cnn.com/2011/08/07/markets/world_markets_downgrade/index.htm"],["CNN Money: Dow's 634-point dive after downgrade","https://money.cnn.com/2011/08/08/markets/markets_newyork/index.htm"],["Reuters (via Investing.com): Wall St sinks after historic downgrade","https://m.investing.com/news/stock-market-news/us-stocks-wall-st-sinks-as-fear-jumps-after-historic-downgrade-221360"]]],
+ ["China shock","2015-08-10","2016-02-11","China devalued the yuan; Shanghai fell 8.5% in a day on 'Black Monday'.",[["Channel 4 News: Black Monday, markets plunge over China fears","https://www.channel4.com/news/black-monday-markets-plunge-over-china-fears"],["Al Jazeera: Black Monday, the great fall of China","https://www.aljazeera.com/video/counting-the-cost/2015/8/30/black-monday-the-great-fall-of-china"],["Evelyn Partners: market update, China Black Monday","https://www.evelyn.com/insights-and-events/insights/market-update-china-black-monday/"]]],
+ ["Q4 2018 sell-off","2018-09-20","2018-12-24","Fed rate hikes and trade war fears; worst December since 1931.",[["Business Insider: worst December since the Great Depression","https://www.businessinsider.in/grinch-like-us-stocks-are-on-course-for-their-worst-december-since-the-great-depression/articleshow/67143965.cms"],["AP (via Fox 13): US stocks plunge before Christmas","https://www.fox13news.com/news/not-very-merry-us-stocks-plunge-before-christmas"],["USA Today: Dow drops 464 in worst December since '31","https://www.pressreader.com/usa/usa-today-us-edition/20181221/281681140986419"]]],
+ ["Covid crash","2020-02-19","2020-03-23","Pandemic lockdowns; the fastest bear market in history, S&P 500 down 34% in 23 trading days.",[["Boston Globe: worst day on Wall Street since 1987","https://www.bostonglobe.com/2020/03/12/business/us-stock-futures-plummet-after-trump-suspends-travel-europe-us"],["Reuters (via Investing.com): shortest bear market in S&P 500 history","https://www.investing.com/news/stock-market-news/say-goodbye-to-the-shortest-bear-market-in-sp-500-history-2270085"],["A Wealth of Common Sense: the Corona crash one year later","https://awealthofcommonsense.com/2021/03/a-look-back-at-the-corona-crash-one-year-later/"]]],
+ ["2022 rate shock","2022-01-03","2022-10-12","Inflation and seven Fed hikes; S&P 500 down 19% for the year, Nasdaq down 33%.",[["NBC News: Wall Street's worst year since 2008","https://www.nbcnews.com/business/markets/stocks-fall-end-of-2022-wall-streets-worst-year-since-2008-rcna63776"],["CBS News: stocks end worst year since the financial crisis","https://www.cbsnews.com/news/stocks-down-last-day-worst-year-since-financial-crisis-2022-12-30"],["CNBC: markets, 29 Dec 2022","https://www.cnbc.com/2022/12/29/stock-market-futures-open-to-close-news.html"]]],
+ ["2025 tariff shock","2025-02-19","2025-04-08","'Liberation Day' tariffs; S&P 500 fell 10.5% in two days.",[["Wikipedia: 2025 stock market crash","https://en.wikipedia.org/wiki/2025_stock_market_crash"],["Fortune: 10 days and a $10 trillion market swing","https://fortune.com/2025/04/12/trump-tariffs-stocks-bonds-supply-chain-what-comes-next/"],["Fortune: global tariff sell-off continues","https://fortune.com/asia/2025/04/04/global-trump-tariff-selloff-asian-markets-us-dollar-drop-second-day/"]]],
+ ["2026 energy shock","2026-01-28","2026-03-30","Middle East conflict and the Hormuz disruption pushed oil past US$100.",[["Chicago Fed: the aftermath of the 2026 oil shock","https://www.chicagofed.org/publications/chicago-fed-letter/2026/523"],["BlackRock Investment Institute: Middle East conflict, energy risks in focus","https://www.blackrock.com/corporate/insights/blackrock-investment-institute/publications/middle-east-conflict-2026"],["IEA: Oil Market Report, October 2026","https://www.iea.org/reports/oil-market-report-october-2026"]]]];
 
 // APA 3.0 figures from the FC's projection calculator (verified against the Product Summary in the vault)
 const APA={fee:0.039,feeYears:10,sb:[[10,20,0.05],[21,99,0.08]],bands:[2400,4800,7200,12000],
@@ -168,34 +187,54 @@ function apaProject(prem,iip,years,g){let bi=-1;APA.bands.forEach((b,i)=>{if(pre
 
 // Brokers: indicative figures from 2026 Singapore comparison sites (see sources). comm = per-trade cost in SGD for a typical ~S$1,000 to S$12,000 buy; fx = conversion markup; cust = yearly custody % ; plat = yearly platform %
 const BRK=[
- {n:"Interactive Brokers (Tiered)",comm:2.5,fx:0.0003,cust:0,plat:0,note:"LSE ETF about GBP 1.70 min; US stocks US$0.005/share min US$1. Tiny FX markup (~0.03%)."},
- {n:"moomoo SG",comm:1.35,fx:0.003,cust:0,plat:0,note:"US$0 commission, US$0.99 platform fee per order after the free first year. FX about 0.3% (check)."},
- {n:"Tiger Brokers",comm:2.7,fx:0.003,cust:0,plat:0,note:"About US$1.99 per order all-in on small trades."},
- {n:"Syfe Trade",comm:2.7,fx:0.004,cust:0,plat:0,note:"US$0.99 to US$1.99 per trade, platform fee included."},
+ {n:"Interactive Brokers (Tiered)",comm:2.5,fx:0.00002,cust:0,plat:0,note:"LSE ETF about GBP 1.70 min; US stocks US$0.005/share min US$1. FX spread about 0.002% over interbank, min US$2 per conversion."},
+ {n:"moomoo SG",comm:1.35,fx:0.001,cust:0,plat:0,note:"US$0 commission, US$0.99 platform fee per order after the free first year. FX spread quoted between 0.03% and 0.30% by different guides; 0.10% used here."},
+ {n:"Tiger Brokers",comm:2.7,fx:0.0015,cust:0,plat:0,note:"About US$1.99 per order all-in on small trades. FX spread about 0.15% in-app."},
+ {n:"Syfe Trade",comm:2.7,fx:0.001,cust:0,plat:0,note:"US$0.99 to US$1.99 per trade, platform fee included. FX about 0.08% to 0.15%."},
  {n:"FSMOne",comm:12,fx:0.004,cust:0,plat:0,note:"0.08% of trade, min about S$10 (SGX); no custody fee. LSE access limited; check."},
  {n:"Saxo",comm:10,fx:0.0025,cust:0.0012,plat:0,note:"Around 0.08% to 0.10%, min S$3 to S$10; 0.12%/yr custody if you opt out of stock lending."},
  {n:"POEMS",comm:25,fx:0.004,cust:0,plat:0,note:"Standard 0.28% min S$25; cheaper Cash Plus tier exists."},
  {n:"DBS Vickers (Cash Upfront)",comm:10.9,fx:0.005,cust:0,plat:0,note:"0.12%, min S$10.90, CDP-linked."},
  {n:"Endowus (fund platform)",comm:0,fx:0,cust:0,plat:0.003,note:"No trade fee; 0.30%/yr platform fee on top of fund fees. Funds, not ETFs."}];
-const BRK_SRC='Sources: <a href="https://growbeansprout.com/best-online-brokerage-singapore" target="_blank" rel="noopener">Beansprout, Oct 2026</a>; <a href="https://thekopinotes.com/articles/investing/singapore-brokerage-guide-2026/" target="_blank" rel="noopener">The Kopi Notes brokerage guide 2026</a>; <a href="https://www.moneysmart.sg/investments/interactive-brokers-brokerage" target="_blank" rel="noopener">MoneySmart IBKR 2026</a>; <a href="https://thekopinotes.com/articles/digital-banks/moomoo-vs-tiger-broker-singapore/" target="_blank" rel="noopener">Kopi Notes moomoo vs Tiger</a>. Broker fees change often; the official pricing pages were not reachable when this was built, so treat every figure as indicative.';
+const BRK_SRC='Sources: <a href="https://growbeansprout.com/best-online-brokerage-singapore" target="_blank" rel="noopener">Beansprout, Oct 2026</a>; <a href="https://thekopinotes.com/articles/investing/singapore-brokerage-guide-2026/" target="_blank" rel="noopener">The Kopi Notes brokerage guide 2026</a>; <a href="https://www.moneysmart.sg/investments/interactive-brokers-brokerage" target="_blank" rel="noopener">MoneySmart IBKR 2026</a>; <a href="https://thekopinotes.com/articles/digital-banks/moomoo-vs-tiger-broker-singapore/" target="_blank" rel="noopener">Kopi Notes moomoo vs Tiger</a>; FX spreads: <a href="https://thekopinotes.com/articles/investing/best-brokerage-etf-singapore/" target="_blank" rel="noopener">Kopi Notes best ETF brokerage 2026</a>, <a href="https://thekopinotes.com/articles/investing/tiger-brokers-fees-singapore-guide/" target="_blank" rel="noopener">Tiger fees guide</a>. Broker fees change often; the official pricing pages were not reachable when this was built, so treat every figure as indicative.';
 
+// Which ETF matches which AIA fund (the FC's and her boss's choices)
+const MATCH={F0HKG0704C:"VT",F0HKG0704D:"VOO",F0HKG070IS:"EWJ",F0HKG070J2:"VWO",F0HKG0704N:"BND",F0HKG0704H:"XLV",F0HKG0704U:"VOO",F000013Z2Y:"VT"};
+// The FC's core allocation and its ETF twin (told to the agent 2026-10-08)
+const PF_DEFAULT=[["F0HKG0704C",30,"VT"],["F0HKG0704D",20,"VOO"],["F0HKG070IS",20,"EWJ"],["F0HKG070J2",20,"VWO"],["F0HKG0704N",10,"BND"]];
+let pf=PF_DEFAULT.map(x=>x.slice());try{const s=JSON.parse(localStorage.getItem("trk-pf")||"null");if(Array.isArray(s)&&s.length)pf=s}catch(e){}
 // ---------- state ----------
+D.etf.BND=D.etf.BND||{name:"Vanguard Total Bond Market (BND)",plain:"US bonds, lower risk, US-listed",ter:0.03,terSrc:"Vanguard factsheet (verify)",series:[],priceOnly:true};
+D.etf.QQQ=D.etf.QQQ||{name:"Invesco QQQ (Nasdaq-100)",plain:"100 biggest US tech-heavy companies, US-listed",ter:0.20,terSrc:"Invesco factsheet (verify)",series:[],priceOnly:true};
 const aiaKeys=Object.keys(D.aia),etfKeys=Object.keys(D.etf);
-let sel={aia:aiaKeys[1],etfs:new Set(["CSPX"]),years:5,bs:false};
+let sel={aia:aiaKeys[1],etfs:new Set([MATCH[aiaKeys[1]]]),years:5,bs:false,pf:false,fx:false};
 try{Object.assign(sel,JSON.parse(localStorage.getItem("trk")||"{}"),{etfs:new Set(JSON.parse(localStorage.getItem("trk-etfs")||'["CSPX"]'))})}catch(e){}
-const saveS=()=>{try{localStorage.setItem("trk",JSON.stringify({aia:sel.aia,years:sel.years,bs:sel.bs}));localStorage.setItem("trk-etfs",JSON.stringify([...sel.etfs]))}catch(e){}};
+const saveS=()=>{try{localStorage.setItem("trk",JSON.stringify({aia:sel.aia,years:sel.years,bs:sel.bs,pf:sel.pf,fx:sel.fx}));localStorage.setItem("trk-etfs",JSON.stringify([...sel.etfs]))}catch(e){}};
 
 function chips(){
  $("#aia-chips").innerHTML=aiaKeys.map(k=>{const f=D.aia[k],has=f.series.length>0;return `<button class="chip ${k===sel.aia?"on":""} ${has?"":"off"}" data-a="${k}" style="--c:var(--aia)"><i></i>${f.short}${has?"":'<span class="soon">· prices loading</span>'}</button>`}).join("");
  $("#etf-chips").innerHTML=etfKeys.map(k=>{const f=D.etf[k],has=f.series.length>0;return `<button class="chip ${sel.etfs.has(k)?"on":""} ${has?"":"off"}" data-e="${k}" style="--c:${COL[k]}"><i></i>${k}${has?"":'<span class="soon">· soon</span>'}</button>`}).join("");
- document.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>{sel.aia=b.dataset.a;saveS();render()});
+ document.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>{sel.aia=b.dataset.a;const m=MATCH[sel.aia];if(m&&D.etf[m]&&D.etf[m].series.length){sel.etfs=new Set([m])}saveS();render()});
+ $("#pf-on").checked=sel.pf;$("#pf-on").onchange=e=>{sel.pf=e.target.checked;saveS();render()};$("#fx-on").checked=sel.fx;$("#fx-on").onchange=e=>{sel.fx=e.target.checked;saveS();render()};
+ $("#pf-edit").onclick=()=>{const b=$("#pf-box");b.hidden=!b.hidden;if(!b.hidden)pfEdit()};
  document.querySelectorAll("[data-e]").forEach(b=>b.onclick=()=>{const k=b.dataset.e;if(!D.etf[k].series.length)return;sel.etfs.has(k)?sel.etfs.delete(k):sel.etfs.add(k);saveS();render()});
  document.querySelectorAll("#per button").forEach(b=>{b.classList.toggle("on",+b.dataset.y===sel.years);b.onclick=()=>{sel.years=+b.dataset.y;saveS();render()}});
  $("#bs-on").checked=sel.bs;$("#bs-on").onchange=e=>{sel.bs=e.target.checked;saveS();render()};
 }
 
+function mix(parts){ // parts: [[series, weight]] -> buy-and-hold from the latest common start, no rebalancing
+ const ok=parts.filter(([s])=>s&&s.length);if(!ok.length)return null;const start=ok.map(([s])=>s[0][0]).sort().slice(-1)[0];
+ const base=ok.map(([s])=>s.find(p=>p[0]>=start)[1]);const dates=ok[0][0].filter(p=>p[0]>=start).map(p=>p[0]);const idx=ok.map(()=>0);const tw=ok.reduce((a,[,w])=>a+w,0);
+ return dates.map(d=>{let v=0;ok.forEach(([s,w],i)=>{while(idx[i]+1<s.length&&s[idx[i]+1][0]<=d)idx[i]++;const p=s[idx[i]];v+=w/tw*(p[1]/base[i])});return [d,v]})}
 function lines(){
- const out=[];const a=D.aia[sel.aia];if(a.series.length)out.push({k:sel.aia,name:a.short+" (AIA)",col:"var(--aia)",s:a.series,plain:a.plain});
+ const out=[];
+ if(sel.pf){
+  const a=mix(pf.map(([k,w])=>[D.aia[k]&&D.aia[k].series,w])),e=mix(pf.map(([k,w,ek])=>[D.etf[ek]&&D.etf[ek].series,w]));
+  const miss=pf.filter(([k,w,ek])=>!(D.etf[ek]&&D.etf[ek].series.length)).map(([k,w,ek])=>ek);
+  if(a)out.push({k:"pf-aia",name:"My AIA allocation",col:"var(--aia)",s:a,plain:pf.map(([k,w])=>`${w}% ${D.aia[k].short}`).join(", ")});
+  if(e)out.push({k:"pf-etf",name:"Same mix in ETFs",col:"var(--etf1)",s:e,plain:pf.map(([k,w,ek])=>`${w}% ${ek}`).join(", ")+(miss.length?` (${miss.join(", ")} not loaded yet, mix renormalised)`:""),priceOnly:pf.some(([k,w,ek])=>D.etf[ek]&&D.etf[ek].priceOnly)});
+  return out}
+ const a=D.aia[sel.aia];if(a.series.length)out.push({k:sel.aia,name:a.short+" (AIA)",col:"var(--aia)",s:a.series,plain:a.plain});
  [...sel.etfs].forEach(k=>{const e=D.etf[k];if(e.series.length)out.push({k,name:e.name,col:COL[k]||"var(--etf4)",s:e.series,plain:e.plain,priceOnly:e.priceOnly})});return out}
 
 function windowed(L){
@@ -220,8 +259,8 @@ function render(){
  s+=`<line x1="${Lm}" x2="${W-R}" y1="${Y(10000)}" y2="${Y(10000)}" stroke="#b8962e" stroke-dasharray="4 4"/><text x="${W-R}" y="${Y(10000)-5}" text-anchor="end" font-size="11" fill="#b8962e">what you put in</text>`;
  const yrs=(t1-t0)/31557600000,step=yrs>12?2:1;for(let y=new Date(start).getFullYear()+1;y<=new Date(end).getFullYear();y+=step){const d=`${y}-01-01`;if(+new Date(d)>t0)s+=`<text x="${X(d)}" y="${H-12}" text-anchor="middle" font-size="12" fill="#6b6253">${y}</text>`}
  // black swans
- const evs=[];if(sel.bs)BS.forEach(([n,a0,b0])=>{if(a0<start||a0>end)return;const b1=b0>end?end:b0;s+=`<rect x="${X(a0)}" y="${T}" width="${Math.max(2,X(b1)-X(a0))}" height="${H-T-B}" fill="#8b0203" opacity=".09"/><text x="${X(a0)+4}" y="${T+12}" font-size="11" fill="#8b0203" font-weight="700">${n}</text>`;
-  const row={n,a0,b0:b1,drops:L.map(l=>{const at=v=>{const p=l.pts.filter(q=>q[0]<=v);return p.length?p[p.length-1][1]:null};const pa=at(a0),pb=lowest(l.pts,a0,b1);const rec=pa&&recover(l.pts,b1,pa);return{name:l.name,col:l.col,dd:pa&&pb?(pb/pa-1)*100:null,rec}})};evs.push(row)});
+ const evs=[];if(sel.bs)BS.forEach(([n,a0,b0,why,arts])=>{if(a0<start||a0>end)return;const b1=b0>end?end:b0;s+=`<rect x="${X(a0)}" y="${T}" width="${Math.max(2,X(b1)-X(a0))}" height="${H-T-B}" fill="#8b0203" opacity=".09"/><text x="${X(a0)+4}" y="${T+12}" font-size="11" fill="#8b0203" font-weight="700">${n}</text>`;
+  const row={n,a0,b0:b1,why,arts,drops:L.map(l=>{const at=v=>{const p=l.pts.filter(q=>q[0]<=v);return p.length?p[p.length-1][1]:null};const pa=at(a0),pb=lowest(l.pts,a0,b1);const rec=pa&&recover(l.pts,b1,pa);return{name:l.name,col:l.col,dd:pa&&pb?(pb/pa-1)*100:null,rec}})};evs.push(row)});
  L.forEach(l=>{s+=`<path d="${l.pts.map((p,i)=>(i?"L":"M")+X(p[0]).toFixed(1)+","+Y(p[1]).toFixed(1)).join("")}" fill="none" stroke="${l.col}" stroke-width="2.6" stroke-linejoin="round"/>`;const e=l.pts[l.pts.length-1];s+=`<circle cx="${X(e[0])}" cy="${Y(e[1])}" r="5" fill="${l.col}" stroke="#fff" stroke-width="2"/>`});
  if(drag&&drag.a&&drag.b){const xa=X(drag.a),xb=X(drag.b);s+=`<rect x="${Math.min(xa,xb)}" y="${T}" width="${Math.abs(xb-xa)}" height="${H-T-B}" fill="#29251E" opacity=".08"/><line x1="${xa}" x2="${xa}" y1="${T}" y2="${H-B}" stroke="#29251E"/><line x1="${xb}" x2="${xb}" y1="${T}" y2="${H-B}" stroke="#29251E"/>`}
  s+=`<rect id="hit" x="${Lm}" y="${T}" width="${W-Lm-R}" height="${H-T-B}" fill="transparent"/>`;
@@ -232,8 +271,31 @@ function render(){
  hit.onpointerdown=e=>{drag={a:dateAt(e),b:null};hit.setPointerCapture(e.pointerId)};hit.onpointermove=e=>{if(drag&&drag.a&&e.buttons){drag.b=dateAt(e);render()}};hit.onpointerup=e=>{if(drag){drag.b=dateAt(e);if(drag.a===drag.b)drag=null;render()}};
  const m=$("#meas");if(drag&&drag.a&&drag.b&&drag.a!==drag.b){const [a0,b0]=[drag.a,drag.b].sort();m.className="measure on";m.innerHTML=`<b>${fmt(a0)} → ${fmt(b0)}</b> · `+L.map(l=>{const at=v=>{const p=l.pts.filter(q=>q[0]<=v);return p.length?p[p.length-1][1]:null};const pa=at(a0),pb=at(b0);return pa&&pb?`<span style="color:${l.col};font-weight:800">${l.name.split(" (")[0]} ${pct((pb/pa-1)*100)}</span>`:""}).join(" · ")+' <button class="chip" style="padding:2px 10px;margin-left:8px" onclick="drag=null;render()">clear</button>'}else m.className="measure";
  // black swan list
- const bl=$("#bs-list");bl.hidden=!sel.bs;if(sel.bs)bl.innerHTML=(evs.length?evs.map(r=>`<div class="ev"><div><b>${r.n}</b><div style="font-size:.8rem;color:var(--soft)">${fmt(r.a0)} to ${fmt(r.b0)}</div></div><div style="text-align:right">${r.drops.map(d=>d.dd==null?"":`<div><span style="color:${d.col};font-weight:800;font-size:.8rem">${d.name.split(" (")[0]}</span> <span class="dd">${d.dd.toFixed(0)}%</span></div>`).join("")}</div><small>${r.drops.filter(d=>d.rec).map(d=>`${d.name.split(" (")[0]}: back to where it was in ${d.rec}`).join(" · ")||"Not yet back to its previous level in this window."}</small></div>`).join(""):'<div class="ev"><small>No Black Swan events fall inside this period. Choose a longer period.</small></div>');
- renderVs();renderProj();
+ const bl=$("#bs-list");bl.hidden=!sel.bs;if(sel.bs)bl.innerHTML=(evs.length?evs.map(r=>`<div class="ev"><div><b>${r.n}</b><div style="font-size:.8rem;color:var(--soft)">${fmt(r.a0)} to ${fmt(r.b0)}</div></div><div style="text-align:right">${r.drops.map(d=>d.dd==null?"":`<div><span style="color:${d.col};font-weight:800;font-size:.8rem">${d.name.split(" (")[0]}</span> <span class="dd">${d.dd.toFixed(0)}%</span></div>`).join("")}</div><small>${r.why} ${r.drops.filter(d=>d.rec).map(d=>`${d.name.split(" (")[0]}: back to where it was in ${d.rec}`).join(" · ")||"Not yet back to its previous level in this window."}</small><small class="arts">Read more: ${r.arts.map(([t,u])=>`<a href="${u}" target="_blank" rel="noopener">${t}</a>`).join(" · ")}</small></div>`).join(""):'<div class="ev"><small>No Black Swan events fall inside this period. Choose a longer period.</small></div>');
+ renderFx(L,start,end);renderVs();renderProj();
+}
+function pfEdit(){
+ const b=$("#pf-box");const aiaOpts=k=>aiaKeys.map(x=>`<option value="${x}" ${x===k?"selected":""}>${D.aia[x].short}</option>`).join("");const etfOpts=k=>etfKeys.map(x=>`<option value="${x}" ${x===k?"selected":""}>${x}</option>`).join("");
+ b.innerHTML=`<div class="pr" style="font-weight:800;color:var(--soft);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase"><span>AIA fund</span><span>%</span><span></span><span>ETF twin</span><span>%</span></div>`+pf.map((r,i)=>`<div class="pr"><select data-pa="${i}">${aiaOpts(r[0])}</select><input type="number" data-pw="${i}" value="${r[1]}" min="0" max="100"><span>→</span><select data-pe="${i}">${etfOpts(r[2])}</select><span>${r[1]}%</span></div>`).join("")+`<div class="row"><span class="tot" id="pf-tot"></span><button class="chip" id="pf-add" type="button">+ add line</button><button class="chip" id="pf-reset" type="button">Reset to Crystal's mix</button></div>`;
+ const tot=pf.reduce((a,r)=>a+(+r[1]||0),0);$("#pf-tot").textContent=`Total ${tot}%${tot!==100?" (weights are scaled to 100%)":""}`;
+ b.querySelectorAll("[data-pa]").forEach(s=>s.onchange=()=>{pf[+s.dataset.pa][0]=s.value;pf[+s.dataset.pa][2]=MATCH[s.value]||pf[+s.dataset.pa][2];savePf()});
+ b.querySelectorAll("[data-pw]").forEach(s=>s.onchange=()=>{pf[+s.dataset.pw][1]=+s.value||0;savePf()});
+ b.querySelectorAll("[data-pe]").forEach(s=>s.onchange=()=>{pf[+s.dataset.pe][2]=s.value;savePf()});
+ $("#pf-add").onclick=()=>{pf.push([aiaKeys[0],10,MATCH[aiaKeys[0]]]);savePf()};$("#pf-reset").onclick=()=>{pf=PF_DEFAULT.map(x=>x.slice());savePf()};
+}
+function savePf(){try{localStorage.setItem("trk-pf",JSON.stringify(pf))}catch(e){}pfEdit();render()}
+// FX reality: what the app shows in USD vs what lands in SGD, then the broker's FX spread both ways
+function fxAt(d){const f=(D.fx&&D.fx.USDSGD)||[];let lo=0,hi=f.length-1,r=null;while(lo<=hi){const m=(lo+hi)>>1;if(f[m][0]<=d){r=f[m][1];lo=m+1}else hi=m-1}return r}
+function renderFx(L,start,end){
+ const box=$("#fx-box");box.hidden=!sel.fx;if(!sel.fx)return;
+ const brk=BRK[+($("#p-brk").value||0)];const f0=fxAt(start),f1=fxAt(end);
+ if(!f0||!f1){box.innerHTML='<p>Exchange-rate data not loaded for this period.</p>';return}
+ const usdMove=(f1/f0-1)*100,yrs=Math.max(.5,(+new Date(end)-+new Date(start))/31557600000);
+ const etfs=L.filter(l=>!String(l.k).startsWith("F0")&&!String(l.k).startsWith("F000")&&l.k!=="pf-aia");
+ const cards=etfs.map(l=>{const vS=l.pts[l.pts.length-1][1];const rS=(vS/10000-1)*100;const rU=((vS/f1)/(10000/f0)-1)*100;const sp=brk.fx*100,spf=sp<0.01?sp.toFixed(3):sp.toFixed(2);const rNet=((1+rS/100)*(1-brk.fx)*(1-brk.fx)-1)*100;
+  return `<div><small>${l.name.split(" (")[0]}</small><b>${pct(rU)}</b><small>what the app shows (USD)</small></div><div><small>in Singapore dollars</small><b>${pct(rS)}</b><small>after the US dollar moved ${pct(usdMove)}</small></div><div><small>after ${brk.n.split(" (")[0]} FX spread</small><b>${pct(rNet)}</b><small>${spf}% to buy USD, ${spf}% to sell back${brk.n.startsWith("Interactive")?", min US$2 each way":""}</small></div>`}).join("");
+ const aia=L.find(l=>String(l.k).startsWith("F0")||String(l.k).startsWith("F000")||l.k==="pf-aia");
+ box.innerHTML=`<p><b>The US dollar ${usdMove<0?"fell":"rose"} ${Math.abs(usdMove).toFixed(1)}% against the Singapore dollar</b> between ${fmt(start)} and ${fmt(end)} (about ${(Math.abs(usdMove)/yrs).toFixed(1)}% a year). A USD ETF's return looks bigger in the app than what you can spend in Singapore.</p><div class="fr">${cards}${aia?`<div style="border-top:4px solid var(--aia)"><small>${aia.name.split(" (")[0]}</small><b>${pct((aia.pts[aia.pts.length-1][1]/10000-1)*100)}</b><small>already in SGD, nothing to convert</small></div>`:""}</div><p class="note" style="margin:0">USD/SGD: ${D.fx&&D.fx.src?D.fx.src:"ECB daily rate"}. Broker spread: indicative, from 2026 Singapore comparison sites; moomoo and Tiger publish their rate only inside the app. You retire in Singapore dollars, so this is the number that matters.</p>`;
 }
 function lowest(pts,a,b){let m=null;pts.forEach(p=>{if(p[0]>=a&&p[0]<=b&&(m==null||p[1]<m))m=p[1]});return m}
 function recover(pts,fromDate,level){const p=pts.find(q=>q[0]>fromDate&&q[1]>=level);if(!p)return null;const days=Math.round((+new Date(p[0])-+new Date(fromDate))/86400000);return days<60?days+" days":Math.round(days/30)+" months"}
@@ -258,7 +320,7 @@ function renderProj(){
  $("#proj-note").textContent=`Assumes the market returns ${(g*100).toFixed(1)}% a year before fees on both sides, so each side is shown net of its own fund fee (${a.short} ${a.ter}%, ${ek} ${e.ter}%). AIA side: APA 3.0 platform charge 3.9% for years 1 to 10, welcome and special bonuses as per the product summary, premiums paid for ${iip} years. ETF side: one buy a year through ${brk.n} at ${money(brk.comm)} plus ${(brk.fx*100).toFixed(2)}% FX${brk.cust?` and ${(brk.cust*100).toFixed(2)}% yearly custody`:""}${brk.plat?` and ${(brk.plat*100).toFixed(2)}% yearly platform fee`:""}. No tax, no surrender charges, no early withdrawals. Not guaranteed.`;
 }
 $("#p-brk").innerHTML=BRK.map((b,i)=>`<option value="${i}">${b.n}</option>`).join("");
-["p-amt","p-yrs","p-g","p-brk"].forEach(id=>$("#"+id).addEventListener("input",()=>{renderVs();renderProj()}));
+["p-amt","p-yrs","p-g","p-brk"].forEach(id=>$("#"+id).addEventListener("input",()=>{if(id==="p-brk")render();else{renderVs();renderProj()}}));
 $("#brk").innerHTML=`<thead><tr><th>Broker</th><th class="n">Per trade</th><th class="n">FX markup</th><th class="n">Yearly fee</th><th>Notes</th></tr></thead><tbody>`+BRK.map(b=>`<tr><td><b>${b.n}</b></td><td class="n">${b.comm?money(b.comm):"none"}</td><td class="n">${b.fx?(b.fx*100).toFixed(2)+"%":"none"}</td><td class="n">${b.cust||b.plat?((b.cust+b.plat)*100).toFixed(2)+"%":"none"}</td><td style="color:var(--soft);font-size:.84rem">${b.note}</td></tr>`).join("")+"</tbody>";
 $("#brk-src").innerHTML=BRK_SRC;
 render();
