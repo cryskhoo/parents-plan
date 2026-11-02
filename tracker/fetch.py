@@ -315,7 +315,7 @@ def main():
         if not s and k == "CSPX": s, ccy = yahoo_chart(sym, "2000-01-01")
         if s:
             D["etf"].setdefault(k, {"name": k, "plain": "", "ter": None, "terSrc": ""})
-            D["etf"][k]["series"] = to_sgd(s, ccy, usd, gbp); D["etf"][k]["src"] = f"Yahoo Finance {sym} ({ccy}), converted to SGD"
+            D["etf"][k]["series"] = to_sgd(s, ccy, usd, gbp); D["etf"][k]["priceOnly"] = k not in ISIN; D["etf"][k]["src"] = (f"justETF {ISIN[k]} total return (dividends included), USD" if k in ISIN else f"Nasdaq API {k} daily close (price only, dividends not included), USD") + ", converted to SGD"
             log(f"  {k} {ccy} {len(s)} {s[0][0]}..{s[-1][0]}")
         else: log(f"  {k} FAILED")
     def do_aia(item):
@@ -379,7 +379,7 @@ def main():
     log("== Underlying funds (Yahoo search, then FT)")
     for it in list(D["aia"].items()): do_under(it)
 
-    D["log"] = LOG[-120:]
+    D["log"] = [l for l in LOG if "retry" not in l and "try " not in l][-80:]
     open(OUT, "w").write("window.TRACK=" + json.dumps(D, separators=(",", ":")) + ";")
     log(f"wrote {OUT} {len(json.dumps(D))//1024} KB")
 

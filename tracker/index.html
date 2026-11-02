@@ -101,7 +101,7 @@ details summary{cursor:pointer;font-weight:800}
     <div class="chartwrap"><svg class="ch" id="ch" viewBox="0 0 900 420" role="img" aria-label="Growth of S$10,000 over time for the chosen funds"></svg></div>
     <div class="legend" id="leg"></div>
     <div class="measure" id="meas"></div>
-    <p class="note">Drag across the chart to measure any period. Prices are in SGD, dividends reinvested, each line already net of its own fund fee. Platform and broker costs are shown separately below, so the picture stays fair.</p>
+    <p class="note">Drag across the chart to measure any period. Prices are in SGD, each line already net of its own fund fee. AIA funds and the UCITS ETFs (CSPX, IWDA, VWRA, EQQQ) include dividends; the US-listed ETFs are price only. Platform and broker costs are shown separately below, so the picture stays fair.</p>
     <div class="bs" id="bs-list" hidden></div>
   </section>
 
@@ -143,7 +143,7 @@ details summary{cursor:pointer;font-weight:800}
     </ul>
   </section>
 
-  <p class="fine">Past performance is not indicative of future performance. Not financial advice. ETF prices from Yahoo Finance (LSE listings, converted to SGD). AIA fund data from fundsingapore.com. Fees cited where shown. Crystal Khoo · Knowing you better to serve you best.</p>
+  <p class="fine">Past performance is not indicative of future performance. Not financial advice. AIA fund prices: Morningstar daily NAV in SGD. UCITS ETFs: justETF total-return series. US ETFs: Nasdaq daily close. FX: European Central Bank. All converted to SGD daily. Fees cited where shown. Crystal Khoo · Knowing you better to serve you best.</p>
 </div>
 
 <script src="data.js"></script>
@@ -151,7 +151,7 @@ details summary{cursor:pointer;font-weight:800}
 const D=window.TRACK,$=s=>document.querySelector(s);
 document.getElementById("upd").textContent=new Date(D.updated).toLocaleDateString("en-SG",{day:"numeric",month:"short",year:"numeric"});
 const money=n=>"S$"+Math.round(n).toLocaleString("en-SG"),pct=n=>(n>=0?"+":"")+n.toFixed(1)+"%";
-const COL={CSPX:"var(--etf1)",IWDA:"var(--etf2)",VWRA:"var(--etf3)",EQQQ:"var(--etf4)"};
+const COL={CSPX:"var(--etf1)",IWDA:"var(--etf2)",VWRA:"var(--etf3)",EQQQ:"var(--etf4)",VOO:"#0f4c81",VT:"#3c8d2f",VWO:"#b5651d",EWJ:"#9b2d6f",XLV:"#2a9d8f"};
 
 // Black Swan windows: start and bottom dates. Drop % is computed from the data on screen, never hardcoded.
 const BS=[
@@ -196,7 +196,7 @@ function chips(){
 
 function lines(){
  const out=[];const a=D.aia[sel.aia];if(a.series.length)out.push({k:sel.aia,name:a.short+" (AIA)",col:"var(--aia)",s:a.series,plain:a.plain});
- [...sel.etfs].forEach(k=>{const e=D.etf[k];if(e.series.length)out.push({k,name:e.name,col:COL[k],s:e.series,plain:e.plain})});return out}
+ [...sel.etfs].forEach(k=>{const e=D.etf[k];if(e.series.length)out.push({k,name:e.name,col:COL[k]||"var(--etf4)",s:e.series,plain:e.plain,priceOnly:e.priceOnly})});return out}
 
 function windowed(L){
  if(!L.length)return{L:[],start:null};
@@ -212,7 +212,7 @@ function render(){
  const a=D.aia[sel.aia];$("#aia-flag").hidden=a.series.length>0;
  $("#aia-flag").innerHTML=`<b>${a.name}</b>: daily prices are being connected from fundsingapore.com and will appear here automatically. Meanwhile, published returns: 1 yr ${a.returns["1y"]??"n/a"}% · 3 yrs ${a.returns["3y"]??"n/a"}% · 5 yrs ${a.returns["5y"]??"n/a"}% · 10 yrs ${a.returns["10y"]??"n/a"}% (total, SGD, fundsingapore.com, 2 Nov 2026). ${a.plain}.`;
  if(!L.length){svg.innerHTML="";$("#tiles").innerHTML="";$("#leg").innerHTML="";return}
- $("#tiles").innerHTML=L.map(l=>{const v=l.pts[l.pts.length-1][1],g=(v/10000-1)*100;return `<div class="tile" style="--c:${l.col}"><small>${l.name}</small><b>${money(v)}</b><span class="pc ${g>=0?"up":"dn"}">${pct(g)} since ${fmt(start)}</span><small>${l.plain}</small></div>`}).join("");
+ $("#tiles").innerHTML=L.map(l=>{const v=l.pts[l.pts.length-1][1],g=(v/10000-1)*100;return `<div class="tile" style="--c:${l.col}"><small>${l.name}</small><b>${money(v)}</b><span class="pc ${g>=0?"up":"dn"}">${pct(g)} since ${fmt(start)}</span><small>${l.plain}${l.priceOnly?" · price only, dividends not included":""}</small></div>`}).join("");
  const W=900,H=420,Lm=70,R=20,T=18,B=40;const all=L.flatMap(l=>l.pts.map(p=>p[1]));const mn=Math.min(...all)*0.95,mx=Math.max(...all)*1.05;
  const t0=+new Date(start),t1=+new Date(end);const X=d=>Lm+(+new Date(d)-t0)/(t1-t0)*(W-Lm-R),Y=v=>H-B-(v-mn)/(mx-mn)*(H-T-B);
  let s="";const raw=(mx-mn)/5,pw=Math.pow(10,Math.floor(Math.log10(raw))),st=[1,2,2.5,5,10].find(m=>m*pw>=raw)*pw;
