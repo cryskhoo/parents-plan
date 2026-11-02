@@ -22,10 +22,19 @@ jobs:
         with:
           name: fetch-log
           path: fetch.log
+      - name: Broker logos (clearbit, only if missing)
+        run: |
+          mkdir -p tracker/logos
+          for pair in ibkr:interactivebrokers.com moomoo:moomoo.com tiger:tigerbrokers.com.sg syfe:syfe.com fsmone:fsmone.com saxo:home.saxo poems:poems.com.sg dbs:dbs.com.sg endowus:endowus.com; do
+            n=${pair%%:*}; dom=${pair#*:}
+            [ -s tracker/logos/$n.png ] || curl -sL -m 20 -o tracker/logos/$n.png "https://logo.clearbit.com/$dom?size=128" || true
+            file tracker/logos/$n.png | grep -qi image || rm -f tracker/logos/$n.png
+          done
+          ls -la tracker/logos || true
       - name: Commit data
         run: |
           git config user.name "fund-tracker-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add tracker/data.js
+          git add tracker/data.js tracker/logos || true
           git diff --cached --quiet || git commit -m "Update fund data $(date -u +%F)"
           git push

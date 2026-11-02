@@ -305,7 +305,7 @@ def main():
     global FXX; FXX = {"CHF": chf, "EUR": eur}
 
     log("== ETFs")
-    ETF = {"CSPX": "CSPX.L", "IWDA": "IWDA.L", "VWRA": "VWRA.L", "EQQQ": "EQQQ.L", "VOO": "VOO", "VT": "VT", "VWO": "VWO", "EWJ": "EWJ", "XLV": "XLV", "BND": "BND", "QQQ": "QQQ"}
+    ETF = {"CSPX": "CSPX.L", "IWDA": "IWDA.L", "VWRA": "VWRA.L", "EQQQ": "EQQQ.L", "VOO": "VOO", "VT": "VT", "VWO": "VWO", "EWJ": "EWJ", "XLV": "XLV", "BND": "BND", "QQQ": "QQQ", "MCHI": "MCHI", "BIL": "BIL", "EWS": "EWS"}
     ISIN = {"CSPX": "IE00B5BMR087", "IWDA": "IE00B4L5Y983", "VWRA": "IE00BK5BQT80", "EQQQ": "IE0032077012"}
     def do_etf(item):
         k, sym = item; s = None; ccy = None
