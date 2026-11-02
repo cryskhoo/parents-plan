@@ -3,6 +3,7 @@ Runs on GitHub Actions (open internet). Never raises on a single source failing:
 so the page always has whatever data was obtainable. Sources: Yahoo Finance (ETFs, FX, underlying funds),
 fundsingapore.com / api.newwealth.cloud (AIA ILP funds), markets.ft.com as fallback for funds."""
 import json, re, sys, time, datetime, urllib.request, urllib.parse, html
+from concurrent.futures import ThreadPoolExecutor
 
 OUT = "tracker/data.js"
 UA = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36",
@@ -11,7 +12,7 @@ LOG = []
 def log(*a):
     s = " ".join(str(x) for x in a); print(s, flush=True); LOG.append(s)
 
-def get(url, headers=None, retries=3, timeout=40):
+def get(url, headers=None, retries=2, timeout=15):
     h = dict(UA); h.update(headers or {})
     for i in range(retries):
         try:
@@ -19,7 +20,7 @@ def get(url, headers=None, retries=3, timeout=40):
             with urllib.request.urlopen(req, timeout=timeout) as r:
                 return r.read().decode("utf-8", "ignore")
         except Exception as e:
-            log(f"  retry {i+1} {url[:90]} -> {e}"); time.sleep(2 + 2*i)
+            log(f"  retry {i+1} {url[:90]} -> {str(e)[:60]}"); time.sleep(1)
     return None
 
 def to_date(ts): return datetime.datetime.utcfromtimestamp(ts).date().isoformat()
@@ -77,14 +78,14 @@ def fundsg_history(secid):
     ]
     hdr = {"Origin": "https://www.fundsingapore.com", "Referer": "https://www.fundsingapore.com/"}
     for u in cands:
-        txt = get(u, hdr, retries=1, timeout=25)
+        txt = get(u, hdr, retries=1, timeout=12)
         if not txt: continue
         log(f"  fundsg {u.split('imas_fund_sg')[1][:40]} -> {len(txt)} bytes: {txt[:160].replace(chr(10),' ')}")
         ser = extract_series(txt)
         if ser and len(ser) > 50: return ser
     # fund detail page (Next.js) may embed the series
     for u in (f"https://www.fundsingapore.com/fund-library/{secid}", f"https://www.fundsingapore.com/fund/{secid}", f"https://www.fundsingapore.com/funds/{secid}"):
-        txt = get(u, retries=1, timeout=30)
+        txt = get(u, retries=1, timeout=15)
         if txt:
             log(f"  fundsg page {u[-40:]} -> {len(txt)} bytes")
             ser = extract_series(txt.replace('\\"', '"'))
@@ -150,7 +151,7 @@ def ft_symbol(name):
     m = re.search(r'tearsheet/summary\?s=([A-Z0-9:\-\.]+)', txt)
     return m.group(1) if m else None
 
-def ft_history(symbol, years=25):
+def ft_history(symbol, years=16):
     out = []
     end = datetime.date.today()
     for k in range(years):
@@ -168,7 +169,7 @@ def ft_history(symbol, years=25):
                 out.append([d, float(r[4].replace(",", ""))])
             except Exception: continue
         end = a - datetime.timedelta(days=1)
-        time.sleep(0.6)
+        time.sleep(0.3)
     out = sorted({d: v for d, v in out}.items())
     return [[d, v] for d, v in out] if len(out) > 50 else None
 
@@ -185,36 +186,30 @@ def main():
 
     log("== ETFs")
     ETF = {"CSPX": "CSPX.L", "IWDA": "IWDA.L", "VWRA": "VWRA.L", "EQQQ": "EQQQ.L", "VOO": "VOO", "VT": "VT", "VWO": "VWO", "EWJ": "EWJ", "XLV": "XLV"}
-    for k, sym in ETF.items():
-        s, ccy = yahoo_chart(sym, "2000-01-01")
+    def do_etf(item):
+        k, sym = item; s, ccy = yahoo_chart(sym, "2000-01-01")
         if s:
             D["etf"].setdefault(k, {"name": k, "plain": "", "ter": None, "terSrc": ""})
             D["etf"][k]["series"] = to_sgd(s, ccy, usd, gbp); D["etf"][k]["src"] = f"Yahoo Finance {sym} ({ccy}), converted to SGD"
             log(f"  {k} {ccy} {len(s)} {s[0][0]}..{s[-1][0]}")
         else: log(f"  {k} FAILED")
-
-    log("== AIA funds (fundsingapore)")
-    for secid, f in D["aia"].items():
-        ser = fundsg_history(secid)
+    def do_aia(item):
+        secid, f = item; ser = fundsg_history(secid)
         if not ser:
             sym = ft_symbol(f["name"]); log(f"  FT symbol for {f['name']}: {sym}")
             if sym: ser = ft_history(sym)
         if ser:
-            f["series"] = ser; f["src"] = "fundsingapore.com (Morningstar) daily NAV, SGD" if ser else ""
+            f["series"] = ser; f["src"] = "fundsingapore.com (Morningstar) daily NAV, SGD"
             log(f"  {f['short']} {len(ser)} {ser[0][0]}..{ser[-1][0]}")
         else: log(f"  {f['short']} FAILED")
-
-    log("== Underlying funds (Yahoo search, then FT)")
-    for secid, f in D["aia"].items():
-        u = f.get("underlying")
-        if not u: continue
+    def do_under(item):
+        secid, f = item; u = f.get("underlying")
+        if not u: return
         ser = None; pick = None
         for q in (u, u.replace(" Fund", "") + " A Acc USD", u.split(" (")[0]):
-            res = yahoo_search(q)
-            for r in res:
+            for r in yahoo_search(q):
                 nm = (r.get("longname") or r.get("shortname") or "").lower()
-                if all(w.lower() in nm for w in u.split()[:2]):
-                    pick = r; break
+                if all(w.lower() in nm for w in u.split()[:2]): pick = r; break
             if pick: break
         if pick:
             s, ccy = yahoo_chart(pick["symbol"], "2000-01-01")
@@ -231,6 +226,14 @@ def main():
                     f["underlyingSeries"] = to_sgd(s, ccy, usd, gbp); f["underlyingSrc2"] = f"FT markets {sym}, converted to SGD"
                     log(f"  {f['short']} <- FT {sym} {len(s)}")
                 else: log(f"  {f['short']} underlying FAILED")
+    with ThreadPoolExecutor(8) as ex:
+        list(ex.map(do_etf, ETF.items()))
+    log("== AIA funds (fundsingapore / FT)")
+    with ThreadPoolExecutor(8) as ex:
+        list(ex.map(do_aia, list(D["aia"].items())))
+    log("== Underlying funds (Yahoo search, then FT)")
+    with ThreadPoolExecutor(8) as ex:
+        list(ex.map(do_under, list(D["aia"].items())))
 
     D["log"] = LOG[-60:]
     open(OUT, "w").write("window.TRACK=" + json.dumps(D, separators=(",", ":")) + ";")
