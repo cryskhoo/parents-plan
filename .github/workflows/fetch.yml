@@ -16,7 +16,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Fetch prices
-        timeout-minutes: 12
+        timeout-minutes: 20
         run: python tracker/fetch.py 2>&1 | tee fetch.log
       - uses: actions/upload-artifact@v4
         with:

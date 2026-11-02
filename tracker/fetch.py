@@ -12,7 +12,7 @@ LOG = []
 def log(*a):
     s = " ".join(str(x) for x in a); print(s, flush=True); LOG.append(s)
 
-def get(url, headers=None, retries=2, timeout=15):
+def get(url, headers=None, retries=1, timeout=15):
     h = dict(UA); h.update(headers or {})
     for i in range(retries):
         try:
@@ -34,7 +34,7 @@ def yget(url, timeout=20):
 def yahoo_init():
     global CRUMB
     if CRUMB is not None: return CRUMB
-    for attempt in range(3):
+    for attempt in range(1):
         try:
             try: yget("https://fc.yahoo.com", 15)
             except Exception: pass
@@ -48,7 +48,7 @@ def yahoo_chart(sym, start="2000-01-01"):
     crumb = yahoo_init()
     for host in ("query2", "query1"):
         txt = None
-        for attempt in range(3):
+        for attempt in range(1):
             try:
                 txt = yget(f"https://{host}.finance.yahoo.com/v8/finance/chart/{urllib.parse.quote(sym)}?period1={p1}&period2={p2}&interval=1d&events=div&crumb={urllib.parse.quote(crumb)}"); break
             except Exception as e:
@@ -84,6 +84,56 @@ def stooq(sym):
             try: out.append([c[0], float(c[4])])
             except ValueError: pass
     return out if len(out) > 50 else None
+
+# ---------- justETF (UCITS ETFs by ISIN) ----------
+def justetf(isin, ccy="USD"):
+    u = f"https://www.justetf.com/api/etfs/{isin}/performance-chart?locale=en&currency={ccy}&valuesType=MARKET_VALUE&reduceData=false&includeDividends=true&features=DIVIDENDS&dateFrom=2000-01-01&dateTo={datetime.date.today().isoformat()}"
+    txt = get(u, {"Referer": "https://www.justetf.com/en/etf-profile.html?isin=" + isin, "Accept": "application/json"}, retries=1, timeout=25)
+    if not txt: log(f"  justetf {isin}: no response"); return None
+    try:
+        j = json.loads(txt); ser = j.get("series") or j.get("data") or []
+        out = []
+        for o in ser:
+            d = o.get("date") or (o.get("x") if isinstance(o, dict) else None); v = o.get("value") if isinstance(o.get("value"), (int, float)) else (o.get("value") or {}).get("raw") if isinstance(o.get("value"), dict) else o.get("y")
+            if d and v is not None: out.append([str(d)[:10], float(v)])
+        log(f"  justetf {isin}: {len(out)} points; keys={list(j.keys())[:6]}; sample={txt[:160].replace(chr(10),' ')}")
+        return out if len(out) > 50 else None
+    except Exception as e: log(f"  justetf {isin} parse {e}: {txt[:200]!r}"); return None
+
+# ---------- Nasdaq API (US listed ETFs) ----------
+def nasdaq_hist(sym):
+    u = f"https://api.nasdaq.com/api/quote/{sym}/historical?assetclass=etf&fromdate=2000-01-01&todate={datetime.date.today().isoformat()}&limit=9999"
+    txt = get(u, {"Accept": "application/json, text/plain, */*", "Origin": "https://www.nasdaq.com", "Referer": "https://www.nasdaq.com/"}, retries=1, timeout=25)
+    if not txt: log(f"  nasdaq {sym}: no response"); return None
+    try:
+        rows = json.loads(txt)["data"]["tradesTable"]["rows"]; out = []
+        for r in rows:
+            d = datetime.datetime.strptime(r["date"], "%m/%d/%Y").date().isoformat(); out.append([d, float(r["close"].replace("$", "").replace(",", ""))])
+        out.sort(); log(f"  nasdaq {sym}: {len(out)} {out[0][0]}..{out[-1][0]}"); return out if len(out) > 50 else None
+    except Exception as e: log(f"  nasdaq {sym} parse {e}: {txt[:200]!r}"); return None
+
+# ---------- Morningstar time series (funds) ----------
+def ms_series(secid, universe, ccy):
+    for host, tok in (("lt.morningstar.com", "9vehuxllxs"), ("tools.morningstar.co.uk", "t92wz0sj7c"), ("tools.morningstar.co.uk", "9vehuxllxs")):
+        u = f"https://{host}/api/rest.svc/timeseries_price/{tok}?id={secid}]2]0]{universe}&currencyId={ccy}&idtype=Morningstar&frequency=daily&startDate=2000-01-01&outputType=JSON"
+        txt = get(u, retries=1, timeout=25)
+        if not txt: continue
+        try:
+            j = json.loads(txt); pts = j["TimeSeries"]["Security"][0]["HistoryDetail"]
+            out = sorted([[o["EndDate"][:10], float(o["Value"])] for o in pts])
+            log(f"  morningstar {secid} {universe} via {host}/{tok}: {len(out)} {out[0][0]}..{out[-1][0]}"); return out if len(out) > 50 else None
+        except Exception as e: log(f"  morningstar {secid} {host}/{tok}: {str(e)[:40]} :: {txt[:160].replace(chr(10),' ')!r}")
+    return None
+def ms_search(q):
+    txt = get(f"https://www.morningstar.co.uk/uk/util/SecuritySearch.ashx?q={urllib.parse.quote(q)}&limit=10&preferedList=&source=nav&moduleId=6&ifIncludeAds=False", retries=1, timeout=20)
+    if not txt: log(f"  ms search {q[:30]}: no response"); return []
+    out = []
+    for line in txt.splitlines():
+        parts = line.split("|")
+        if len(parts) >= 2:
+            m = re.search(r'"i":"([^"]+)"', line); out.append((parts[0], m.group(1) if m else None, line[:200]))
+    log(f"  ms search {q[:30]}: " + " || ".join(f"{a} -> {b}" for a, b, _ in out[:4]))
+    return out
 
 # ---------- FX ----------
 def frankfurter(base, quote):
@@ -255,20 +305,25 @@ def main():
 
     log("== ETFs")
     ETF = {"CSPX": "CSPX.L", "IWDA": "IWDA.L", "VWRA": "VWRA.L", "EQQQ": "EQQQ.L", "VOO": "VOO", "VT": "VT", "VWO": "VWO", "EWJ": "EWJ", "XLV": "XLV"}
-    STQ = {"CSPX": ("cspx.uk", "USD"), "IWDA": ("iwda.uk", "USD"), "VWRA": ("vwra.uk", "USD"), "EQQQ": ("eqqq.uk", "GBp"), "VOO": ("voo.us", "USD"), "VT": ("vt.us", "USD"), "VWO": ("vwo.us", "USD"), "EWJ": ("ewj.us", "USD"), "XLV": ("xlv.us", "USD")}
+    ISIN = {"CSPX": "IE00B5BMR087", "IWDA": "IE00B4L5Y983", "VWRA": "IE00BK5BQT80", "EQQQ": "IE0032077012"}
     def do_etf(item):
         k, sym = item; s = None; ccy = None
-        if k in STQ:
-            s = stooq(STQ[k][0]); ccy = STQ[k][1]
-            if s: log(f"  {k} via stooq {STQ[k][0]} {len(s)}")
-        if not s: s, ccy = yahoo_chart(sym, "2000-01-01")
+        if k in ISIN:
+            s = justetf(ISIN[k], "USD"); ccy = "USD"
+        else:
+            s = nasdaq_hist(k); ccy = "USD"
+        if not s and k == "CSPX": s, ccy = yahoo_chart(sym, "2000-01-01")
         if s:
             D["etf"].setdefault(k, {"name": k, "plain": "", "ter": None, "terSrc": ""})
             D["etf"][k]["series"] = to_sgd(s, ccy, usd, gbp); D["etf"][k]["src"] = f"Yahoo Finance {sym} ({ccy}), converted to SGD"
             log(f"  {k} {ccy} {len(s)} {s[0][0]}..{s[-1][0]}")
         else: log(f"  {k} FAILED")
     def do_aia(item):
-        secid, f = item; ser = fundsg_history(secid)
+        secid, f = item; ser = None
+        for uni in ("FOSGP$$ALL", "FOSGP$$ALL_1340", "FOALL$$ALL"):
+            ser = ms_series(secid, uni, "SGD")
+            if ser: f["src"] = f"Morningstar daily NAV ({secid}), SGD"; break
+        if not ser: ser = fundsg_history(secid)
         if not ser:
             sym = ft_symbol(f["name"]); log(f"  FT symbol for {f['name']}: {sym}")
             if sym: ser = ft_history(sym)
@@ -283,6 +338,13 @@ def main():
         secid, f = item; u = f.get("underlying")
         if not u: return
         ser = None; pick = None
+        for nm, mid, _ in ms_search(KNOWN_Q.get(secid, u))[:3]:
+            if not mid: continue
+            for uni in ("FOGBR$$ALL", "FOALL$$ALL", "FOLUX$$ALL", "FOIRL$$ALL", "FOSGP$$ALL"):
+                s = ms_series(mid, uni, "USD")
+                if s:
+                    f["underlyingSeries"] = to_sgd(s, "USD", usd, gbp); f["underlyingSrc2"] = f"Morningstar {mid} ({nm}), USD, converted to SGD"
+                    log(f"  {f['short']} <- MS {mid} {nm} {len(s)}"); return
         for sym in KNOWN_FT.get(secid, []):
             s = ft_history(sym)
             if s:
@@ -309,13 +371,13 @@ def main():
                     f["underlyingSeries"] = to_sgd(s, ccy, usd, gbp); f["underlyingSrc2"] = f"FT markets {sym}, converted to SGD"
                     log(f"  {f['short']} <- FT {sym} {len(s)}")
                 else: log(f"  {f['short']} underlying FAILED")
-    for it in ETF.items(): do_etf(it); time.sleep(2.5)
+    for it in ETF.items(): do_etf(it); time.sleep(1)
     log("== AIA probe"); aia_probe()
     log("== AIA funds (fundsingapore / FT)")
     with ThreadPoolExecutor(4) as ex:
         list(ex.map(do_aia, list(D["aia"].items())))
     log("== Underlying funds (Yahoo search, then FT)")
-    for it in list(D["aia"].items()): do_under(it); time.sleep(1.5)
+    for it in list(D["aia"].items()): do_under(it)
 
     D["log"] = LOG[-120:]
     open(OUT, "w").write("window.TRACK=" + json.dumps(D, separators=(",", ":")) + ";")
