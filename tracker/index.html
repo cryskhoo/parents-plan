@@ -29,9 +29,9 @@ h3{font:800 1.05rem/1.2 var(--f-num);margin:0 0 4px}
 .pfbox .tot{font-weight:800;font-size:.85rem;color:var(--soft)}
 .alloc{display:grid;grid-template-columns:1fr 1fr;gap:12px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px 16px}
 .alloc h4{margin:0 0 6px;font:800 .8rem var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
-.alloc .bar{display:flex;height:14px;border-radius:7px;overflow:hidden;margin-bottom:8px}.alloc .bar i{display:block;height:100%}
-.alloc ul{margin:0;padding:0;list-style:none;display:grid;gap:3px;font-size:.88rem}.alloc li{display:flex;justify-content:space-between;gap:8px}.alloc li b{font-variant-numeric:tabular-nums}
-.alloc li i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.alloc .aside{display:grid;grid-template-columns:1fr 96px;gap:10px;align-items:center;min-width:0}
+.alloc .pie{width:96px;height:96px}
+.alloc .line{font-size:.86rem;line-height:1.6;color:var(--ink)}.alloc .line span{white-space:nowrap}.alloc .line .dot{color:var(--soft);margin:0 4px}.alloc .line i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:4px;vertical-align:middle}.alloc .line b{font-variant-numeric:tabular-nums}
 @media(max-width:560px){.alloc{grid-template-columns:1fr}}
 .fxbox{background:#fff4dc;border:1px solid #f0cf8c;border-radius:18px;padding:14px 16px;display:grid;gap:10px}
 .fxbox .fr{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
@@ -60,7 +60,10 @@ svg.ch{width:100%;height:auto;display:block;touch-action:pan-y;user-select:none;
 .ctrl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
 .seg{display:inline-flex;flex-wrap:wrap;border:2px solid var(--line);border-radius:22px;overflow:hidden;background:#fff;max-width:100%}
 .seg button{all:unset;cursor:pointer;padding:6px 13px;font:700 .85rem var(--f-body);color:var(--soft)}.seg button.on{background:var(--ink);color:#fff}
-.sw{display:inline-flex;align-items:center;gap:8px;font:700 .9rem var(--f-body);cursor:pointer}
+.sw{display:inline-flex;align-items:center;gap:8px;font:700 .9rem var(--f-body);cursor:pointer;position:relative}
+.info{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--ink);color:#fff;font-size:.75rem;font-weight:800;cursor:help;position:relative}
+.info .tip{display:none;position:absolute;left:50%;top:28px;transform:translateX(-50%);width:min(300px,80vw);background:var(--ink);color:#fff;font-weight:500;font-size:.85rem;line-height:1.45;padding:10px 12px;border-radius:12px;z-index:20;text-align:left;white-space:normal}
+.info:hover .tip,.info:focus .tip,.info:focus-within .tip{display:block}.info .tip b{display:block;margin-bottom:4px}
 .sw input{appearance:none;width:44px;height:26px;border-radius:999px;background:#d8cfbd;position:relative;cursor:pointer;transition:.2s}
 .sw input::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
 .sw input:checked{background:var(--red)}.sw input:checked::after{left:21px}
@@ -94,6 +97,8 @@ input[type=range]{width:100%;accent-color:var(--red)}
 .proj .p span{font-size:.78rem;color:var(--soft)}
 .fine{font-size:.78rem;color:var(--soft);text-align:center;max-width:60ch;margin:0 auto}
 .src a{color:inherit}
+.blogo{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:8px;background:var(--bc);color:#fff;font:800 .7rem var(--f-body);overflow:hidden;vertical-align:middle;flex:0 0 auto}.blogo img{width:100%;height:100%;object-fit:contain;background:#fff;position:relative;z-index:1}.blogo i{font-style:normal;position:absolute}
+.blogo{position:relative}.bname{display:inline-flex;align-items:center;gap:8px}
 details summary{cursor:pointer;font-weight:800;list-style:none;display:flex;align-items:center;gap:10px;flex-wrap:wrap}details summary::-webkit-details-marker{display:none}details summary::after{content:"▾";margin-left:auto;color:var(--soft)}details[open] summary::after{content:"▴"}details[open] summary{margin-bottom:10px}
 @media(max-width:560px){.vs{grid-template-columns:1fr}.proj{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
@@ -110,7 +115,7 @@ details summary{cursor:pointer;font-weight:800;list-style:none;display:flex;alig
   <section class="card pick">
     <div><label class="lbl">Pick an AIA fund</label><div class="row" id="aia-chips"></div></div>
     <div><label class="lbl">Compare with <span class="note" style="font-weight:700">(the matching ETF is picked for you; add more if you like)</span></label><div class="row" id="etf-chips"></div></div>
-    <div class="row" style="justify-content:space-between"><label class="sw"><input type="checkbox" id="pf-on"> <b>Show my fund allocation vs the same mix in ETFs</b></label><button class="chip" id="pf-edit" type="button">Edit allocation</button></div>
+    <div class="row" style="justify-content:space-between;gap:10px"><label class="sw"><input type="checkbox" id="pf-on"> <b>Show a fund mix vs the same mix in ETFs</b></label><select id="pf-preset" style="width:auto;max-width:100%"></select><button class="chip" id="pf-edit" type="button">Customise</button></div>
     <div id="pf-box" class="pfbox" hidden></div>
     <div class="flag" id="aia-flag" hidden></div>
   </section>
@@ -119,7 +124,7 @@ details summary{cursor:pointer;font-weight:800;list-style:none;display:flex;alig
     <div class="ctrl">
       <div class="seg" id="per"><button data-y="ytd" class="on">YTD</button><button data-y="1">1 yr</button><button data-y="2">2 yrs</button><button data-y="3">3 yrs</button><button data-y="4">4 yrs</button><button data-y="5">5 yrs</button><button data-y="10">10 yrs</button><button data-y="0">Max</button></div>
       <button class="chip" id="zoom-off" type="button" hidden>✕ Exit zoom</button>
-      <label class="sw"><input type="checkbox" id="bs-on"> Show Black Swan events</label>
+      <label class="sw" title="A Black Swan is a rare, sudden market shock that almost nobody saw coming, like Covid in 2020 or the 2008 crisis. Turn this on to see how far each fund fell in those moments and how long it took to recover."><input type="checkbox" id="bs-on"> Show Black Swan events <span class="info" tabindex="0" aria-label="What is a Black Swan event?">?<span class="tip"><b>What's a Black Swan event?</b> A rare, sudden market shock that almost nobody saw coming: a pandemic, a banking collapse, a war. Prices fall hard and fast. This switch shades those moments on the chart and shows how far each fund fell, and how long it took to get back.</span></span></label>
       <label class="sw"><input type="checkbox" id="fx-on"> What you really get in SGD</label>
     </div>
     <div class="big" id="tiles"></div>
@@ -200,6 +205,8 @@ function apaProject(prem,iip,years,g){let bi=-1;APA.bands.forEach((b,i)=>{if(pre
   const n=(prev+rp+wb+sr*rp)*(1+g),fee=t<=APA.feeYears?n*APA.fee:0;prev=n-fee;out.push(prev)}return out}
 
 // Brokers: indicative figures from 2026 Singapore comparison sites (see sources). comm = per-trade cost in SGD for a typical ~S$1,000 to S$12,000 buy; fx = conversion markup; cust = yearly custody % ; plat = yearly platform %
+const LOGO={"Interactive Brokers (Tiered)":["ibkr","#d81e05","IB"],"moomoo SG":["moomoo","#ff7a00","mm"],"Tiger Brokers":["tiger","#f6b100","T"],"Syfe Trade":["syfe","#1d6b5d","S"],"FSMOne":["fsmone","#0b4ea2","F"],"Saxo":["saxo","#0a2f6b","Sx"],"POEMS":["poems","#c8102e","P"],"DBS Vickers (Cash Upfront)":["dbs","#e4002b","D"],"Endowus (fund platform)":["endowus","#1f8a4c","E"]};
+const logo=n=>{const [f,c,m]=LOGO[n]||["",'#6b6253',n[0]];return `<span class="blogo" style="--bc:${c}"><img src="logos/${f}.png" alt="" onerror="this.remove()"><i>${m}</i></span>`};
 const BRK=[
  {n:"Interactive Brokers (Tiered)",comm:2.5,fx:0.00002,cust:0,plat:0,note:"LSE ETF about GBP 1.70 min; US stocks US$0.005/share min US$1. FX spread about 0.002% over interbank, min US$2 per conversion."},
  {n:"moomoo SG",comm:1.35,fx:0.001,cust:0,plat:0,note:"US$0 commission, US$0.99 platform fee per order after the free first year. FX spread quoted between 0.03% and 0.30% by different guides; 0.10% used here."},
@@ -215,8 +222,19 @@ const BRK_SRC='Sources: <a href="https://growbeansprout.com/best-online-brokerag
 // Which ETF matches which AIA fund (the FC's and her boss's choices)
 const MATCH={F0HKG0704C:"VT",F0HKG0704D:"VOO",F0HKG070IS:"EWJ",F0HKG070J2:"VWO",F0HKG0704N:"BND",F0HKG0704H:"XLV",F0HKG0704U:"VOO",F000013Z2Y:"VT"};
 // The FC's core allocation and its ETF twin (told to the agent 2026-10-08)
-const PF_DEFAULT=[["F0HKG0704C",30,"VT"],["F0HKG0704D",20,"VOO"],["F0HKG070IS",20,"EWJ"],["F0HKG070J2",20,"VWO"],["F0HKG0704N",10,"BND"]];
-let pf=PF_DEFAULT.map(x=>x.slice());try{const s=JSON.parse(localStorage.getItem("trk-pf")||"null");if(Array.isArray(s)&&s.length)pf=s}catch(e){}
+const MATCH2=Object.assign({},{F0HKG0704F:"MCHI",F0HKG0704B:"VT",F0HKG0704O:"BIL",F0HKG0704G:"EWS"});Object.assign(MATCH,MATCH2);
+// Preset mixes, the same ones offered in Crystal's Funds & mix tab
+const byName=n=>Object.keys(D.aia).find(k=>D.aia[k].name===n);
+const PRESET_DEFS=[
+ ["core","My core mix",[["AIA Global Equity Fund",30],["AIA Global Technology Fund",20],["AIA Japan Equity Fund",20],["AIA Emerging Markets Equity Fund",20],["AIA Regional Fixed Income Fund",10]]],
+ ["sat","Core-satellite",[["AIA Global Technology Fund",45],["AIA Greater China Equity Fund",35],["AIA Japan Equity Fund",15],["AIA S$ Money Market Fund",5]]],
+ ["pick","Today's market mix (40 / 30 / 30)",[["AIA Portfolio 100",40],["AIA US Equity Fund",30],["AIA Japan Equity Fund",30]]],
+ ["pick2","Today's market mix, steadier",[["AIA Portfolio 100",70],["AIA Growth Fund",20],["AIA Japan Equity Fund",10]]],
+ ["risk","Risk taker (100% tech)",[["AIA Global Technology Fund",100]]],
+ ["th","Tech and healthcare (60 / 40)",[["AIA Global Technology Fund",60],["AIA International Health Care Fund",40]]]];
+const PRESETS=PRESET_DEFS.map(([id,n,rows])=>({id,n,rows:rows.map(([nm,w])=>{const k=byName(nm);return k?[k,w,MATCH[k]||"VT"]:null}).filter(Boolean)})).filter(p=>p.rows.length);
+const PF_DEFAULT=PRESETS[0].rows.map(x=>x.slice());
+let pf=PF_DEFAULT.map(x=>x.slice()),pfPreset="core";try{const s=JSON.parse(localStorage.getItem("trk-pf")||"null");if(Array.isArray(s)&&s.length)pf=s;pfPreset=localStorage.getItem("trk-pfp")||"core"}catch(e){}
 // ---------- state ----------
 D.etf.BND=D.etf.BND||{name:"Vanguard Total Bond Market (BND)",plain:"US bonds, lower risk, US-listed",ter:0.03,terSrc:"Vanguard factsheet (verify)",series:[],priceOnly:true};
 D.etf.QQQ=D.etf.QQQ||{name:"Invesco QQQ (Nasdaq-100)",plain:"100 biggest US tech-heavy companies, US-listed",ter:0.20,terSrc:"Invesco factsheet (verify)",series:[],priceOnly:true};
@@ -232,6 +250,8 @@ function chips(){
  document.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>{sel.aia=b.dataset.a;const m=MATCH[sel.aia];if(m&&D.etf[m]&&D.etf[m].series.length){sel.etfs=new Set([m])}saveS();render()});
  $("#pf-on").checked=sel.pf;$("#pf-on").onchange=e=>{sel.pf=e.target.checked;saveS();render()};$("#fx-on").checked=sel.fx;$("#fx-on").onchange=e=>{sel.fx=e.target.checked;saveS();render()};
  $("#pf-edit").onclick=()=>{const b=$("#pf-box");b.hidden=!b.hidden;if(!b.hidden)pfEdit()};
+ const ps=$("#pf-preset");ps.innerHTML=PRESETS.map(p=>`<option value="${p.id}" ${p.id===pfPreset?"selected":""}>${p.n}</option>`).join("")+`<option value="custom" ${pfPreset==="custom"?"selected":""}>Custom</option>`;ps.style.display=sel.pf?"":"none";$("#pf-edit").style.display=sel.pf?"":"none";
+ ps.onchange=()=>{pfPreset=ps.value;const p=PRESETS.find(x=>x.id===pfPreset);if(p){pf=p.rows.map(x=>x.slice());try{localStorage.setItem("trk-pf",JSON.stringify(pf));localStorage.setItem("trk-pfp",pfPreset)}catch(e){}$("#pf-box").hidden=true;render()}else{$("#pf-box").hidden=false;pfEdit()}};
  document.querySelectorAll("[data-e]").forEach(b=>b.onclick=()=>{const k=b.dataset.e;if(!D.etf[k].series.length)return;sel.etfs.has(k)?sel.etfs.delete(k):sel.etfs.add(k);saveS();render()});
  document.querySelectorAll("#per button").forEach(b=>{b.classList.toggle("on",!zoom&&String(b.dataset.y)===String(sel.years));b.onclick=()=>{sel.years=b.dataset.y==="ytd"?"ytd":+b.dataset.y;zoom=null;saveS();render()}});
  $("#zoom-off").hidden=!zoom;$("#zoom-off").onclick=()=>{zoom=null;render()};
@@ -272,7 +292,8 @@ function render(){
  if(!L.length){svg.innerHTML="";$("#tiles").innerHTML="";$("#leg").innerHTML="";return}
  $("#tiles").innerHTML=L.map(l=>{const v=l.pts[l.pts.length-1][1],g=(v/10000-1)*100;return `<div class="tile" style="--c:${l.col}"><small>${l.name}</small><b>${money(v)}</b><span class="pc ${g>=0?"up":"dn"}">${pct(g)} ${sel.years==="ytd"&&!zoom?"this year":"since "+fmt(start)}</span><small>${sel.pf?(l.priceOnly?"price only, dividends not included":""):l.plain+(l.priceOnly?" · price only, dividends not included":"")}</small></div>`}).join("");
  const al=$("#alloc");al.hidden=!sel.pf;if(sel.pf){const PAL=["#8b0203","#c0392b","#e67e22","#b8962e","#6b6253","#9b2d6f"],PAL2=["#1f6f8b","#2e8b57","#6a4fb3","#d08a1e","#0f4c81","#3c8d2f"];const tw=pf.reduce((a,r)=>a+(+r[1]||0),0)||1;
-  const side=(title,items,pal)=>`<div><h4>${title}</h4><div class="bar">${items.map((x,i)=>`<i style="width:${x.w/tw*100}%;background:${pal[i%pal.length]}"></i>`).join("")}</div><ul>${items.map((x,i)=>`<li><span><i style="background:${pal[i%pal.length]}"></i>${x.n}</span><b>${Math.round(x.w/tw*100)}%</b></li>`).join("")}</ul></div>`;
+  const pie=(items,pal)=>{let acc=0;const R=38,C=2*Math.PI*R;return `<svg viewBox="0 0 100 100" class="pie">${items.map((x,i)=>{const f=x.w/tw,s=`<circle r="${R}" cx="50" cy="50" fill="none" stroke="${pal[i%pal.length]}" stroke-width="22" stroke-dasharray="${f*C} ${C}" stroke-dashoffset="${-acc*C}" transform="rotate(-90 50 50)"/>`;acc+=f;return s}).join("")}</svg>`};
+  const side=(title,items,pal)=>`<div class="aside"><div><h4>${title}</h4><div class="line">${items.map((x,i)=>`<span><i style="background:${pal[i%pal.length]}"></i><b>${Math.round(x.w/tw*100)}%</b> ${x.n}</span>`).join(' ')}</div></div>${pie(items,pal)}</div>`;
   al.innerHTML=side("My AIA allocation",pf.map(([k,w])=>({n:D.aia[k].short,w:+w||0})),PAL)+side("Same mix in ETFs",pf.map(([k,w,ek])=>({n:ek+(D.etf[ek]&&D.etf[ek].series.length?"":" (not loaded)"),w:+w||0})),PAL2)}
  const W=900,H=420,Lm=70,R=20,T=18,B=40;const all=L.flatMap(l=>l.pts.map(p=>p[1]));const mn=Math.min(...all)*0.95,mx=Math.max(...all)*1.05;
  const t0=+new Date(start),t1=+new Date(end);const X=d=>Lm+(+new Date(d)-t0)/(t1-t0)*(W-Lm-R),Y=v=>H-B-(v-mn)/(mx-mn)*(H-T-B);
@@ -300,14 +321,14 @@ function render(){
 }
 function pfEdit(){
  const b=$("#pf-box");const aiaOpts=k=>aiaKeys.map(x=>`<option value="${x}" ${x===k?"selected":""}>${D.aia[x].short}</option>`).join("");const etfOpts=k=>etfKeys.map(x=>`<option value="${x}" ${x===k?"selected":""}>${x}</option>`).join("");
- b.innerHTML=`<div class="pr" style="font-weight:800;color:var(--soft);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase"><span>AIA fund</span><span>%</span><span></span><span>ETF twin</span><span>%</span></div>`+pf.map((r,i)=>`<div class="pr"><select data-pa="${i}">${aiaOpts(r[0])}</select><input type="number" data-pw="${i}" value="${r[1]}" min="0" max="100"><span>→</span><select data-pe="${i}">${etfOpts(r[2])}</select><span>${r[1]}%</span></div>`).join("")+`<div class="row"><span class="tot" id="pf-tot"></span><button class="chip" id="pf-add" type="button">+ add line</button><button class="chip" id="pf-reset" type="button">Reset to Crystal's mix</button></div>`;
+ b.innerHTML=`<div class="pr" style="font-weight:800;color:var(--soft);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase"><span>AIA fund</span><span>%</span><span></span><span>ETF twin</span><span>%</span></div>`+pf.map((r,i)=>`<div class="pr"><select data-pa="${i}">${aiaOpts(r[0])}</select><input type="number" data-pw="${i}" value="${r[1]}" min="0" max="100"><span>→</span><select data-pe="${i}">${etfOpts(r[2])}</select><span>${r[1]}%</span></div>`).join("")+`<div class="row"><span class="tot" id="pf-tot"></span><button class="chip" id="pf-add" type="button">+ add line</button><button class="chip" id="pf-reset" type="button">Reset to core mix</button></div>`;
  const tot=pf.reduce((a,r)=>a+(+r[1]||0),0);$("#pf-tot").textContent=`Total ${tot}%${tot!==100?" (weights are scaled to 100%)":""}`;
  b.querySelectorAll("[data-pa]").forEach(s=>s.onchange=()=>{pf[+s.dataset.pa][0]=s.value;pf[+s.dataset.pa][2]=MATCH[s.value]||pf[+s.dataset.pa][2];savePf()});
  b.querySelectorAll("[data-pw]").forEach(s=>s.onchange=()=>{pf[+s.dataset.pw][1]=+s.value||0;savePf()});
  b.querySelectorAll("[data-pe]").forEach(s=>s.onchange=()=>{pf[+s.dataset.pe][2]=s.value;savePf()});
  $("#pf-add").onclick=()=>{pf.push([aiaKeys[0],10,MATCH[aiaKeys[0]]]);savePf()};$("#pf-reset").onclick=()=>{pf=PF_DEFAULT.map(x=>x.slice());savePf()};
 }
-function savePf(){try{localStorage.setItem("trk-pf",JSON.stringify(pf))}catch(e){}pfEdit();render()}
+function savePf(){pfPreset="custom";try{localStorage.setItem("trk-pf",JSON.stringify(pf));localStorage.setItem("trk-pfp","custom")}catch(e){}pfEdit();render()}
 // FX reality: what the app shows in USD vs what lands in SGD, then the broker's FX spread both ways
 function fxAt(d){const f=(D.fx&&D.fx.USDSGD)||[];let lo=0,hi=f.length-1,r=null;while(lo<=hi){const m=(lo+hi)>>1;if(f[m][0]<=d){r=f[m][1];lo=m+1}else hi=m-1}return r}
 function renderFx(L,start,end){
@@ -329,7 +350,7 @@ function fmt(d){return new Date(d).toLocaleDateString("en-SG",{month:"short",yea
 function renderVs(){
  const a=D.aia[sel.aia],ek=[...sel.etfs][0]||"CSPX",e=D.etf[ek];const brk=BRK[+($("#p-brk").value||0)];
  $("#vs").innerHTML=`<div class="side a"><small class="lbl">${a.short} via AIA Pro Achiever 3.0</small><div class="v">3.9% a year</div><div>platform charge, years 1 to 10, then <b>0%</b></div><ul><li>Fund fee ${a.ter.toFixed(2)}% a year (already inside the price)</li><li>Welcome bonus 5% to 30% of your first 3 years' premiums, special bonus 5% to 8% from year 10 (depends on amount and term)</li><li>Fund switches: free, unlimited</li><li>Adviser included</li></ul></div>
- <div class="side e"><small class="lbl">${ek} via ${brk.n}</small><div class="v">${brk.plat?(brk.plat*100).toFixed(2)+"% a year":money(brk.comm)+" a trade"}</div><div>${brk.plat?"platform fee":"commission and platform fee"}${brk.fx?`, plus about ${(brk.fx*100).toFixed(2)}% when you change SGD to USD`:""}${brk.cust?`, ${(brk.cust*100).toFixed(2)}%/yr custody`:""}</div><ul><li>Fund fee ${e.ter.toFixed(2)}% a year (already inside the price)</li><li>No bonuses</li><li>Sell any day, no lock-in</li><li>You manage it yourself</li></ul></div>`;
+ <div class="side e"><small class="lbl">${ek} via ${brk.n}</small><div>${logo(brk.n)}</div><div class="v">${brk.plat?(brk.plat*100).toFixed(2)+"% a year":money(brk.comm)+" a trade"}</div><div>${brk.plat?"platform fee":"commission and platform fee"}${brk.fx?`, plus about ${(brk.fx*100).toFixed(2)}% when you change SGD to USD`:""}${brk.cust?`, ${(brk.cust*100).toFixed(2)}%/yr custody`:""}</div><ul><li>Fund fee ${e.ter.toFixed(2)}% a year (already inside the price)</li><li>No bonuses</li><li>Sell any day, no lock-in</li><li>You manage it yourself</li></ul></div>`;
  $("#vs-note").innerHTML=`Fund fees: ${a.short} ${a.ter}% (${a.terSrc}); ${ek} ${e.ter}% (${e.terSrc}). APA 3.0 charge and bonuses: AIA Pro Achiever 3.0 Product Summary, as modelled in Crystal's projection calculator.`;
 }
 // ---------- projections ----------
@@ -345,7 +366,7 @@ function renderProj(){
 }
 $("#p-brk").innerHTML=BRK.map((b,i)=>`<option value="${i}">${b.n}</option>`).join("");
 ["p-amt","p-yrs","p-g","p-brk"].forEach(id=>$("#"+id).addEventListener("input",()=>{if(id==="p-brk")render();else{renderVs();renderProj()}}));
-$("#brk").innerHTML=`<thead><tr><th>Broker</th><th class="n">Per trade</th><th class="n">FX markup</th><th class="n">Yearly fee</th><th>Notes</th></tr></thead><tbody>`+BRK.map(b=>`<tr><td><b>${b.n}</b></td><td class="n">${b.comm?money(b.comm):"none"}</td><td class="n">${b.fx?(b.fx*100).toFixed(2)+"%":"none"}</td><td class="n">${b.cust||b.plat?((b.cust+b.plat)*100).toFixed(2)+"%":"none"}</td><td style="color:var(--soft);font-size:.84rem">${b.note}</td></tr>`).join("")+"</tbody>";
+$("#brk").innerHTML=`<thead><tr><th>Broker</th><th class="n">Per trade</th><th class="n">FX markup</th><th class="n">Yearly fee</th><th>Notes</th></tr></thead><tbody>`+BRK.map(b=>`<tr><td><span class="bname">${logo(b.n)}<b>${b.n}</b></span></td><td class="n">${b.comm?money(b.comm):"none"}</td><td class="n">${b.fx?((b.fx*100<0.01?(b.fx*100).toFixed(3):(b.fx*100).toFixed(2))+"%"):"none"}</td><td class="n">${b.cust||b.plat?((b.cust+b.plat)*100).toFixed(2)+"%":"none"}</td><td style="color:var(--soft);font-size:.84rem">${b.note}</td></tr>`).join("")+"</tbody>";
 $("#brk-src").innerHTML=BRK_SRC;
 render();
 </script>
