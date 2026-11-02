@@ -25,11 +25,34 @@ def get(url, headers=None, retries=2, timeout=15):
 
 def to_date(ts): return datetime.datetime.utcfromtimestamp(ts).date().isoformat()
 
-# ---------- Yahoo ----------
+# ---------- Yahoo (cookie + crumb; Yahoo 429s bare requests from cloud IPs) ----------
+import http.cookiejar
+CJ = http.cookiejar.CookieJar(); OPENER = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(CJ)); CRUMB = None
+def yget(url, timeout=20):
+    req = urllib.request.Request(url, headers=UA)
+    with OPENER.open(req, timeout=timeout) as r: return r.read().decode("utf-8", "ignore")
+def yahoo_init():
+    global CRUMB
+    if CRUMB is not None: return CRUMB
+    for attempt in range(3):
+        try:
+            try: yget("https://fc.yahoo.com", 15)
+            except Exception: pass
+            c = yget("https://query2.finance.yahoo.com/v1/test/getcrumb", 15).strip()
+            if c and "<" not in c: CRUMB = c; log(f"  yahoo crumb ok ({len(c)} chars)"); return c
+        except Exception as e: log(f"  yahoo crumb attempt {attempt+1}: {str(e)[:80]}"); time.sleep(3)
+    CRUMB = ""; return ""
+
 def yahoo_chart(sym, start="2000-01-01"):
     p1 = int(datetime.datetime.strptime(start, "%Y-%m-%d").timestamp()); p2 = int(time.time()) + 86400
-    for host in ("query1", "query2"):
-        txt = get(f"https://{host}.finance.yahoo.com/v8/finance/chart/{urllib.parse.quote(sym)}?period1={p1}&period2={p2}&interval=1d&events=div")
+    crumb = yahoo_init()
+    for host in ("query2", "query1"):
+        txt = None
+        for attempt in range(3):
+            try:
+                txt = yget(f"https://{host}.finance.yahoo.com/v8/finance/chart/{urllib.parse.quote(sym)}?period1={p1}&period2={p2}&interval=1d&events=div&crumb={urllib.parse.quote(crumb)}"); break
+            except Exception as e:
+                log(f"  yahoo {sym} {host} try {attempt+1}: {str(e)[:60]}"); time.sleep(4 + 4*attempt)
         if not txt: continue
         try:
             r = json.loads(txt)["chart"]["result"][0]
@@ -43,8 +66,9 @@ def yahoo_chart(sym, start="2000-01-01"):
     return None, None
 
 def yahoo_search(q, types=("MUTUALFUND", "ETF")):
-    txt = get(f"https://query2.finance.yahoo.com/v1/finance/search?q={urllib.parse.quote(q)}&quotesCount=15&newsCount=0")
-    if not txt: return []
+    yahoo_init()
+    try: txt = yget(f"https://query2.finance.yahoo.com/v1/finance/search?q={urllib.parse.quote(q)}&quotesCount=15&newsCount=0")
+    except Exception as e: log(f"  yahoo search {q[:30]}: {str(e)[:60]}"); return []
     try: return [x for x in json.loads(txt).get("quotes", []) if x.get("quoteType") in types]
     except Exception: return []
 
@@ -62,8 +86,16 @@ def stooq(sym):
     return out if len(out) > 50 else None
 
 # ---------- FX ----------
+def frankfurter(base, quote):
+    txt = get(f"https://api.frankfurter.app/1999-01-04..?from={base}&to={quote}", retries=2, timeout=40)
+    if not txt: return None
+    try:
+        rates = json.loads(txt)["rates"]; out = sorted((d, v[quote]) for d, v in rates.items() if quote in v)
+        log(f"  frankfurter {base}{quote} {len(out)}"); return [[d, v] for d, v in out] if len(out) > 100 else None
+    except Exception as e: log(f"  frankfurter parse {e}"); return None
 def fx_series(sym):
-    s = stooq(sym.lower())
+    base, quote = sym[:3].upper(), sym[3:].upper()
+    s = frankfurter(base, quote) or stooq(sym.lower())
     if not s:
         ymap = {"usdsgd": "SGD=X", "gbpsgd": "GBPSGD=X", "chfsgd": "CHFSGD=X", "eursgd": "EURSGD=X"}
         s, _ = yahoo_chart(ymap.get(sym.lower(), sym), "2000-01-01")
@@ -192,8 +224,9 @@ def ft_history(symbol, years=16):
         if not txt: break
         rows = ft_rows(txt)
         if not rows:
-            if not dumped:
-                i = txt.find("<tbody"); log(f"  FT sample {symbol} k={k} len={len(txt)}: " + re.sub(r"\s+", " ", txt[i:i+700] if i>0 else txt[:400])); dumped = True
+            if k == 0:
+                i = txt.find("Historical prices"); j = txt.find("<tbody", i if i > 0 else 0)
+                log(f"  FT sample {symbol} len={len(txt)} title={re.search(r'<title>(.*?)</title>', txt, re.S).group(1).strip()[:80] if '<title>' in txt else '?'} :: " + re.sub(r"\s+", " ", txt[j:j+900] if j > 0 else txt[:300]))
             break
         out += rows; end = a - datetime.timedelta(days=1); time.sleep(0.3)
     out = sorted({d: v for d, v in out}.items())
@@ -276,7 +309,7 @@ def main():
                     f["underlyingSeries"] = to_sgd(s, ccy, usd, gbp); f["underlyingSrc2"] = f"FT markets {sym}, converted to SGD"
                     log(f"  {f['short']} <- FT {sym} {len(s)}")
                 else: log(f"  {f['short']} underlying FAILED")
-    for it in ETF.items(): do_etf(it); time.sleep(1.5)
+    for it in ETF.items(): do_etf(it); time.sleep(2.5)
     log("== AIA probe"); aia_probe()
     log("== AIA funds (fundsingapore / FT)")
     with ThreadPoolExecutor(4) as ex:
