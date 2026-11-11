@@ -469,7 +469,7 @@ tabs.forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
 const fb=document.getElementById("formal-btn");function setFormal(on){document.body.classList.toggle("formal",on);fb.setAttribute("aria-pressed",on);fb.textContent=on?"Story view":"Professional view";try{localStorage.setItem("pp-formal",on?"1":"0")}catch(e){}}
 document.getElementById("df-tostory").onclick=e=>{e.preventDefault();showTab("story")};
 fb.onclick=()=>setFormal(!document.body.classList.contains("formal"));
-try{if(localStorage.getItem("pp-formal")==="1")setFormal(true);const st=localStorage.getItem("pp-tab");if(st==="fund"||st==="story")showTab(st)}catch(e){}
+try{if(localStorage.getItem("pp-formal")==="1")setFormal(true);showTab("about")}catch(e){}
 
 const GATE="b55ac30a86c22c568f73572b6040596f32107278a1de5ffc08245c9874227dd9";
 document.getElementById("gate-f").addEventListener("submit",async e=>{e.preventDefault();const v=document.getElementById("gate-p").value.trim();const h=[...new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(v)))].map(b=>b.toString(16).padStart(2,"0")).join("");
