@@ -26,7 +26,7 @@ h1{font-family:var(--f-disp);font-weight:800;font-size:clamp(1.9rem,6.5vw,2.7rem
 .sub{margin:0;color:#1f4d63;font-weight:800;font-size:1.02rem;max-width:40ch;background:rgba(255,255,255,.78);border-radius:18px;padding:9px 16px}
 .aimwrap{display:grid;gap:12px}
 .aim{font-family:var(--f-disp);font-weight:800;font-size:1.35rem;text-align:center;margin:0;color:var(--leaf)}
-.wins{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.wins{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
 .win{all:unset;box-sizing:border-box;cursor:pointer;background:var(--paper);border:4px solid var(--card-edge);border-radius:24px;padding:12px 12px 14px;display:grid;gap:6px;justify-items:center;align-content:start;text-align:center;box-shadow:0 6px 0 #d8c995;transition:transform .15s}
 .win:hover{transform:translateY(-3px)}.win:focus-visible{outline:3px solid var(--leaf);outline-offset:3px}
 .win .n{font-family:var(--f-disp);font-weight:800;font-size:.8rem;color:#fff;background:var(--coin2);border-radius:99px;padding:2px 10px;letter-spacing:.06em}
@@ -36,7 +36,7 @@ h1{font-family:var(--f-disp);font-weight:800;font-size:clamp(1.9rem,6.5vw,2.7rem
 .mosaic{filter:blur(5px);user-select:none;pointer-events:none}.lock{color:var(--coin2)!important}
 .hint{font-size:.76rem;font-weight:800;color:#fff;background:var(--leaf);border-radius:99px;padding:3px 12px}
 @keyframes pop{from{opacity:0;transform:translateY(-4px)}to{opacity:1}}
-@media(max-width:560px){.wins{grid-template-columns:1fr}.win{grid-template-columns:70px 1fr;justify-items:start;text-align:left;column-gap:12px;padding:10px 14px}.win svg{grid-row:span 4;max-width:70px}}
+@media(max-width:560px){.wins{grid-template-columns:1fr;gap:22px}.win{grid-template-columns:70px 1fr;justify-items:start;text-align:left;column-gap:12px;padding:10px 14px}.win svg{grid-row:span 4;max-width:70px}}
 .scene{background:var(--paper);border:4px solid var(--card-edge);border-radius:34px;box-shadow:0 8px 0 #d8c995,0 18px 30px rgba(80,120,60,.18);overflow:hidden;display:grid}
 .stage{position:relative;aspect-ratio:16/9;max-width:100%;background:linear-gradient(180deg,#bfe9ff,#e8f8ff 60%);overflow:hidden}
 .stage svg{position:absolute;inset:0;width:100%;height:100%}
@@ -108,7 +108,7 @@ h2{font-family:var(--f-disp);font-weight:800;font-size:1.42rem;line-height:1.15;
 .formal-btn[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
 /* professional view: brand palette, no cartoons */
 body.formal{background:linear-gradient(90deg,#f8f6f0,#e1d4c2 60%,#cbb18b);color:#29251E;font-family:"Nunito",system-ui,sans-serif}
-body.formal .sky{display:none!important}body.formal .wrap{gap:56px}body.formal .stage{background:linear-gradient(180deg,#f8f6f0,#e1d4c2)}body.formal .wins{gap:14px}body.formal .win .hint{background:#8b0203}body.formal .mus{box-shadow:none;border-color:#d8cdb5}body.formal .tabs [role=tab]{border-color:#d8cdb5;background:#fffdf8}body.formal .formal-btn{border-color:#d8cdb5}body.formal .kaya{border-style:solid}
+body.formal .sky{display:none!important}body.formal .wrap{gap:56px}body.formal .stage{background:linear-gradient(180deg,#f8f6f0,#e1d4c2)}body.formal .wins{gap:24px}body.formal .win .hint{background:#8b0203}body.formal .mus{box-shadow:none;border-color:#d8cdb5}body.formal .tabs [role=tab]{border-color:#d8cdb5;background:#fffdf8}body.formal .formal-btn{border-color:#d8cdb5}body.formal .kaya{border-style:solid}
 body.formal h1{color:#29251E;text-shadow:none;font-family:"Montserrat","Baloo 2",sans-serif;font-weight:800;letter-spacing:-.01em}
 body.formal .sub{background:none;color:#5b0302;padding:0;max-width:60ch;font-weight:600;font-size:1.05rem}
 body.formal .aim{color:#8b0203;font-family:"Montserrat",sans-serif;text-transform:uppercase;letter-spacing:.12em;font-size:.85rem}
@@ -120,7 +120,7 @@ body.formal .txt p{color:#4a4336}body.formal .dyk-b{background:#f8f6f0;border-co
 body.formal .kaya,body.formal .col.them,body.formal .col.you{background:#f8f6f0;border-color:#d8cdb5}body.formal .cta{background:#29251E;box-shadow:none;border-radius:14px}body.formal .cta .big{background:#b8962e;color:#29251E!important;transform:none;box-shadow:none}
 body.formal .gal img{transform:none;border-radius:8px}body.formal .tabs [role=tab][aria-selected=true]{background:#8b0203;border-color:#8b0203}body.formal .formal-btn[aria-pressed=true]{background:#8b0203;border-color:#8b0203}
 /* about tab */
-.ab{display:grid;gap:22px;font-family:"Nunito",system-ui,sans-serif;color:#29251E}.ab h2{margin:4px 0 8px;font:800 1.4rem "Montserrat",sans-serif;color:#29251E}.ab p{margin:0 0 10px;color:#4a4336;line-height:1.5}
+.ab{display:grid;gap:22px;font-family:"Nunito",system-ui,sans-serif;color:#29251E}.ab h2{margin:4px 0 8px;font:800 1.4rem "Montserrat",sans-serif;color:#29251E}.ab p{margin:0 0 10px;color:#4a4336;line-height:1.5}.ab p b{color:#29251E}
 .abhero{display:grid;gap:16px}.abname{display:grid;gap:6px;padding:6px 0}.abscript{font-family:"Montserrat",sans-serif;color:#8b0203!important;font-size:clamp(2.2rem,9vw,3.2rem)}.abtag{font:800 .8rem "Montserrat",sans-serif;letter-spacing:.2em;color:#29251E!important}
 .abmdrt{display:inline-flex;gap:10px;align-items:baseline;border-left:3px solid #b8962e;padding-left:10px}.abmdrt b{font:800 .68rem "Montserrat",sans-serif;letter-spacing:.14em;color:#6b6253}.abmdrt span{font:800 1.4rem "League Spartan","Montserrat",sans-serif;color:#8b0203}
 .abvals{color:#8b0203!important;font-weight:800}.ablede{color:#8b0203!important;font-weight:800;margin:6px 0 12px!important}
@@ -129,7 +129,7 @@ body.formal .gal img{transform:none;border-radius:8px}body.formal .tabs [role=ta
 .abtwo{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}.ab ul{margin:8px 0 0;padding-left:18px;color:#4a4336;line-height:1.6;font-weight:600}
 .abclaims{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:8px}
 .ab blockquote{margin:10px 0 0;background:#f8f6f0;border:1px solid #d8cdb5;border-radius:12px;padding:14px 16px;font-style:italic;color:#29251E;line-height:1.5;font-weight:600}.ab blockquote cite{display:block;margin-top:8px;font-style:normal;font:800 .72rem "Montserrat",sans-serif;letter-spacing:.06em;color:#6b6253}.ab mark{background:#f6c68a;color:#29251E;padding:0 3px;border-radius:3px}
-.abfam{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}.abfam img{width:100%;aspect-ratio:2/1;object-fit:cover;border-radius:10px;display:block}.abclaims img{width:100%;height:auto;border-radius:12px;display:block}.abclaims{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}.abintro{display:grid;grid-template-columns:150px 1fr;gap:16px;align-items:start}.abphoto{width:100%;border-radius:12px;display:block}.abck{width:56px;height:56px;border-radius:50%;display:block;margin-bottom:4px}.abmdrt img{height:40px;width:auto;align-self:center;border-radius:4px}@media(max-width:560px){.abintro{grid-template-columns:1fr}.abphoto{max-width:180px}}
+.abfam{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}.abfam img{width:100%;aspect-ratio:2/1;object-fit:cover;border-radius:10px;display:block}.abclaims img{width:100%;height:auto;border-radius:12px;display:block}.abclaims{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}.abintro{display:grid;grid-template-columns:150px 1fr;gap:16px;align-items:start}.abphoto{width:100%;display:block;border-bottom:3px solid #b8962e}.abck{width:64px;height:auto;display:block;margin-bottom:6px}.abmdrt img{height:40px;width:auto;align-self:center;border-radius:4px}@media(max-width:560px){.abintro{grid-template-columns:1fr}.abphoto{max-width:180px}}
 /* dividend fund tab: brand look */
 #tab-fund{display:grid;gap:22px;font-family:"Nunito",system-ui,sans-serif;color:#29251E}
 .dfhead{display:grid;gap:8px;padding:6px 0}
@@ -156,7 +156,7 @@ body.formal .gal img{transform:none;border-radius:8px}body.formal .tabs [role=ta
 .dft{background:#f8f6f0;border:1px solid #d8cdb5;border-radius:12px;padding:10px;display:grid;gap:3px;font-size:.78rem}.dft .yr{font:800 .72rem "Montserrat",sans-serif;color:#6b6253;letter-spacing:.06em;text-transform:uppercase}.dft .age{font:800 1.3rem/1 "League Spartan","Montserrat",sans-serif}.dft .pay{color:#8b0203;font-weight:800}.dft .dv{color:#2f8f4e;font-weight:800}.dft .pv{color:#6b6253}
 .dft.now{border-color:#8b0203;background:#fff}
 .dfnote{font-size:.85rem;color:#4a4336}.dfnote b{color:#29251E}
-.dfcta{background:#29251E;color:#fff;border-radius:16px;padding:16px 18px;display:grid;gap:8px}.dfcta .dftag{font-style:italic;color:#e1d4c2}.dfcta p{margin:0;font-size:.85rem;color:#d8cdb5}
+.dfnote{position:relative;overflow:hidden}.dfblur{filter:blur(6px);user-select:none;pointer-events:none;color:#4a4336;line-height:1.6}.dflock{position:absolute;inset:0;display:grid;place-content:center;text-align:center;gap:6px;padding:16px;z-index:1}.dflock-t{font:800 1rem "Montserrat",sans-serif;color:#29251E}.dflock-p{margin:0;font-weight:800;color:#8b0203;background:#fff;border:1px solid #d8cdb5;border-radius:999px;padding:6px 14px;display:inline-block;justify-self:center}.dfgate{display:grid;gap:8px;font-family:"Nunito",system-ui,sans-serif;color:#29251E}.dfgate h2{margin:0;font:800 1.5rem "Montserrat",sans-serif}.dfgate p{margin:0;color:#4a4336}#gate-f{display:flex;gap:8px;margin-top:6px}#gate-p{flex:1;min-width:0;font:700 1rem "Nunito",sans-serif;padding:10px 12px;border:2px solid #d8cdb5;border-radius:10px}#gate-f button{font:800 .95rem "Nunito",sans-serif;background:#8b0203;color:#fff;border:0;border-radius:10px;padding:10px 18px;cursor:pointer}.gate-e{color:#8b0203;font-weight:800;min-height:1.2em}.dfcta{background:#29251E;color:#fff;border-radius:16px;padding:16px 18px;display:grid;gap:8px}.dfcta .dftag{font-style:italic;color:#e1d4c2}.dfcta p{margin:0;font-size:.85rem;color:#d8cdb5}
 @media(max-width:560px){.dfpockets{grid-template-columns:1fr}.dfar .arw{display:inline-block;transform:rotate(90deg)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
@@ -174,10 +174,10 @@ body.formal .gal img{transform:none;border-radius:8px}body.formal .tabs [role=ta
   </nav>
   <div id="tab-about" class="ab">
     <section class="abhero">
-      <div class="abname"><img class="abck" src="about/ck.jpg" alt=""><span class="dfeyebrow">Financial Adviser · Singapore</span><h1 class="dfh1 abscript">Crystal Khoo</h1><p class="abtag">KNOWING YOU BETTER TO SERVE YOU BEST</p><div class="abmdrt"><img src="about/mdrt.jpg" alt="MDRT"><b>MDRT MEMBER</b><span>2026 · 2027</span></div></div>
-      <div class="dfcard abintro"><img class="abphoto" src="about/profile.jpg" alt="Crystal Khoo"><div><span class="dfeyebrow">About Crystal</span><h2>Hello, I'm Crystal.</h2>
-        <p>I help my clients allocate their resources effectively and plug the leaks in their money systems, so they spend less time worrying about finances and more time on their careers, loved ones and passions.</p>
-        <p>Every client gets their policies in one summary, nominations done properly, quarterly updates in plain words, and a review with me every year. When a claim happens, you call me, whichever insurer it's with.</p>
+      <div class="abname"><img class="abck" src="about/ck.png" alt=""><span class="dfeyebrow">Financial Adviser · Singapore</span><h1 class="dfh1 abscript">Crystal Khoo</h1><p class="abtag">KNOWING YOU BETTER TO SERVE YOU BEST</p><div class="abmdrt"><b>MDRT MEMBER</b><span>2026 · 2027</span></div></div>
+      <div class="dfcard abintro"><img class="abphoto" src="about/profile.png" alt="Crystal Khoo"><div><span class="dfeyebrow">About Crystal</span><h2>Hello, I'm Crystal.</h2>
+        <p>I help my clients <b>allocate their resources effectively</b> and <b>plug the leaks</b> in their money systems, so they spend <b>less time worrying about finances</b> and more time on their careers, loved ones and passions.</p>
+        <p>Every client gets <b>all their policies in one summary</b>, <b>nominations done properly</b>, <b>quarterly updates</b> in plain words, and <b>a review with me every year</b>. When a claim happens, <b>you call me</b>, whichever insurer it's with.</p>
         <p class="abvals">Clarity · Sustainability · Optimisation</p></div></div>
     </section>
     <section class="dfcard"><span class="dfeyebrow">What clients say</span>
@@ -271,6 +271,7 @@ body.formal .gal img{transform:none;border-radius:8px}body.formal .tabs [role=ta
   <p class="fine">For illustration only, not a quote or a recommendation. Dividend payouts are not guaranteed and depend on fund performance; the plan's value can go up or down. Who receives the remaining value depends on how the policy is set up and nominations. Using CPF savings follows CPF's rules. Your situation will be reviewed properly before anything is recommended.</p>
   </div>
 
+  <div id="tab-gate" hidden><section class="dfcard dfgate"><span class="dfeyebrow">Dividend Fund</span><h2>This part is for my clients.</h2><p>Key in the password I gave you to open the calculator.</p><form id="gate-f"><input id="gate-p" type="password" autocomplete="off" placeholder="Password" aria-label="Password"><button type="submit">Open</button></form><p id="gate-e" class="gate-e" aria-live="polite"></p></section></div>
   <div id="tab-fund" hidden>
     <section class="dfhead">
       <span class="dfeyebrow">Dividend Fund · how it works</span>
@@ -280,8 +281,9 @@ body.formal .gal img{transform:none;border-radius:8px}body.formal .tabs [role=ta
     <section class="dfcard">
       <div class="dfinputs">
         <div><label for="df-age">Your age today</label><input id="df-age" type="number" min="18" max="80" value="55"></div>
-        <div><label for="df-p">Amount to set aside today</label><input id="df-p" type="number" min="90000" step="5000" value="100000"></div>
+        <div><label for="df-p">Amount to set aside today</label><input id="df-p" type="number" min="90000" step="5000" value="108888"></div>
         <div><label>Start collecting dividends</label><div class="dfseg" id="df-start"><button data-v="0" class="on">From day one</button><button data-v="1">After 1 year</button><button data-v="5">After 5 years</button></div></div>
+        <div><label>Capital growth we assume</label><div class="dfseg" id="df-g"><button data-v="0">0%</button><button data-v="1" class="on">1%</button><button data-v="2">2%</button></div></div>
         <div><label>Dividend yield we assume</label><div class="dfseg" id="df-y"><button data-v="5">5%</button><button data-v="6">6%</button><button data-v="7" class="on">7%</button></div></div>
         <div class="dfsl"><label for="df-to">Show until age <output id="df-to-v">75</output></label><input id="df-to" type="range" min="60" max="95" step="1" value="75"></div>
         <div><label>Mix</label><div class="dfseg" id="df-mix"><button data-v="100" class="on">Dividend fund only</button><button data-v="80">80% dividend + 20% growth</button></div></div>
@@ -439,9 +441,9 @@ function burst(x,y,n=60,coins=false){for(let i=0;i<n;i++){const a=Math.random()*
 function tick(){cx.clearRect(0,0,fx.width,fx.height);cx.save();cx.scale(devicePixelRatio,devicePixelRatio);parts=parts.filter(p=>p.l-->0);parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.35;p.vx*=.98;p.rot+=.1;cx.globalAlpha=Math.min(1,p.l/20);cx.fillStyle=p.c;if(p.coin){cx.beginPath();cx.ellipse(p.x,p.y,p.r,p.r*Math.abs(Math.cos(p.rot)),0,0,7);cx.fill();cx.strokeStyle="#d99400";cx.stroke()}else{cx.fillRect(p.x,p.y,p.r,p.r*1.6)}});cx.restore();if(parts.length)requestAnimationFrame(tick)}
 function chime(k=0){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();if(ac.state!=="running")return;const t0=ac.currentTime;[[0,76],[.08,80],[.16,84],[.26,88]].slice(0,k?4:3).forEach(([d,m])=>{const o=ac.createOscillator(),g=ac.createGain();o.type="sine";o.frequency.value=440*Math.pow(2,(m-69)/12);g.gain.setValueAtTime(0,t0+d);g.gain.linearRampToValueAtTime(.12,t0+d+.01);g.gain.exponentialRampToValueAtTime(.0001,t0+d+.35);o.connect(g).connect(ac.destination);o.start(t0+d);o.stop(t0+d+.4)})}catch(e){}}
 const toast=document.createElement("div");toast.className="toast";document.body.appendChild(toast);let tt;
-function say(h,s){toast.innerHTML=`${h}<small>${s||""}</small>`;toast.classList.add("show");clearTimeout(tt);tt=setTimeout(()=>toast.classList.remove("show"),900)}
+function say(h,s){if(document.body.dataset.tab!=="story")return;toast.innerHTML=`${h}<small>${s||""}</small>`;toast.classList.add("show");clearTimeout(tt);tt=setTimeout(()=>toast.classList.remove("show"),900)}
 const won=new Set(),hudT={};const WT={1:"Win #1 collected",2:"Win #2 collected",3:"All 3 wins collected 🏆"};
-function win(n){if(won.has(n))return;won.add(n);const m=document.querySelector(`.medal[data-w="${n}"]`);m.classList.remove("lock");m.classList.add("won");const r=m.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,70,true);chime(n===3);
+function win(n){if(document.body.dataset.tab!=="story"||won.has(n))return;won.add(n);const m=document.querySelector(`.medal[data-w="${n}"]`);m.classList.remove("lock");m.classList.add("won");const r=m.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,70,true);chime(n===3);
  hudT.textContent=WT[n];say(`🏅 ${WT[n]}`,n<3?`${3-won.size} more to go`:"Scroll down for your next step");
  if(won.size===3){document.getElementById("cta").classList.add("all");setTimeout(()=>burst(innerWidth/2,innerHeight*.3,160),500)}}
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.dataset.w.split(",").forEach(n=>win(+n))}),{threshold:.3});
@@ -451,18 +453,21 @@ let ins=0;document.querySelectorAll(".dyk-b").forEach(b=>b.addEventListener("cli
 let rev=0;document.querySelectorAll(".win").forEach(w=>w.addEventListener("click",()=>{if(w.dataset.done)return;w.dataset.done=1;rev++;const r=w.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,30);chime();say(rev<3?`✨ ${rev}/3 revealed`:"✨ All 3 revealed",rev<3?"Tap the others":"Now scroll to collect them")}));
 // Tabs and professional view
 const tabs=document.querySelectorAll(".tabs [role=tab]");let curTab="story";
-function showTab(t){curTab=t;document.body.dataset.tab=t;tabs.forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===t));document.getElementById("tab-about").hidden=t!=="about";document.getElementById("tab-story").hidden=t!=="story";document.getElementById("tab-fund").hidden=t!=="fund";try{localStorage.setItem("pp-tab",t)}catch(e){}if(t==="fund")dfRender();window.scrollTo({top:0,behavior:"smooth"})}
+function showTab(t){curTab=t;document.body.dataset.tab=t;tabs.forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===t));document.getElementById("tab-about").hidden=t!=="about";document.getElementById("tab-story").hidden=t!=="story";const unl=(()=>{try{return sessionStorage.getItem("pp-unl")==="1"}catch(e){return false}})();document.getElementById("tab-gate").hidden=!(t==="fund"&&!unl);document.getElementById("tab-fund").hidden=!(t==="fund"&&unl);try{localStorage.setItem("pp-tab",t)}catch(e){}if(t==="fund"&&unl)dfRender();window.scrollTo({top:0,behavior:"smooth"})}
 tabs.forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
 const fb=document.getElementById("formal-btn");function setFormal(on){document.body.classList.toggle("formal",on);fb.setAttribute("aria-pressed",on);fb.textContent=on?"Story view":"Professional view";try{localStorage.setItem("pp-formal",on?"1":"0")}catch(e){}}
 fb.onclick=()=>setFormal(!document.body.classList.contains("formal"));
 try{if(localStorage.getItem("pp-formal")==="1")setFormal(true);const st=localStorage.getItem("pp-tab");if(st==="fund"||st==="story")showTab(st)}catch(e){}
 
+const GATE="b55ac30a86c22c568f73572b6040596f32107278a1de5ffc08245c9874227dd9";
+document.getElementById("gate-f").addEventListener("submit",async e=>{e.preventDefault();const v=document.getElementById("gate-p").value.trim();const h=[...new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(v)))].map(b=>b.toString(16).padStart(2,"0")).join("");
+ if(h===GATE){try{sessionStorage.setItem("pp-unl","1")}catch(x){}showTab("fund")}else{document.getElementById("gate-e").textContent="That's not it. Check the password I sent you."}});
 // Dividend Fund calculator: 5-pay plan rules from the PWV 3.0 launch deck (Oct 2026) as modelled in Crystal's Growth Calculator; 3% one-time top-up charge from the 2-pay handoff.
-const DF={fmc:0.0138,supp:0.036,suppYears:7,ib:0.025,ibYears:[8,11],perf:0.004,topupCharge:0.03,
+const DF={fmc:0,supp:0.036,suppYears:7,ib:0.025,ibYears:[8,11],perf:0.004,topupCharge:0.03,
  wb:p=>p>=42000?[.03,.04,.05]:p>=24000?[.03,0,0]:[0,0,0],promo:p=>p>=60000?.10:p>=48000?.05:0,min:18000};
-let df={age:55,p:20000,fund:"front",start:0,y:7,to:75,mix:100};try{Object.assign(df,JSON.parse(localStorage.getItem("pp-df")||"{}"))}catch(e){}
+let df={age:55,p:21777.6,fund:"front",start:0,y:7,to:75,mix:100,g:1};try{Object.assign(df,JSON.parse(localStorage.getItem("pp-df")||"{}"))}catch(e){}
 function dfSim(){
- const P=df.p,n=5,w=DF.wb(P),y=df.y/100,rows=[],mix=(df.mix||100)/100,gg=0.08;let RP=0,U=0,R=0,G=0,cum=0,extra=0,paidCash=0;
+ const P=df.p,n=5,w=DF.wb(P),y=df.y/100,rows=[],mix=(df.mix||100)/100,gg=0.08,cg=(df.g==null?1:df.g)/100;let RP=0,U=0,R=0,G=0,cum=0,extra=0,paidCash=0;
  const topup=df.fund==="front"?P*(n-1):0;
  for(let t=1;t<=Math.max(1,df.to-df.age+1);t++){
   let fromPocket=0,fresh=0;
@@ -475,7 +480,7 @@ function dfSim(){
   if(t>=8){RP*=1+DF.perf;G*=1+DF.perf}
   const pot=RP+U+R+G,div=t>df.start?y*(RP+U+R):0;
   if(t>df.start)cum+=div;else R+=y*(RP+U+R);
-  RP*=1-DF.fmc;U*=1-DF.fmc;R*=1-DF.fmc;G*=(1+gg)*(1-DF.fmc);if(t<=DF.suppYears){RP*=1-DF.supp;G*=1-DF.supp}
+  RP*=(1+cg)*(1-DF.fmc);U*=(1+cg)*(1-DF.fmc);R*=(1+cg)*(1-DF.fmc);G*=(1+gg)*(1-DF.fmc);if(t<=DF.suppYears){RP*=1-DF.supp;G*=1-DF.supp}
   rows.push({t,age:df.age+t-1,fresh,fromPocket,div,cum,pot:RP+U+R+G,U,RP,R,G,paidCash,extra});
  }
  return rows}
@@ -483,7 +488,7 @@ const m=n=>"S$"+Math.round(n).toLocaleString("en-SG"),Kk=n=>Math.abs(n)>=1e6?"S$
 function dfRender(){
  const el=id=>document.getElementById(id);
  df.fund="front";el("df-age").value=df.age;if(document.activeElement!==el("df-p"))el("df-p").value=df.p*5;el("df-to").value=df.to;el("df-to-v").value=df.to;
- [["df-start","start"],["df-y","y"],["df-mix","mix"]].forEach(([id,k])=>el(id).querySelectorAll("button").forEach(b=>b.classList.toggle("on",String(b.dataset.v)===String(df[k]))));
+ [["df-start","start"],["df-y","y"],["df-mix","mix"],["df-g","g"]].forEach(([id,k])=>el(id).querySelectorAll("button").forEach(b=>b.classList.toggle("on",String(b.dataset.v)===String(df[k]))));
  if(df.p<DF.min){el("df-stats").innerHTML=`<div class="dfs red"><b>${m(DF.min*5)}</b><small>is the minimum amount to set aside</small></div>`;el("df-pockets").innerHTML="";el("df-chart").innerHTML="";el("df-tl").innerHTML="";el("df-basis").innerHTML="";return}
  const r=dfSim(),n=5,first=r[df.start]||r[0],last=r[r.length-1],y5=r[Math.min(4,r.length-1)],totalIn=df.p*n,topup=df.fund==="front"?df.p*(n-1):0;
  const coin=(x,y,d)=>`<g class="coinrun" style="animation-delay:${d}s"><circle cx="${x}" cy="${y}" r="7" fill="#ffc93c" stroke="#d99400" stroke-width="1.5"/><text x="${x}" y="${y+3.5}" text-anchor="middle" font-size="8" font-weight="800" fill="#b37800">$</text></g>`;
@@ -509,10 +514,10 @@ function dfRender(){
  el("df-chart").innerHTML=s;el("df-leg").innerHTML=`<span><i style="background:#8b0203"></i>Your pot (stays with me)</span><span><i style="background:#2f8f4e"></i>Dividends paid to you, adding up</span><span><i style="background:#b8962e"></i>What you put in</span>`;
  el("df-tl").innerHTML=r.map(x=>`<div class="dft ${x.t===1?"now":""}"><span class="yr">${x.t===1?"Today":"Year "+x.t}</span><span class="age">Age ${x.age}</span>${x.t===1?`<span class="pay">You pay ${m(x.fresh+(df.fund==="front"?topup:0))}</span>`:x.fromPocket?`<span class="pay">Nothing to pay${x.fresh?" (top-up short by "+m(x.fresh)+")":""}</span>`:x.fresh?`<span class="pay">You pay ${m(x.fresh)}</span>`:`<span class="pay" style="color:#6b6253">Nothing to pay</span>`}<span class="dv">${x.div?m(x.div/12)+"/mth to you":"Dividends reinvested"}</span><span class="pv">Pot ${Kk(x.pot)}</span></div>`).join("");
  const short=last.extra;
- el("df-basis").innerHTML=`<b>How this is worked out.</b> Your ${m(totalIn)} moves from your bank account into the portfolio today. The plan counts it as five yearly amounts of ${m(df.p)}: the first is paid now, the other four sit inside the portfolio as a top-up (a one-time 3% charge, no bonus) and are drawn down one a year, so there is nothing more to pay.${short?` Because that parked money also pays the yearly fund charge while it waits, the last year is about ${m(short)} short; in practice that is topped up or the last amount is slightly lower.`:""} <b>Why the pot dips in the early years:</b> in years 1 to 7 the plan takes a 3.6% yearly supplementary charge on top of the 1.38% fund charge, while the pot is also paying you ${df.y}% a year. After year 7 that charge stops, and the plan adds a 2.5% investment bonus in years 8 to 11 and a 0.4% performance bonus from year 8, so the pot steadies.${df.mix===80?" The 20% growth portion is assumed to grow 8% a year, the same assumption as in Crystal's calculator.":""} Welcome bonus by yearly amount: none below S$24,000, 3% at S$24,000, and 3%, 4%, 5% in years 1 to 3 at S$42,000 and above. Dividends are ${df.y}% a year of the dividend portion, paid out${df.start?` from year ${df.start+1} (reinvested before that)`:" from the first year"}, with the fund price assumed flat. The dividend fund has paid about 7% a year so far; that is history, not a promise. Sources: the plan's launch deck (Oct 2026) and the benefit illustration the model was fitted to.`;
+ el("df-basis").innerHTML=`<div class="dflock"><div class="dflock-t">🔒 How this is worked out, and why the pot dips in the early years</div><p class="dflock-p">Unlocked in our 30-minute chat</p></div><div class="dfblur" aria-hidden="true">Your ${m(totalIn)} moves from your bank account into the portfolio today. The plan counts it as five yearly amounts of ${m(df.p)}. The first is paid now. The other four sit inside the portfolio and are drawn down one a year. In years 1 to 7 the plan takes a 3.6% yearly charge while the pot is also paying you ${df.y}% a year. After year 7 that charge stops. Bonuses are added from year 8. Capital growth assumed ${df.g}% a year. Dividends are not guaranteed.</div>`;
 }
 ["df-age","df-p","df-to"].forEach(id=>document.getElementById(id).addEventListener("input",e=>{df[id.slice(3)]=id==="df-p"?(+e.target.value||0)/5:(+e.target.value||0);try{localStorage.setItem("pp-df",JSON.stringify(df))}catch(x){}dfRender()}));
-[["df-start","start",v=>+v],["df-y","y",v=>+v],["df-mix","mix",v=>+v]].forEach(([id,k,f])=>document.getElementById(id).querySelectorAll("button").forEach(b=>b.onclick=()=>{df[k]=f(b.dataset.v);try{localStorage.setItem("pp-df",JSON.stringify(df))}catch(x){}dfRender()}));
+[["df-start","start",v=>+v],["df-y","y",v=>+v],["df-mix","mix",v=>+v],["df-g","g",v=>+v]].forEach(([id,k,f])=>document.getElementById(id).querySelectorAll("button").forEach(b=>b.onclick=()=>{df[k]=f(b.dataset.v);try{localStorage.setItem("pp-df",JSON.stringify(df))}catch(x){}dfRender()}));
 document.getElementById("copy").onclick=()=>{const u=location.href.split("#")[0],o=document.getElementById("copied");
   navigator.clipboard.writeText(u).then(()=>o.textContent="Link copied. Paste it in your family chat.").catch(()=>{o.textContent=u})};
 </script>
