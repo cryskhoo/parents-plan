@@ -2,7 +2,7 @@
 <title>The Tan Family Plan</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@500;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@500;700;800&family=Montserrat:wght@800&family=League+Spartan:wght@800&display=swap">
 <style>
 /* Layout: one column of storybook "island" cards, each a soft-3D cartoon scene with one line of story. Single sunny look by choice. */
 :root{
@@ -100,6 +100,53 @@ h2{font-family:var(--f-disp);font-weight:800;font-size:1.42rem;line-height:1.15;
 .twinkle{animation:tw 1.8s ease-in-out infinite}
 @keyframes tw{0%,100%{opacity:.2}50%{opacity:1}}
 .bfly{animation:fly 6s ease-in-out infinite}.bfly>g{animation:flap .25s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center}@keyframes fly{0%,100%{translate:0 0}25%{translate:30px -14px}50%{translate:60px 4px}75%{translate:24px 12px}}@keyframes flap{to{transform:scaleX(.4)}}.wave{animation:wv 3s ease-in-out infinite}@keyframes wv{50%{transform:translateX(8px)}}.fire{animation:fl .4s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:bottom}@keyframes fl{to{transform:scaleY(1.15) scaleX(.92)}}
+/* tabs, professional view, dividend fund */
+.tabs{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.tabs [role=tab]{font:800 .95rem var(--f-body);border:3px solid var(--card-edge);background:var(--paper);color:var(--ink);border-radius:999px;padding:9px 18px;cursor:pointer}
+.tabs [role=tab][aria-selected=true]{background:var(--leaf);border-color:var(--leaf);color:#fff}
+.formal-btn{margin-left:auto;font:800 .85rem var(--f-body);border:3px solid var(--card-edge);background:#fff;color:var(--ink);border-radius:999px;padding:8px 14px;cursor:pointer}
+.formal-btn[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
+/* professional view: brand palette, no cartoons */
+body.formal{background:linear-gradient(90deg,#f8f6f0,#e1d4c2 60%,#cbb18b);color:#29251E;font-family:"Nunito",system-ui,sans-serif}
+body.formal .sky,body.formal .mus,body.formal .stage,body.formal .wins svg,body.formal .hint,body.formal .medal.sm,body.formal .trophy{display:none!important}
+body.formal h1{color:#29251E;text-shadow:none;font-family:"Montserrat","Baloo 2",sans-serif;font-weight:800;letter-spacing:-.01em}
+body.formal .sub{background:none;color:#5b0302;padding:0;max-width:60ch;font-weight:600;font-size:1.05rem}
+body.formal .aim{color:#8b0203;font-family:"Montserrat",sans-serif;text-transform:uppercase;letter-spacing:.12em;font-size:.85rem}
+body.formal .win{background:#fffdf8;border:1px solid #d8cdb5;box-shadow:none;border-radius:14px;text-align:left;justify-items:start;padding:16px 18px}
+body.formal .win b{font-family:"Montserrat",sans-serif;font-size:1.05rem;color:#29251E}body.formal .win .more{display:block;color:#5c5444}
+body.formal .scene{background:#fffdf8;border:1px solid #d8cdb5;box-shadow:none;border-radius:14px}
+body.formal .step{color:#8b0203;font-family:"Montserrat",sans-serif}body.formal h2{font-family:"Montserrat",sans-serif;color:#29251E;font-size:1.3rem}
+body.formal .txt p{color:#4a4336}body.formal .dyk-b{background:#f8f6f0;border-color:#d8cdb5;color:#29251E}body.formal .dyk-t{background:#f8f6f0;color:#29251E}
+body.formal .kaya,body.formal .col.them,body.formal .col.you{background:#f8f6f0;border-color:#d8cdb5}body.formal .cta{background:#29251E;box-shadow:none;border-radius:14px}body.formal .cta .big{background:#b8962e;color:#29251E!important;transform:none;box-shadow:none}
+body.formal .gal img{transform:none;border-radius:8px}body.formal .tabs [role=tab][aria-selected=true]{background:#8b0203;border-color:#8b0203}body.formal .formal-btn[aria-pressed=true]{background:#8b0203;border-color:#8b0203}
+/* dividend fund tab: brand look */
+#tab-fund{display:grid;gap:18px;font-family:"Nunito",system-ui,sans-serif;color:#29251E}
+.dfhead{display:grid;gap:8px;padding:6px 0}
+.dfeyebrow{font:800 .78rem "Montserrat",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8b0203}
+.dfh1{margin:0;font:800 clamp(1.7rem,6vw,2.5rem)/1.05 "Montserrat",sans-serif;color:#29251E;text-shadow:none;letter-spacing:-.01em}
+.dflede{margin:0;color:#4a4336;max-width:58ch;font-weight:600}
+.dfcard{background:#fffdf8;border:1px solid #d8cdb5;border-radius:16px;padding:16px 18px;min-width:0}
+.dfh3{margin:0 0 8px;font:800 1.05rem "Montserrat",sans-serif}
+.dfinputs{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.dfinputs label{display:block;font:800 .72rem "Montserrat",sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#6b6253;margin-bottom:5px}
+.dfinputs input,.dfinputs select{width:100%;font:700 1rem "Nunito",sans-serif;padding:9px 11px;border:2px solid #d8cdb5;border-radius:10px;background:#fff;color:#29251E}
+.dfseg{display:flex;flex-wrap:wrap;gap:6px}.dfseg button{font:700 .82rem "Nunito",sans-serif;border:2px solid #d8cdb5;background:#fff;border-radius:999px;padding:6px 11px;cursor:pointer;color:#29251E}.dfseg button.on{background:#8b0203;border-color:#8b0203;color:#fff}
+.dfpockets{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:10px;align-items:center;background:#fffdf8;border:1px solid #d8cdb5;border-radius:16px;padding:14px 16px}
+.dfp{display:grid;justify-items:center;gap:4px;text-align:center}.dfp .ic{width:84px;height:84px}.dfp b{font:800 1.25rem "League Spartan","Montserrat",sans-serif;font-variant-numeric:tabular-nums}.dfp small{color:#6b6253;font-weight:700;font-size:.78rem;line-height:1.25}
+.dfp.pot b{color:#8b0203}.dfp.div b{color:#2f8f4e}
+.dfar{font:800 1.6rem "Montserrat",sans-serif;color:#b8962e;text-align:center}.dfar small{display:block;font:700 .68rem "Nunito",sans-serif;color:#6b6253;text-transform:uppercase;letter-spacing:.08em}
+.coinrun{animation:coinrun 2.2s linear infinite}@keyframes coinrun{0%{transform:translateX(-18px);opacity:0}15%{opacity:1}85%{opacity:1}100%{transform:translateX(18px);opacity:0}}
+.dfstats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.dfs{background:#fffdf8;border:1px solid #d8cdb5;border-radius:16px;padding:14px 16px;display:grid;gap:2px;border-top:5px solid #b8962e}
+.dfs b{font:800 1.7rem/1 "League Spartan","Montserrat",sans-serif;font-variant-numeric:tabular-nums}.dfs small{color:#6b6253;font-weight:700;font-size:.8rem;line-height:1.3}
+.dfs.red{border-top-color:#8b0203}.dfs.red b{color:#8b0203}.dfs.green{border-top-color:#2f8f4e}.dfs.green b{color:#2f8f4e}
+.dfchart{width:100%;height:auto;display:block}.dfleg{display:flex;flex-wrap:wrap;gap:14px;font-size:.8rem;font-weight:700;color:#6b6253;margin-top:6px}.dfleg i{display:inline-block;width:14px;height:4px;border-radius:2px;margin-right:5px;vertical-align:middle}
+.dftl-wrap{overflow-x:auto;padding-bottom:6px}.dftl{display:grid;grid-auto-flow:column;grid-auto-columns:116px;gap:8px;min-width:0}
+.dft{background:#f8f6f0;border:1px solid #d8cdb5;border-radius:12px;padding:10px;display:grid;gap:3px;font-size:.78rem}.dft .yr{font:800 .72rem "Montserrat",sans-serif;color:#6b6253;letter-spacing:.06em;text-transform:uppercase}.dft .age{font:800 1.3rem/1 "League Spartan","Montserrat",sans-serif}.dft .pay{color:#8b0203;font-weight:800}.dft .dv{color:#2f8f4e;font-weight:800}.dft .pv{color:#6b6253}
+.dft.now{border-color:#8b0203;background:#fff}
+.dfnote{font-size:.85rem;color:#4a4336}.dfnote b{color:#29251E}
+.dfcta{background:#29251E;color:#fff;border-radius:16px;padding:16px 18px;display:grid;gap:8px}.dfcta .dftag{font-style:italic;color:#e1d4c2}.dfcta p{margin:0;font-size:.85rem;color:#d8cdb5}
+@media(max-width:560px){.dfpockets{grid-template-columns:1fr}.dfar{transform:rotate(90deg);padding:4px 0}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
 
@@ -108,6 +155,12 @@ h2{font-family:var(--f-disp);font-weight:800;font-size:1.42rem;line-height:1.15;
 <button id="mus" class="mus" aria-pressed="false">🎵 Play music</button>
 
 <div class="wrap">
+  <nav class="tabs" role="tablist" aria-label="Pages">
+    <button role="tab" data-tab="story" aria-selected="true">The story</button>
+    <button role="tab" data-tab="fund" aria-selected="false">Dividend Fund</button>
+    <button type="button" class="formal-btn" id="formal-btn" aria-pressed="false">Professional view</button>
+  </nav>
+  <div id="tab-story">
   <header>
     <h1>Let's reach a win-win for you and your Mummy and Daddy</h1>
     <p class="sub">Help your parents settle their retirement fund with a steady payout, while preserving wealth for you, instead of the usual drawdown approach.</p>
@@ -176,6 +229,31 @@ h2{font-family:var(--f-disp);font-weight:800;font-size:1.42rem;line-height:1.15;
   </section>
 
   <p class="fine">For illustration only, not a quote or a recommendation. Dividend payouts are not guaranteed and depend on fund performance; the plan's value can go up or down. Who receives the remaining value depends on how the policy is set up and nominations. Using CPF savings follows CPF's rules. Your situation will be reviewed properly before anything is recommended.</p>
+  </div>
+
+  <div id="tab-fund" hidden>
+    <section class="dfhead">
+      <span class="dfeyebrow">Dividend Fund · how it works</span>
+      <h1 class="dfh1">Give me a pot. Keep the pot. Live on what it pays.</h1>
+      <p class="dflede">Put in your age and the amount, and see year by year what the pot pays you, and that the pot is still there growing with me.</p>
+    </section>
+    <section class="dfcard">
+      <div class="dfinputs">
+        <div><label for="df-age">Your age today</label><input id="df-age" type="number" min="18" max="80" value="55"></div>
+        <div><label for="df-p">Yearly amount, for 5 years</label><input id="df-p" type="number" min="18000" step="1000" value="20000"></div>
+        <div><label>How you fund it</label><div class="dfseg" id="df-fund"><button data-v="front" class="on">All today: 1 year + 4 years top-up</button><button data-v="yearly">Pay each year</button></div></div>
+        <div><label>Start collecting dividends</label><div class="dfseg" id="df-start"><button data-v="0" class="on">From day one</button><button data-v="1">After 1 year</button><button data-v="5">After 5 years</button></div></div>
+        <div><label>Dividend yield we assume</label><div class="dfseg" id="df-y"><button data-v="5">5%</button><button data-v="6">6%</button><button data-v="7" class="on">7%</button></div></div>
+        <div><label for="df-to">Show until age</label><select id="df-to"><option>70</option><option selected>75</option><option>80</option><option>85</option></select></div>
+      </div>
+    </section>
+    <section class="dfpockets" id="df-pockets"></section>
+    <section class="dfstats" id="df-stats"></section>
+    <section class="dfcard"><h3 class="dfh3">Your pot and what it pays, year by year</h3><svg id="df-chart" viewBox="0 0 900 340" class="dfchart" role="img" aria-label="Pot value and dividends paid, by year and age"></svg><div class="dfleg" id="df-leg"></div></section>
+    <section class="dfcard"><h3 class="dfh3">Timeline</h3><div class="dftl-wrap"><div class="dftl" id="df-tl"></div></div></section>
+    <section class="dfcard dfnote" id="df-basis"></section>
+    <section class="dfcta"><div><b>Crystal Khoo</b> · Financial Adviser<br><span class="dftag">Knowing you better to serve you best</span></div><p>Figures are an illustration from the plan's published bonus and charge rules and the dividend yield you chose above. Dividends are not guaranteed; the pot can fall as well as rise. A full benefit illustration comes before any decision.</p></section>
+  </div>
 </div>
 
 <script>
@@ -331,6 +409,70 @@ document.querySelectorAll(".scene .medal[data-w]").forEach(m=>{const st=m.parent
 addEventListener("scroll",()=>{document.querySelectorAll(".stage[data-w]").forEach(st=>{if(st.getBoundingClientRect().top<innerHeight*.75)st.dataset.w.split(",").forEach(n=>win(+n))})},{passive:true});
 let ins=0;document.querySelectorAll(".dyk-b").forEach(b=>b.addEventListener("click",e=>{if(b.classList.contains("done"))return;b.classList.add("done");ins++;const r=b.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,30);chime();say(`💡 Insight ${ins}/4`,ins===4?"You know more than most people now":"Nice one")}));
 let rev=0;document.querySelectorAll(".win").forEach(w=>w.addEventListener("click",()=>{if(w.dataset.done)return;w.dataset.done=1;rev++;const r=w.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,30);chime();say(rev<3?`✨ ${rev}/3 revealed`:"✨ All 3 revealed",rev<3?"Tap the others":"Now scroll to collect them")}));
+// Tabs and professional view
+const tabs=document.querySelectorAll(".tabs [role=tab]");let curTab="story";
+function showTab(t){curTab=t;tabs.forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===t));document.getElementById("tab-story").hidden=t!=="story";document.getElementById("tab-fund").hidden=t!=="fund";try{localStorage.setItem("pp-tab",t)}catch(e){}if(t==="fund")dfRender();window.scrollTo({top:0,behavior:"smooth"})}
+tabs.forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+const fb=document.getElementById("formal-btn");function setFormal(on){document.body.classList.toggle("formal",on);fb.setAttribute("aria-pressed",on);fb.textContent=on?"Story view":"Professional view";try{localStorage.setItem("pp-formal",on?"1":"0")}catch(e){}}
+fb.onclick=()=>setFormal(!document.body.classList.contains("formal"));
+try{if(localStorage.getItem("pp-formal")==="1")setFormal(true);if(localStorage.getItem("pp-tab")==="fund")showTab("fund")}catch(e){}
+
+// Dividend Fund calculator: 5-pay plan rules from the PWV 3.0 launch deck (Oct 2026) as modelled in Crystal's Growth Calculator; 3% one-time top-up charge from the 2-pay handoff.
+const DF={fmc:0.0138,supp:0.036,suppYears:7,ib:0.025,ibYears:[8,11],perf:0.004,topupCharge:0.03,
+ wb:p=>p>=42000?[.03,.04,.05]:p>=24000?[.03,0,0]:[0,0,0],promo:p=>p>=60000?.10:p>=48000?.05:0,min:18000};
+let df={age:55,p:20000,fund:"front",start:0,y:7,to:75};try{Object.assign(df,JSON.parse(localStorage.getItem("pp-df")||"{}"))}catch(e){}
+function dfSim(){
+ const P=df.p,n=5,w=DF.wb(P),y=df.y/100,rows=[];let RP=0,U=0,R=0,cum=0,extra=0,paidCash=0;
+ const topup=df.fund==="front"?P*(n-1):0;
+ for(let t=1;t<=Math.max(1,df.to-df.age+1);t++){
+  let fromPocket=0,fresh=0;
+  if(t<=n){const wel=(w[t-1]||0)*P,promo=t===1?DF.promo(P)*P:0;
+   if(t===1){fresh=P;U+=topup*(1-DF.topupCharge);paidCash+=P+topup}
+   else if(df.fund==="front"){if(U>=P){U-=P;fromPocket=P}else{fromPocket=U;fresh=P-U;U=0;extra+=fresh;paidCash+=fresh}}
+   else{fresh=P;paidCash+=P}
+   RP+=P+wel+promo}
+  if(t>=DF.ibYears[0]&&t<=DF.ibYears[1])RP+=DF.ib*P;
+  if(t>=8){RP*=1+DF.perf}
+  const pot=RP+U+R,div=t>df.start?y*pot:0;
+  if(t>df.start)cum+=div;else R+=y*pot;
+  RP*=1-DF.fmc;U*=1-DF.fmc;R*=1-DF.fmc;if(t<=DF.suppYears)RP*=1-DF.supp;
+  rows.push({t,age:df.age+t-1,fresh,fromPocket,div,cum,pot:RP+U+R,U,RP,R,paidCash,extra});
+ }
+ return rows}
+const m=n=>"S$"+Math.round(n).toLocaleString("en-SG"),Kk=n=>Math.abs(n)>=1e6?"S$"+(n/1e6).toFixed(2)+"m":Math.abs(n)>=1e4?"S$"+Math.round(n/1e3)+"k":m(n);
+function dfRender(){
+ const el=id=>document.getElementById(id);
+ el("df-age").value=df.age;el("df-p").value=df.p;el("df-to").value=df.to;
+ [["df-fund","fund"],["df-start","start"],["df-y","y"]].forEach(([id,k])=>el(id).querySelectorAll("button").forEach(b=>b.classList.toggle("on",String(b.dataset.v)===String(df[k]))));
+ if(df.p<DF.min){el("df-stats").innerHTML=`<div class="dfs red"><b>${m(DF.min)}</b><small>a year is the minimum for the 5-year plan</small></div>`;el("df-pockets").innerHTML="";el("df-chart").innerHTML="";el("df-tl").innerHTML="";el("df-basis").innerHTML="";return}
+ const r=dfSim(),n=5,first=r[df.start]||r[0],last=r[r.length-1],y5=r[Math.min(4,r.length-1)],totalIn=df.p*n,topup=df.fund==="front"?df.p*(n-1):0;
+ const coin=(x,y,d)=>`<g class="coinrun" style="animation-delay:${d}s"><circle cx="${x}" cy="${y}" r="7" fill="#ffc93c" stroke="#d99400" stroke-width="1.5"/><text x="${x}" y="${y+3.5}" text-anchor="middle" font-size="8" font-weight="800" fill="#b37800">$</text></g>`;
+ el("df-pockets").innerHTML=df.fund==="front"?`
+  <div class="dfp"><svg class="ic" viewBox="0 0 84 84"><path d="M10 20 h64 v44 q0 10 -10 10 h-44 q-10 0 -10 -10Z" fill="#e1d4c2" stroke="#b8962e" stroke-width="3"/><path d="M10 20 q32 18 64 0" fill="none" stroke="#b8962e" stroke-width="3"/>${coin(30,48,0)}${coin(50,52,.7)}</svg><b>${m(topup)}</b><small>Left pocket: your top-up, paid today</small></div>
+  <div class="dfar">→<small>${m(df.p)} a year moves across, years 2 to 5</small></div>
+  <div class="dfp pot"><svg class="ic" viewBox="0 0 84 84"><path d="M14 30 h56 l-6 40 q-1 6 -7 6 h-30 q-6 0 -7 -6Z" fill="#8b0203"/><rect x="10" y="24" width="64" height="10" rx="4" fill="#5b0302"/>${coin(32,50,.3)}${coin(52,50,1.1)}</svg><b>${m(df.p)} × 5</b><small>Right pocket: the plan. Bonuses added here</small></div>
+  <div class="dfar">→<small>pays you</small></div>
+  <div class="dfp div"><svg class="ic" viewBox="0 0 84 84"><rect x="12" y="26" width="60" height="42" rx="8" fill="#fff" stroke="#2f8f4e" stroke-width="3"/><path d="M12 34 h60" stroke="#2f8f4e" stroke-width="3"/>${coin(42,52,.5)}</svg><b>${m(first.div/12)}</b><small>a month in dividends${df.start?`, from age ${first.age}`:", from day one"}</small></div>`:
+ `<div class="dfp pot"><svg class="ic" viewBox="0 0 84 84"><path d="M14 30 h56 l-6 40 q-1 6 -7 6 h-30 q-6 0 -7 -6Z" fill="#8b0203"/><rect x="10" y="24" width="64" height="10" rx="4" fill="#5b0302"/>${coin(32,50,.3)}${coin(52,50,1.1)}</svg><b>${m(df.p)} × 5</b><small>You pay each year for 5 years. Bonuses added here</small></div><div class="dfar">→<small>pays you</small></div><div class="dfp div"><svg class="ic" viewBox="0 0 84 84"><rect x="12" y="26" width="60" height="42" rx="8" fill="#fff" stroke="#2f8f4e" stroke-width="3"/><path d="M12 34 h60" stroke="#2f8f4e" stroke-width="3"/>${coin(42,52,.5)}</svg><b>${m(first.div/12)}</b><small>a month in dividends${df.start?`, from age ${first.age}`:", from day one"}</small></div><div></div><div></div>`;
+ const bonusTot=r.slice(0,11).reduce((a,x,i)=>a+(i<n?(DF.wb(df.p)[i]||0)*df.p+(i===0?DF.promo(df.p)*df.p:0):0)+(i>=7&&i<=10?DF.ib*df.p:0),0);
+ el("df-stats").innerHTML=`<div class="dfs red"><b>${m(totalIn)}</b><small>the pot you give me${df.fund==="front"?", all in today":", over 5 years"}</small></div><div class="dfs green"><b>${m(first.div/12)}</b><small>a month to you, ${df.start?"from age "+first.age:"starting now"}</small></div><div class="dfs green"><b>${Kk(last.cum)}</b><small>dividends paid to you by age ${last.age}</small></div><div class="dfs red"><b>${Kk(last.pot)}</b><small>the pot still there at ${last.age}, after paying you</small></div><div class="dfs"><b>${m(bonusTot)}</b><small>bonuses the plan adds over the years${bonusTot?"":" (bigger amounts earn welcome bonus)"}</small></div>`;
+ // chart
+ const W=900,H=340,L=70,Rr=20,T=20,B=48,mx=Math.max(...r.map(x=>Math.max(x.pot,x.cum)))*1.1,X=i=>L+i/(r.length-1)*(W-L-Rr),Y=v=>H-B-v/mx*(H-T-B);
+ let s="";const raw=mx/5,pw=Math.pow(10,Math.floor(Math.log10(raw))),st=[1,2,2.5,5,10].find(k=>k*pw>=raw)*pw;
+ for(let v=0;v<=mx;v+=st)s+=`<line x1="${L}" x2="${W-Rr}" y1="${Y(v)}" y2="${Y(v)}" stroke="#e3dccb"/><text x="${L-8}" y="${Y(v)+4}" text-anchor="end" font-size="12" fill="#6b6253">${Kk(v)}</text>`;
+ r.forEach((x,i)=>{if(i===0||x.age%5===0||i===r.length-1)s+=`<text x="${X(i)}" y="${H-26}" text-anchor="middle" font-size="12" fill="#29251E" font-weight="700">${x.age}</text><text x="${X(i)}" y="${H-10}" text-anchor="middle" font-size="10" fill="#6b6253">yr ${x.t}</text>`});
+ s+=`<path d="${r.map((x,i)=>(i?"L":"M")+X(i).toFixed(1)+","+Y(x.cum).toFixed(1)).join("")} L${X(r.length-1)},${Y(0)} L${X(0)},${Y(0)} Z" fill="#2f8f4e" opacity=".12"/>`;
+ s+=`<line x1="${L}" x2="${W-Rr}" y1="${Y(totalIn)}" y2="${Y(totalIn)}" stroke="#b8962e" stroke-dasharray="5 5"/><text x="${W-Rr}" y="${Y(totalIn)-6}" text-anchor="end" font-size="11" fill="#b8962e" font-weight="700">what you put in</text>`;
+ s+=`<path d="${r.map((x,i)=>(i?"L":"M")+X(i).toFixed(1)+","+Y(x.pot).toFixed(1)).join("")}" fill="none" stroke="#8b0203" stroke-width="3.5"/>`;
+ s+=`<path d="${r.map((x,i)=>(i?"L":"M")+X(i).toFixed(1)+","+Y(x.cum).toFixed(1)).join("")}" fill="none" stroke="#2f8f4e" stroke-width="3"/>`;
+ s+=`<text x="${X(r.length-1)-6}" y="${Y(last.pot)-10}" text-anchor="end" font-size="13" font-weight="800" fill="#8b0203">pot ${Kk(last.pot)}</text><text x="${X(r.length-1)-6}" y="${Y(last.cum)+(last.cum>last.pot?-10:18)}" text-anchor="end" font-size="13" font-weight="800" fill="#2f8f4e">paid to you ${Kk(last.cum)}</text>`;
+ el("df-chart").innerHTML=s;el("df-leg").innerHTML=`<span><i style="background:#8b0203"></i>Your pot (stays with me)</span><span><i style="background:#2f8f4e"></i>Dividends paid to you, adding up</span><span><i style="background:#b8962e"></i>What you put in</span>`;
+ el("df-tl").innerHTML=r.map(x=>`<div class="dft ${x.t===1?"now":""}"><span class="yr">${x.t===1?"Today":"Year "+x.t}</span><span class="age">Age ${x.age}</span>${x.t===1?`<span class="pay">You pay ${m(x.fresh+(df.fund==="front"?topup:0))}</span>`:x.fromPocket?`<span class="pay">${m(x.fromPocket)} from left pocket${x.fresh?" + "+m(x.fresh)+" cash":""}</span>`:x.fresh?`<span class="pay">You pay ${m(x.fresh)}</span>`:`<span class="pay" style="color:#6b6253">Nothing to pay</span>`}<span class="dv">${x.div?m(x.div/12)+"/mth to you":"Dividends reinvested"}</span><span class="pv">Pot ${Kk(x.pot)}</span></div>`).join("");
+ const short=last.extra;
+ el("df-basis").innerHTML=`<b>How this is worked out.</b> ${df.fund==="front"?`You pay ${m(df.p)} for year 1 plus a ${m(topup)} top-up today. A top-up carries a one-time 3% charge and earns no bonus. Each year from 2 to 5, ${m(df.p)} moves from the top-up (left pocket) into the plan (right pocket) as that year's premium, so you pay nothing more.${short?` In this illustration the left pocket runs ${m(short)} short, so that much would be paid in cash.`:""}`:`You pay ${m(df.p)} each year for 5 years.`} Welcome bonus by yearly amount (none below S$24,000; 3% at S$24,000; 3%, 4%, 5% in years 1 to 3 at S$42,000 and above), investment bonus 2.5% of the yearly amount in years 8 to 11, performance bonus 0.4% a year from year 8, supplementary charge 3.6% a year for 7 years on the plan account, and a 1.38% yearly fund charge. Dividends are ${df.y}% a year of the whole pot, paid out${df.start?` from year ${df.start+1} (reinvested before that)`:" from the first year"}, with the fund price assumed flat. Sources: PWV 3.0 launch deck (Oct 2026) and the 2-pay benefit illustration the model was fitted to. The dividend fund has paid about 7% a year so far; that is history, not a promise.`;
+}
+["df-age","df-p","df-to"].forEach(id=>document.getElementById(id).addEventListener("input",e=>{df[id.slice(3)]=+e.target.value||0;try{localStorage.setItem("pp-df",JSON.stringify(df))}catch(x){}dfRender()}));
+[["df-fund","fund",v=>v],["df-start","start",v=>+v],["df-y","y",v=>+v]].forEach(([id,k,f])=>document.getElementById(id).querySelectorAll("button").forEach(b=>b.onclick=()=>{df[k]=f(b.dataset.v);try{localStorage.setItem("pp-df",JSON.stringify(df))}catch(x){}dfRender()}));
 document.getElementById("copy").onclick=()=>{const u=location.href.split("#")[0],o=document.getElementById("copied");
   navigator.clipboard.writeText(u).then(()=>o.textContent="Link copied. Paste it in your family chat.").catch(()=>{o.textContent=u})};
 </script>
